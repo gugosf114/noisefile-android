@@ -48,13 +48,18 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
 
-    fun selectedRule(): RuleWorkflow = ruleCatalog.byId(_uiState.value.selectedRuleId)
+    fun selectedRule(): RuleWorkflow =
+        checkNotNull(ruleCatalog.byId(_uiState.value.selectedRuleId)) {
+            "Selected rule is not present in the verified catalog."
+        }
 
     fun selectedJurisdiction(): Jurisdiction =
-        ruleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)
+        checkNotNull(ruleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)) {
+            "Selected jurisdiction is not present in the verified catalog."
+        }
 
     fun selectJurisdiction(jurisdictionId: String) {
-        val jurisdiction = ruleCatalog.jurisdictionById(jurisdictionId)
+        val jurisdiction = ruleCatalog.jurisdictionById(jurisdictionId) ?: return
         if (!jurisdiction.isAvailable) return
         val firstRule = ruleCatalog.forJurisdiction(jurisdiction.id).firstOrNull() ?: return
         _uiState.update {
@@ -68,6 +73,17 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun selectRule(ruleId: String) {
+        val state = _uiState.value
+        val rule = ruleCatalog.byId(ruleId) ?: return
+        if (rule.jurisdictionId != state.selectedJurisdictionId) {
+            _uiState.update {
+                it.copy(
+                    error = "That rule does not belong to the selected city.",
+                    message = null,
+                )
+            }
+            return
+        }
         _uiState.update {
             it.copy(
                 selectedRuleId = ruleId,
@@ -171,6 +187,16 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         val startedAt = state.measurementStartedAt ?: System.currentTimeMillis()
         val reading = state.meterReading
         val rule = ruleCatalog.byId(state.selectedRuleId)
+        if (rule == null || rule.jurisdictionId != state.selectedJurisdictionId) {
+            _uiState.update {
+                it.copy(
+                    screen = AppScreen.HOME,
+                    error = "The selected rule is no longer available for this city.",
+                    message = null,
+                )
+            }
+            return
+        }
         val incident = Incident(
             id = System.currentTimeMillis(),
             ruleId = rule.id,

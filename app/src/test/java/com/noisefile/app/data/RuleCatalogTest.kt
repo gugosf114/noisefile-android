@@ -50,6 +50,8 @@ class RuleCatalogTest {
 
         assertTrue(catalog.forJurisdiction("daly-city").isEmpty())
         assertNull(catalog.retrieve("daly-city", NoiseType.CONSTRUCTION))
+        assertNull(catalog.jurisdictionById("not-a-city"))
+        assertNull(catalog.byId("not-a-rule"))
     }
 
     @Test

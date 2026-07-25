@@ -26,6 +26,14 @@ class RuleCatalog private constructor(
         require(rules.map { it.id }.distinct().size == rules.size) {
             "Rule IDs must be unique."
         }
+        require(
+            rules
+                .map { it.jurisdictionId to it.noiseType }
+                .distinct()
+                .size == rules.size,
+        ) {
+            "Each jurisdiction and noise category may have only one active rule."
+        }
 
         val jurisdictionIds = jurisdictions.map { it.id }.toSet()
         require(rules.all { it.jurisdictionId in jurisdictionIds }) {
@@ -48,11 +56,11 @@ class RuleCatalog private constructor(
             it.jurisdictionId == jurisdictionId && it.noiseType == noiseType
         }
 
-    fun jurisdictionById(id: String): Jurisdiction =
-        jurisdictions.firstOrNull { it.id == id } ?: jurisdictions.first()
+    fun jurisdictionById(id: String): Jurisdiction? =
+        jurisdictions.firstOrNull { it.id == id }
 
-    fun byId(id: String): RuleWorkflow =
-        rules.firstOrNull { it.id == id } ?: rules.first()
+    fun byId(id: String): RuleWorkflow? =
+        rules.firstOrNull { it.id == id }
 
     companion object {
         const val SAN_JOSE_ID = "san-jose"
