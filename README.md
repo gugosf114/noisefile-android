@@ -38,3 +38,6 @@ app/build/outputs/apk/debug/app-debug.apk
 ## Product documentation
 
 See [`docs/PRODUCT_BRIEF.md`](docs/PRODUCT_BRIEF.md).
+
+The offline rule retrieval design is documented in
+[`docs/ORDINANCE_LIBRARY.md`](docs/ORDINANCE_LIBRARY.md).
