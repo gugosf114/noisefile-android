@@ -25,7 +25,7 @@ class RuleCatalogTest {
     @Test
     fun sanJoseBarkingWorkflowRequiresFiveIncidents() {
         val rule = catalog().retrieve(RuleCatalog.SAN_JOSE_ID, NoiseType.BARKING_DOG)
-            ?: error("Missing San José barking-dog rule")
+            ?: error("Missing San Jose barking-dog rule")
 
         assertEquals(5, rule.requiredIncidentCount)
         assertTrue(rule.officialSourceUrl.startsWith("https://www.sanjoseca.gov/"))
@@ -42,7 +42,7 @@ class RuleCatalogTest {
     @Test
     fun sanJoseIncludesConstructionWorkflow() {
         val construction = catalog().retrieve(RuleCatalog.SAN_JOSE_ID, NoiseType.CONSTRUCTION)
-            ?: error("Missing San José construction rule")
+            ?: error("Missing San Jose construction rule")
 
         assertTrue(construction.summary.contains("7:00 a.m."))
         assertTrue(construction.summary.contains("prohibits it on weekends"))

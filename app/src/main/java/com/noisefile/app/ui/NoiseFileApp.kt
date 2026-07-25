@@ -425,7 +425,7 @@ private fun CityPickerDialog(
 
 @Composable
 private fun BrandHeader(
-    cityName: String = "San José",
+    cityName: String = "San Jose",
     onCityClick: (() -> Unit)? = null,
 ) {
     Row(
@@ -548,25 +548,41 @@ private fun HeroCard() {
 }
 
 @Composable
-private fun WaveDecoration(modifier: Modifier = Modifier) {
+private fun WaveDecoration(
+    modifier: Modifier = Modifier,
+    color: Color = Signal,
+    alpha: Float = 0.26f,
+    variant: Int = 0,
+    horizontalBars: Boolean = false,
+) {
     Canvas(modifier = modifier) {
-        val spacing = size.width / 8f
-        for (index in 0..8) {
-            val x = index * spacing
-            val heightFactor = when (index) {
-                0, 8 -> 0.18f
-                1, 7 -> 0.35f
-                2, 6 -> 0.55f
-                3, 5 -> 0.78f
-                else -> 0.95f
+        val factors = when (variant) {
+            1 -> floatArrayOf(0.88f, 0.74f, 0.58f, 0.43f, 0.30f, 0.20f, 0.12f, 0.06f, 0.02f)
+            2 -> floatArrayOf(0.08f, 0.20f, 0.42f, 0.70f, 0.94f, 0.82f, 0.55f, 0.28f, 0.10f)
+            3 -> floatArrayOf(0.03f, 0.08f, 0.17f, 0.32f, 0.51f, 0.73f, 0.91f, 0.70f, 0.42f)
+            else -> floatArrayOf(0.18f, 0.35f, 0.55f, 0.78f, 0.95f, 0.78f, 0.55f, 0.35f, 0.18f)
+        }
+
+        factors.forEachIndexed { index, factor ->
+            if (horizontalBars) {
+                val y = index * (size.height / (factors.size - 1))
+                drawLine(
+                    color = color.copy(alpha = alpha),
+                    start = Offset(size.width * (1f - factor), y),
+                    end = Offset(size.width, y),
+                    strokeWidth = 4.dp.toPx(),
+                    cap = StrokeCap.Round,
+                )
+            } else {
+                val x = index * (size.width / (factors.size - 1))
+                drawLine(
+                    color = color.copy(alpha = alpha),
+                    start = Offset(x, size.height * (1f - factor) / 2f),
+                    end = Offset(x, size.height * (1f + factor) / 2f),
+                    strokeWidth = 5.dp.toPx(),
+                    cap = StrokeCap.Round,
+                )
             }
-            drawLine(
-                color = Signal.copy(alpha = 0.26f),
-                start = Offset(x, size.height * (1f - heightFactor) / 2f),
-                end = Offset(x, size.height * (1f + heightFactor) / 2f),
-                strokeWidth = 5.dp.toPx(),
-                cap = StrokeCap.Round,
-            )
         }
     }
 }
@@ -598,10 +614,21 @@ private fun RuleCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(22.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-        ) {
+        Box {
+            WaveDecoration(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .width(158.dp)
+                    .height(132.dp),
+                color = Cobalt,
+                alpha = 0.08f,
+                variant = 1,
+                horizontalBars = true,
+            )
+            Column(
+                modifier = Modifier.padding(22.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+            ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     modifier = Modifier.size(44.dp),
@@ -696,6 +723,7 @@ private fun RuleCard(
                 color = Muted,
                 fontSize = 12.sp,
             )
+            }
         }
     }
 }
@@ -708,21 +736,33 @@ private fun MicrophoneNotice() {
         color = Cobalt.copy(alpha = 0.09f),
         border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.22f)),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                Icons.Default.Mic,
-                contentDescription = null,
-                tint = Cobalt,
-                modifier = Modifier.size(22.dp),
+        Box {
+            WaveDecoration(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .width(104.dp)
+                    .height(64.dp),
+                color = Cobalt,
+                alpha = 0.10f,
+                variant = 3,
             )
-            Spacer(Modifier.width(11.dp))
-            Text(
-                text = "Microphone permission is requested only when you start measuring. NoiseFile does not listen while idle.",
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    Icons.Default.Mic,
+                    contentDescription = null,
+                    tint = Cobalt,
+                    modifier = Modifier.size(22.dp),
+                )
+                Spacer(Modifier.width(11.dp))
+                Text(
+                    text = "Microphone permission is requested only when you start measuring. NoiseFile does not listen while idle.",
+                    modifier = Modifier.padding(end = 22.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
     }
 }
@@ -734,10 +774,21 @@ private fun NeighborVerifyCard(onShare: () -> Unit) {
         shape = RoundedCornerShape(26.dp),
         colors = CardDefaults.cardColors(containerColor = Ink),
     ) {
-        Column(
-            modifier = Modifier.padding(22.dp),
-            verticalArrangement = Arrangement.spacedBy(13.dp),
-        ) {
+        Box {
+            WaveDecoration(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .width(184.dp)
+                    .height(148.dp),
+                color = Signal,
+                alpha = 0.12f,
+                variant = 2,
+                horizontalBars = true,
+            )
+            Column(
+                modifier = Modifier.padding(22.dp),
+                verticalArrangement = Arrangement.spacedBy(13.dp),
+            ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     modifier = Modifier.size(44.dp),
@@ -783,6 +834,7 @@ private fun NeighborVerifyCard(onShare: () -> Unit) {
                 Icon(Icons.Default.Share, contentDescription = null)
                 Spacer(Modifier.width(9.dp))
                 Text("Share a private invite")
+            }
             }
         }
     }
