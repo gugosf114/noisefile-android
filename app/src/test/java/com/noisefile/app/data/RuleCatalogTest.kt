@@ -23,4 +23,14 @@ class RuleCatalogTest {
             assertTrue(rule.verifiedDate.isNotBlank())
         }
     }
+
+    @Test
+    fun sanJoseIncludesConstructionWorkflow() {
+        val construction = RuleCatalog.sanJose.single {
+            it.noiseType == NoiseType.CONSTRUCTION
+        }
+
+        assertTrue(construction.summary.contains("7:00 a.m."))
+        assertTrue(construction.officialSourceLabel.contains("20.100.450"))
+    }
 }

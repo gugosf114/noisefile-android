@@ -36,16 +36,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -64,9 +70,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -88,6 +98,7 @@ import com.noisefile.app.AppScreen
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
@@ -117,6 +128,7 @@ private val impactOptions = listOf(
 fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    var showCityPicker by remember { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
@@ -141,9 +153,14 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             state = state,
             workflows = viewModel.workflows,
             selectedRule = viewModel.selectedRule(),
+            selectedJurisdiction = viewModel.selectedJurisdiction(),
             incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
             onSelectRule = viewModel::selectRule,
+            onShowCityPicker = { showCityPicker = true },
             onBeginCapture = beginCapture,
+            onShareNeighbor = {
+                shareNeighborInvite(context, viewModel.selectedRule())
+            },
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
             onOpenUri = { openUri(context, it) },
@@ -170,6 +187,18 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onShowHistory = viewModel::showHistory,
         )
     }
+
+    if (showCityPicker) {
+        CityPickerDialog(
+            jurisdictions = viewModel.jurisdictions,
+            selectedJurisdiction = viewModel.selectedJurisdiction(),
+            onSelect = { jurisdiction ->
+                viewModel.selectJurisdiction(jurisdiction.id)
+                showCityPicker = false
+            },
+            onDismiss = { showCityPicker = false },
+        )
+    }
 }
 
 @Composable
@@ -177,9 +206,12 @@ private fun HomeScreen(
     state: NoiseFileUiState,
     workflows: List<RuleWorkflow>,
     selectedRule: RuleWorkflow,
+    selectedJurisdiction: Jurisdiction,
     incidentCount: Int,
     onSelectRule: (String) -> Unit,
+    onShowCityPicker: () -> Unit,
     onBeginCapture: () -> Unit,
+    onShareNeighbor: () -> Unit,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
     onOpenUri: (String) -> Unit,
@@ -197,7 +229,10 @@ private fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             item {
-                BrandHeader()
+                BrandHeader(
+                    cityName = selectedJurisdiction.displayName,
+                    onCityClick = onShowCityPicker,
+                )
             }
 
             item {
@@ -226,7 +261,7 @@ private fun HomeScreen(
 
             item {
                 SectionTitle(
-                    eyebrow = "SAN JOSÉ · FIRST WORKFLOWS",
+                    eyebrow = "${selectedJurisdiction.displayName.uppercase(Locale.US)} · VERIFIED WORKFLOWS",
                     title = "What are you hearing?",
                 )
                 Spacer(Modifier.height(12.dp))
@@ -241,10 +276,10 @@ private fun HomeScreen(
                             onClick = { onSelectRule(workflow.id) },
                             label = {
                                 Text(
-                                    text = if (workflow.noiseType == NoiseType.BARKING_DOG) {
-                                        "Barking dog"
-                                    } else {
-                                        "Party / music"
+                                    text = when (workflow.noiseType) {
+                                        NoiseType.BARKING_DOG -> "Dog"
+                                        NoiseType.PARTY_MUSIC -> "Music"
+                                        NoiseType.CONSTRUCTION -> "Construction"
                                     },
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
@@ -252,10 +287,10 @@ private fun HomeScreen(
                             },
                             leadingIcon = {
                                 Icon(
-                                    imageVector = if (workflow.noiseType == NoiseType.BARKING_DOG) {
-                                        Icons.Default.Pets
-                                    } else {
-                                        Icons.Default.MusicNote
+                                    imageVector = when (workflow.noiseType) {
+                                        NoiseType.BARKING_DOG -> Icons.Default.Pets
+                                        NoiseType.PARTY_MUSIC -> Icons.Default.MusicNote
+                                        NoiseType.CONSTRUCTION -> Icons.Default.Construction
                                     },
                                     contentDescription = null,
                                     modifier = Modifier.size(18.dp),
@@ -280,6 +315,10 @@ private fun HomeScreen(
             }
 
             item {
+                MicrophoneNotice()
+            }
+
+            item {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -298,6 +337,10 @@ private fun HomeScreen(
             }
 
             item {
+                NeighborVerifyCard(onShare = onShareNeighbor)
+            }
+
+            item {
                 ThreeStepStrip()
             }
         }
@@ -305,7 +348,86 @@ private fun HomeScreen(
 }
 
 @Composable
-private fun BrandHeader() {
+private fun CityPickerDialog(
+    jurisdictions: List<Jurisdiction>,
+    selectedJurisdiction: Jurisdiction,
+    onSelect: (Jurisdiction) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Choose your city") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Only verified city packets can be selected. More Bay Area cities are added with the ordinance library.",
+                    color = Muted,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(4.dp))
+                jurisdictions.forEach { jurisdiction ->
+                    val isSelected = jurisdiction.id == selectedJurisdiction.id
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                enabled = jurisdiction.isAvailable,
+                                onClick = { onSelect(jurisdiction) },
+                            ),
+                        shape = RoundedCornerShape(16.dp),
+                        color = when {
+                            isSelected -> Signal.copy(alpha = 0.28f)
+                            jurisdiction.isAvailable -> MaterialTheme.colorScheme.surfaceVariant
+                            else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.48f)
+                        },
+                        border = if (isSelected) {
+                            androidx.compose.foundation.BorderStroke(1.dp, Signal)
+                        } else {
+                            null
+                        },
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(15.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Column {
+                                Text(
+                                    text = jurisdiction.displayName,
+                                    color = if (jurisdiction.isAvailable) Ink else Muted,
+                                    style = MaterialTheme.typography.titleMedium,
+                                )
+                                Text(
+                                    text = if (isSelected) "Selected · verified" else jurisdiction.region,
+                                    color = Muted,
+                                    style = MaterialTheme.typography.bodySmall,
+                                )
+                            }
+                            if (isSelected) {
+                                Icon(
+                                    Icons.Default.CheckCircle,
+                                    contentDescription = "Selected",
+                                    tint = Success,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Done")
+            }
+        },
+    )
+}
+
+@Composable
+private fun BrandHeader(
+    cityName: String = "San José",
+    onCityClick: (() -> Unit)? = null,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -340,6 +462,11 @@ private fun BrandHeader() {
             }
         }
         Surface(
+            modifier = if (onCityClick != null) {
+                Modifier.clickable(onClick = onCityClick)
+            } else {
+                Modifier
+            },
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surface,
             border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
@@ -355,7 +482,16 @@ private fun BrandHeader() {
                     modifier = Modifier.size(16.dp),
                 )
                 Spacer(Modifier.width(5.dp))
-                Text("San José", style = MaterialTheme.typography.labelLarge)
+                Text(cityName, style = MaterialTheme.typography.labelLarge)
+                if (onCityClick != null) {
+                    Spacer(Modifier.width(2.dp))
+                    Icon(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Change city",
+                        tint = Muted,
+                        modifier = Modifier.size(17.dp),
+                    )
+                }
             }
         }
     }
@@ -560,6 +696,94 @@ private fun RuleCard(
                 color = Muted,
                 fontSize = 12.sp,
             )
+        }
+    }
+}
+
+@Composable
+private fun MicrophoneNotice() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = Cobalt.copy(alpha = 0.09f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.22f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Default.Mic,
+                contentDescription = null,
+                tint = Cobalt,
+                modifier = Modifier.size(22.dp),
+            )
+            Spacer(Modifier.width(11.dp))
+            Text(
+                text = "Microphone permission is requested only when you start measuring. NoiseFile does not listen while idle.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun NeighborVerifyCard(onShare: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(26.dp),
+        colors = CardDefaults.cardColors(containerColor = Ink),
+    ) {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(13.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    modifier = Modifier.size(44.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    color = Signal,
+                ) {
+                    Icon(
+                        Icons.Default.GroupAdd,
+                        contentDescription = null,
+                        tint = Ink,
+                        modifier = Modifier.padding(10.dp),
+                    )
+                }
+                Spacer(Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = "NEIGHBOR VERIFY",
+                        color = Signal,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                    )
+                    Text(
+                        text = "Someone else hears it too?",
+                        color = White,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+            }
+            Text(
+                text = "Send a private invite asking a nearby resident to independently confirm the time and impact. Secure expiring verification links are the next backend step.",
+                color = White.copy(alpha = 0.74f),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onShare,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Signal,
+                    contentColor = Ink,
+                ),
+            ) {
+                Icon(Icons.Default.Share, contentDescription = null)
+                Spacer(Modifier.width(9.dp))
+                Text("Share a private invite")
+            }
         }
     }
 }
@@ -1191,5 +1415,27 @@ private fun openUri(context: Context, uri: String) {
     val action = if (parsed.scheme == "tel") Intent.ACTION_DIAL else Intent.ACTION_VIEW
     runCatching {
         context.startActivity(Intent(action, parsed))
+    }
+}
+
+private fun shareNeighborInvite(context: Context, rule: RuleWorkflow) {
+    val message = """
+        I am documenting a ${rule.noiseType.displayName.lowercase(Locale.US)} disturbance in ${rule.jurisdiction}.
+
+        If you are hearing the same event, please reply with:
+        • the approximate time you heard it
+        • where you heard it from
+        • how it affected you
+
+        Please describe only what you personally observed. NoiseFile keeps each person's account separate.
+    """.trimIndent()
+
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, "Can you independently confirm this noise incident?")
+        putExtra(Intent.EXTRA_TEXT, message)
+    }
+    runCatching {
+        context.startActivity(Intent.createChooser(shareIntent, "Invite a neighbor"))
     }
 }
