@@ -1,0 +1,185 @@
+package com.noisefile.app
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.noisefile.app.audio.NoiseMeter
+import com.noisefile.app.data.IncidentStore
+import com.noisefile.app.data.RuleCatalog
+import com.noisefile.app.model.Incident
+import com.noisefile.app.model.MeterReading
+import com.noisefile.app.model.RuleWorkflow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlin.math.max
+
+enum class AppScreen {
+    HOME,
+    METER,
+    REVIEW,
+    HISTORY,
+}
+
+data class NoiseFileUiState(
+    val screen: AppScreen = AppScreen.HOME,
+    val selectedRuleId: String = RuleCatalog.sanJose.first().id,
+    val meterReading: MeterReading = MeterReading(),
+    val incidents: List<Incident> = emptyList(),
+    val measurementStartedAt: Long? = null,
+    val draftImpact: String = "Interrupted rest or quiet use",
+    val draftNotes: String = "",
+    val message: String? = null,
+    val error: String? = null,
+)
+
+class NoiseFileViewModel(application: Application) : AndroidViewModel(application) {
+    val workflows: List<RuleWorkflow> = RuleCatalog.sanJose
+
+    private val incidentStore = IncidentStore(application)
+    private val noiseMeter = NoiseMeter(application)
+    private val _uiState = MutableStateFlow(
+        NoiseFileUiState(incidents = incidentStore.load()),
+    )
+    val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
+
+    fun selectedRule(): RuleWorkflow = RuleCatalog.byId(_uiState.value.selectedRuleId)
+
+    fun selectRule(ruleId: String) {
+        _uiState.update {
+            it.copy(
+                selectedRuleId = ruleId,
+                message = null,
+                error = null,
+            )
+        }
+    }
+
+    fun showHome() {
+        noiseMeter.stop()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.HOME,
+                meterReading = MeterReading(),
+                measurementStartedAt = null,
+                error = null,
+            )
+        }
+    }
+
+    fun showHistory() {
+        noiseMeter.stop()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.HISTORY,
+                error = null,
+            )
+        }
+    }
+
+    fun startMeasurement() {
+        val startedAt = System.currentTimeMillis()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.METER,
+                meterReading = MeterReading(),
+                measurementStartedAt = startedAt,
+                message = null,
+                error = null,
+            )
+        }
+
+        noiseMeter.start(
+            onReading = { reading ->
+                _uiState.update { state -> state.copy(meterReading = reading) }
+            },
+            onError = { error ->
+                _uiState.update { state ->
+                    state.copy(
+                        screen = AppScreen.HOME,
+                        error = error,
+                        measurementStartedAt = null,
+                    )
+                }
+            },
+        )
+    }
+
+    fun microphonePermissionDenied() {
+        _uiState.update {
+            it.copy(
+                error = "Microphone access is required to measure and document an incident.",
+                message = null,
+            )
+        }
+    }
+
+    fun stopMeasurement() {
+        noiseMeter.stop()
+        if (_uiState.value.meterReading.sampleWindows == 0) {
+            _uiState.update {
+                it.copy(
+                    screen = AppScreen.HOME,
+                    error = "No sound samples were captured. Try again and keep the app open.",
+                    measurementStartedAt = null,
+                )
+            }
+            return
+        }
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.REVIEW,
+                draftImpact = "Interrupted rest or quiet use",
+                draftNotes = "",
+                error = null,
+            )
+        }
+    }
+
+    fun setImpact(impact: String) {
+        _uiState.update { it.copy(draftImpact = impact) }
+    }
+
+    fun setNotes(notes: String) {
+        _uiState.update { it.copy(draftNotes = notes) }
+    }
+
+    fun saveIncident() {
+        val state = _uiState.value
+        val startedAt = state.measurementStartedAt ?: System.currentTimeMillis()
+        val reading = state.meterReading
+        val rule = RuleCatalog.byId(state.selectedRuleId)
+        val incident = Incident(
+            id = System.currentTimeMillis(),
+            ruleId = rule.id,
+            noiseType = rule.noiseType,
+            startedAtEpochMillis = startedAt,
+            durationSeconds = max(1L, reading.elapsedMillis / 1_000L),
+            minimumDb = reading.minimumDb,
+            averageDb = reading.averageDb,
+            maximumDb = reading.maximumDb,
+            impact = state.draftImpact,
+            notes = state.draftNotes.trim(),
+        )
+        val incidents = incidentStore.add(incident)
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.HOME,
+                incidents = incidents,
+                meterReading = MeterReading(),
+                measurementStartedAt = null,
+                draftNotes = "",
+                message = "Incident saved to your private history.",
+                error = null,
+            )
+        }
+    }
+
+    fun incidentCountFor(ruleId: String): Int =
+        _uiState.value.incidents.count { it.ruleId == ruleId }
+
+    override fun onCleared() {
+        noiseMeter.stop()
+        super.onCleared()
+    }
+}

@@ -1,0 +1,1195 @@
+package com.noisefile.app.ui
+
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.GraphicEq
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.noisefile.app.AppScreen
+import com.noisefile.app.NoiseFileUiState
+import com.noisefile.app.NoiseFileViewModel
+import com.noisefile.app.model.Incident
+import com.noisefile.app.model.MeterReading
+import com.noisefile.app.model.NoiseType
+import com.noisefile.app.model.RuleWorkflow
+import com.noisefile.app.ui.theme.Cobalt
+import com.noisefile.app.ui.theme.Danger
+import com.noisefile.app.ui.theme.Ink
+import com.noisefile.app.ui.theme.Line
+import com.noisefile.app.ui.theme.Muted
+import com.noisefile.app.ui.theme.Paper
+import com.noisefile.app.ui.theme.Signal
+import com.noisefile.app.ui.theme.Success
+import com.noisefile.app.ui.theme.White
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import kotlin.math.roundToInt
+
+private val impactOptions = listOf(
+    "Interrupted rest or quiet use",
+    "Woke me or someone in my home",
+    "Prevented work or concentration",
+    "Shook walls, windows, or furniture",
+)
+
+@Composable
+fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) viewModel.startMeasurement() else viewModel.microphonePermissionDenied()
+    }
+
+    val beginCapture = {
+        if (
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO,
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            viewModel.startMeasurement()
+        } else {
+            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
+
+    when (state.screen) {
+        AppScreen.HOME -> HomeScreen(
+            state = state,
+            workflows = viewModel.workflows,
+            selectedRule = viewModel.selectedRule(),
+            incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
+            onSelectRule = viewModel::selectRule,
+            onBeginCapture = beginCapture,
+            onShowHome = viewModel::showHome,
+            onShowHistory = viewModel::showHistory,
+            onOpenUri = { openUri(context, it) },
+        )
+
+        AppScreen.METER -> MeterScreen(
+            rule = viewModel.selectedRule(),
+            reading = state.meterReading,
+            onStop = viewModel::stopMeasurement,
+        )
+
+        AppScreen.REVIEW -> ReviewScreen(
+            state = state,
+            rule = viewModel.selectedRule(),
+            onImpactChange = viewModel::setImpact,
+            onNotesChange = viewModel::setNotes,
+            onSave = viewModel::saveIncident,
+            onDiscard = viewModel::showHome,
+        )
+
+        AppScreen.HISTORY -> HistoryScreen(
+            incidents = state.incidents,
+            onShowHome = viewModel::showHome,
+            onShowHistory = viewModel::showHistory,
+        )
+    }
+}
+
+@Composable
+private fun HomeScreen(
+    state: NoiseFileUiState,
+    workflows: List<RuleWorkflow>,
+    selectedRule: RuleWorkflow,
+    incidentCount: Int,
+    onSelectRule: (String) -> Unit,
+    onBeginCapture: () -> Unit,
+    onShowHome: () -> Unit,
+    onShowHistory: () -> Unit,
+    onOpenUri: (String) -> Unit,
+) {
+    AppScaffold(
+        selectedScreen = AppScreen.HOME,
+        onShowHome = onShowHome,
+        onShowHistory = onShowHistory,
+    ) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
+            item {
+                BrandHeader()
+            }
+
+            item {
+                HeroCard()
+            }
+
+            if (state.message != null) {
+                item {
+                    StatusMessage(
+                        text = state.message,
+                        color = Success,
+                        icon = Icons.Default.CheckCircle,
+                    )
+                }
+            }
+
+            if (state.error != null) {
+                item {
+                    StatusMessage(
+                        text = state.error,
+                        color = Danger,
+                        icon = Icons.Default.Shield,
+                    )
+                }
+            }
+
+            item {
+                SectionTitle(
+                    eyebrow = "SAN JOSÉ · FIRST WORKFLOWS",
+                    title = "What are you hearing?",
+                )
+                Spacer(Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    workflows.forEach { workflow ->
+                        FilterChip(
+                            modifier = Modifier.weight(1f),
+                            selected = workflow.id == selectedRule.id,
+                            onClick = { onSelectRule(workflow.id) },
+                            label = {
+                                Text(
+                                    text = if (workflow.noiseType == NoiseType.BARKING_DOG) {
+                                        "Barking dog"
+                                    } else {
+                                        "Party / music"
+                                    },
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = if (workflow.noiseType == NoiseType.BARKING_DOG) {
+                                        Icons.Default.Pets
+                                    } else {
+                                        Icons.Default.MusicNote
+                                    },
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                )
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Ink,
+                                selectedLabelColor = White,
+                                selectedLeadingIconColor = Signal,
+                            ),
+                        )
+                    }
+                }
+            }
+
+            item {
+                RuleCard(
+                    rule = selectedRule,
+                    incidentCount = incidentCount,
+                    onOpenUri = onOpenUri,
+                )
+            }
+
+            item {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp),
+                    onClick = onBeginCapture,
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Cobalt,
+                        contentColor = White,
+                    ),
+                ) {
+                    Icon(Icons.Default.RadioButtonChecked, contentDescription = null)
+                    Spacer(Modifier.width(10.dp))
+                    Text("Record this incident", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+
+            item {
+                ThreeStepStrip()
+            }
+        }
+    }
+}
+
+@Composable
+private fun BrandHeader() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Surface(
+                modifier = Modifier.size(44.dp),
+                shape = RoundedCornerShape(14.dp),
+                color = Ink,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.GraphicEq,
+                    contentDescription = null,
+                    tint = Signal,
+                    modifier = Modifier.padding(10.dp),
+                )
+            }
+            Spacer(Modifier.width(11.dp))
+            Column {
+                Text(
+                    text = "NoiseFile",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    text = "KNOW · LOG · FILE",
+                    color = Muted,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp,
+                )
+            }
+        }
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = Cobalt,
+                    modifier = Modifier.size(16.dp),
+                )
+                Spacer(Modifier.width(5.dp))
+                Text("San José", style = MaterialTheme.typography.labelLarge)
+            }
+        }
+    }
+}
+
+@Composable
+private fun HeroCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(220.dp),
+        shape = RoundedCornerShape(30.dp),
+        colors = CardDefaults.cardColors(containerColor = Ink),
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            WaveDecoration(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .fillMaxWidth(0.58f)
+                    .fillMaxHeight(),
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = Signal,
+                ) {
+                    Text(
+                        text = "LOCAL RULES · PRIVATE RECORD",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                        color = Ink,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.8.sp,
+                    )
+                }
+                Text(
+                    text = "Know what counts.\nBe ready when it happens.",
+                    color = White,
+                    style = MaterialTheme.typography.headlineLarge,
+                )
+                Text(
+                    text = "Your city’s process, your incident history, your next step.",
+                    color = White.copy(alpha = 0.72f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun WaveDecoration(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        val spacing = size.width / 8f
+        for (index in 0..8) {
+            val x = index * spacing
+            val heightFactor = when (index) {
+                0, 8 -> 0.18f
+                1, 7 -> 0.35f
+                2, 6 -> 0.55f
+                3, 5 -> 0.78f
+                else -> 0.95f
+            }
+            drawLine(
+                color = Signal.copy(alpha = 0.26f),
+                start = Offset(x, size.height * (1f - heightFactor) / 2f),
+                end = Offset(x, size.height * (1f + heightFactor) / 2f),
+                strokeWidth = 5.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(eyebrow: String, title: String) {
+    Column {
+        Text(
+            text = eyebrow,
+            color = Cobalt,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.1.sp,
+        )
+        Spacer(Modifier.height(5.dp))
+        Text(text = title, style = MaterialTheme.typography.headlineMedium)
+    }
+}
+
+@Composable
+private fun RuleCard(
+    rule: RuleWorkflow,
+    incidentCount: Int,
+    onOpenUri: (String) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(26.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    modifier = Modifier.size(44.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    color = Signal.copy(alpha = 0.22f),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Shield,
+                        contentDescription = null,
+                        tint = Ink,
+                        modifier = Modifier.padding(10.dp),
+                    )
+                }
+                Spacer(Modifier.width(12.dp))
+                Column {
+                    Text(
+                        text = "WHAT HAPPENS HERE",
+                        color = Muted,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp,
+                    )
+                    Text(text = rule.title, style = MaterialTheme.typography.titleLarge)
+                }
+            }
+
+            Text(text = rule.summary, style = MaterialTheme.typography.bodyLarge)
+
+            rule.requiredIncidentCount?.let { required ->
+                val progress = (incidentCount.toFloat() / required).coerceIn(0f, 1f)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Your documented history", style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            "${incidentCount.coerceAtMost(required)} of $required",
+                            color = if (progress >= 1f) Success else Cobalt,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(9.dp)
+                            .clip(CircleShape),
+                        color = if (progress >= 1f) Success else Cobalt,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+            }
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+            ) {
+                Text(
+                    text = rule.captureInstruction,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { onOpenUri(rule.actionUri) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Ink,
+                        contentColor = White,
+                    ),
+                ) {
+                    Text(rule.actionLabel, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                IconButton(
+                    onClick = { onOpenUri(rule.officialSourceUrl) },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                ) {
+                    Icon(Icons.Default.OpenInNew, contentDescription = "Open official source")
+                }
+            }
+            Text(
+                text = "Official source verified ${rule.verifiedDate}",
+                color = Muted,
+                fontSize = 12.sp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ThreeStepStrip() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        SectionTitle(eyebrow = "ONE CLEAR PATH", title = "From noise to next action")
+        listOf(
+            "1" to "Know the local process before you start.",
+            "2" to "Measure and save each incident privately.",
+            "3" to "File or escalate when your history is ready.",
+        ).forEach { (number, text) ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    modifier = Modifier.size(34.dp),
+                    shape = CircleShape,
+                    color = Ink,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(number, color = Signal, fontWeight = FontWeight.Bold)
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                Text(text, style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+    }
+}
+
+@Composable
+private fun MeterScreen(
+    rule: RuleWorkflow,
+    reading: MeterReading,
+    onStop: () -> Unit,
+) {
+    val view = LocalView.current
+    DisposableEffect(Unit) {
+        view.keepScreenOn = true
+        onDispose { view.keepScreenOn = false }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Ink)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 22.dp, vertical = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column {
+                Text(
+                    text = "MEASURING NOW",
+                    color = Signal,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.2.sp,
+                )
+                Text(
+                    text = rule.noiseType.displayName,
+                    color = White,
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            Surface(
+                shape = CircleShape,
+                color = Danger,
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .background(White, CircleShape),
+                    )
+                    Spacer(Modifier.width(7.dp))
+                    Text(
+                        formatElapsed(reading.elapsedMillis),
+                        color = White,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(28.dp))
+        MeterGauge(reading)
+        Spacer(Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            MeterStat("MIN", reading.minimumDb, Modifier.weight(1f))
+            MeterStat("AVERAGE", reading.averageDb, Modifier.weight(1f))
+            MeterStat("MAX", reading.maximumDb, Modifier.weight(1f))
+        }
+
+        Spacer(Modifier.height(22.dp))
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(22.dp),
+            color = White.copy(alpha = 0.08f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, White.copy(alpha = 0.12f)),
+        ) {
+            Column(Modifier.padding(18.dp)) {
+                Text(
+                    text = "CAPTURE COACH",
+                    color = Signal,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                )
+                Spacer(Modifier.height(7.dp))
+                Text(
+                    text = rule.captureInstruction,
+                    color = White,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        }
+
+        Spacer(Modifier.weight(1f))
+        Text(
+            text = "Estimated sound level · Keep the microphone uncovered",
+            color = White.copy(alpha = 0.58f),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(12.dp))
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            onClick = onStop,
+            shape = RoundedCornerShape(20.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = White,
+                contentColor = Ink,
+            ),
+        ) {
+            Icon(Icons.Default.Stop, contentDescription = null)
+            Spacer(Modifier.width(9.dp))
+            Text("Stop and review", style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+@Composable
+private fun MeterGauge(reading: MeterReading) {
+    val sweep = ((reading.currentDb / 100.0).coerceIn(0.0, 1.0) * 260.0).toFloat()
+    Box(
+        modifier = Modifier.size(250.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Canvas(Modifier.fillMaxSize()) {
+            drawArc(
+                color = White.copy(alpha = 0.12f),
+                startAngle = 140f,
+                sweepAngle = 260f,
+                useCenter = false,
+                style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
+            )
+            drawArc(
+                color = when {
+                    reading.currentDb >= 75 -> Danger
+                    reading.currentDb >= 60 -> Signal
+                    else -> Cobalt
+                },
+                startAngle = 140f,
+                sweepAngle = sweep,
+                useCenter = false,
+                style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
+            )
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = reading.currentDb.roundToInt().toString(),
+                color = White,
+                fontSize = 72.sp,
+                lineHeight = 76.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = (-2).sp,
+            )
+            Text(
+                text = "estimated dB",
+                color = White.copy(alpha = 0.62f),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MeterStat(label: String, value: Double, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(17.dp),
+        color = White.copy(alpha = 0.08f),
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 13.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = label,
+                color = White.copy(alpha = 0.52f),
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.8.sp,
+            )
+            Text(
+                text = value.roundToInt().toString(),
+                color = White,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReviewScreen(
+    state: NoiseFileUiState,
+    rule: RuleWorkflow,
+    onImpactChange: (String) -> Unit,
+    onNotesChange: (String) -> Unit,
+    onSave: () -> Unit,
+    onDiscard: () -> Unit,
+) {
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = onDiscard) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Discard and go back")
+                    }
+                    Spacer(Modifier.width(6.dp))
+                    Column {
+                        Text(
+                            "REVIEW INCIDENT",
+                            color = Cobalt,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.1.sp,
+                        )
+                        Text("What happened?", style = MaterialTheme.typography.headlineMedium)
+                    }
+                }
+            }
+
+            item {
+                MeasurementSummary(state.meterReading, rule)
+            }
+
+            item {
+                SectionTitle(
+                    eyebrow = "IMPACT",
+                    title = "How did it affect you?",
+                )
+            }
+
+            items(impactOptions) { impact ->
+                ImpactOption(
+                    text = impact,
+                    selected = impact == state.draftImpact,
+                    onClick = { onImpactChange(impact) },
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.draftNotes,
+                    onValueChange = onNotesChange,
+                    label = { Text("Optional notes") },
+                    placeholder = { Text("What could you hear or feel?") },
+                    minLines = 3,
+                    shape = RoundedCornerShape(18.dp),
+                )
+            }
+
+            item {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(62.dp),
+                    onClick = onSave,
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Cobalt,
+                        contentColor = White,
+                    ),
+                ) {
+                    Icon(Icons.Default.CheckCircle, contentDescription = null)
+                    Spacer(Modifier.width(9.dp))
+                    Text("Save to private history", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Ink),
+        shape = RoundedCornerShape(26.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(22.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(
+                text = rule.noiseType.displayName,
+                color = Signal,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Column {
+                    Text(
+                        text = reading.averageDb.roundToInt().toString(),
+                        color = White,
+                        fontSize = 54.sp,
+                        lineHeight = 56.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text("estimated average dB", color = White.copy(alpha = 0.62f))
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(formatElapsed(reading.elapsedMillis), color = White)
+                    Text(
+                        "MAX ${reading.maximumDb.roundToInt()} dB",
+                        color = White.copy(alpha = 0.62f),
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ImpactOption(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .clickable(onClick = onClick)
+            .border(
+                width = if (selected) 2.dp else 1.dp,
+                color = if (selected) Cobalt else MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(18.dp),
+            ),
+        color = if (selected) Cobalt.copy(alpha = 0.09f) else MaterialTheme.colorScheme.surface,
+    ) {
+        Row(
+            modifier = Modifier.padding(17.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(22.dp)
+                    .border(
+                        2.dp,
+                        if (selected) Cobalt else Muted,
+                        CircleShape,
+                    )
+                    .padding(4.dp),
+            ) {
+                if (selected) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Cobalt, CircleShape),
+                    )
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Text(text, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
+
+@Composable
+private fun HistoryScreen(
+    incidents: List<Incident>,
+    onShowHome: () -> Unit,
+    onShowHistory: () -> Unit,
+) {
+    AppScaffold(
+        selectedScreen = AppScreen.HISTORY,
+        onShowHome = onShowHome,
+        onShowHistory = onShowHistory,
+    ) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            contentPadding = PaddingValues(20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            item {
+                BrandHeader()
+                Spacer(Modifier.height(26.dp))
+                SectionTitle(
+                    eyebrow = "PRIVATE · ON THIS PHONE",
+                    title = "Incident history",
+                )
+            }
+
+            if (incidents.isEmpty()) {
+                item {
+                    EmptyHistory()
+                }
+            } else {
+                items(incidents, key = { it.id }) { incident ->
+                    IncidentCard(incident)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyHistory() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp),
+        shape = RoundedCornerShape(26.dp),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier.padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Surface(
+                modifier = Modifier.size(64.dp),
+                shape = CircleShape,
+                color = Cobalt.copy(alpha = 0.12f),
+            ) {
+                Icon(
+                    Icons.Default.History,
+                    contentDescription = null,
+                    tint = Cobalt,
+                    modifier = Modifier.padding(17.dp),
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Text("Nothing logged yet", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(7.dp))
+            Text(
+                text = "Your documented incidents will appear here. Nothing is uploaded automatically.",
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+    }
+}
+
+@Composable
+private fun IncidentCard(incident: Incident) {
+    val date = DateTimeFormatter
+        .ofPattern("EEE, MMM d · h:mm a", Locale.US)
+        .format(
+            Instant.ofEpochMilli(incident.startedAtEpochMillis)
+                .atZone(ZoneId.systemDefault()),
+        )
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = incident.noiseType.displayName,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(date, color = Muted, style = MaterialTheme.typography.bodyMedium)
+                }
+                Surface(
+                    shape = CircleShape,
+                    color = Signal.copy(alpha = 0.20f),
+                ) {
+                    Text(
+                        text = "${incident.averageDb.roundToInt()} dB avg",
+                        modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
+                        color = Ink,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
+                Text("Max ${incident.maximumDb.roundToInt()} dB", color = Muted)
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusMessage(
+    text: String,
+    color: Color,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = color.copy(alpha = 0.12f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.30f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(icon, contentDescription = null, tint = color)
+            Spacer(Modifier.width(11.dp))
+            Text(text, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Composable
+private fun AppScaffold(
+    selectedScreen: AppScreen,
+    onShowHome: () -> Unit,
+    onShowHistory: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        containerColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
+            NavigationBar(
+                containerColor = Ink,
+                tonalElevation = 0.dp,
+            ) {
+                NavigationBarItem(
+                    selected = selectedScreen == AppScreen.HOME,
+                    onClick = onShowHome,
+                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    label = { Text("Home") },
+                    colors = navColors(),
+                )
+                NavigationBarItem(
+                    selected = selectedScreen == AppScreen.HISTORY,
+                    onClick = onShowHistory,
+                    icon = { Icon(Icons.Default.History, contentDescription = null) },
+                    label = { Text("History") },
+                    colors = navColors(),
+                )
+            }
+        },
+        content = content,
+    )
+}
+
+@Composable
+private fun navColors() = NavigationBarItemDefaults.colors(
+    selectedIconColor = Ink,
+    selectedTextColor = White,
+    indicatorColor = Signal,
+    unselectedIconColor = White.copy(alpha = 0.58f),
+    unselectedTextColor = White.copy(alpha = 0.58f),
+)
+
+private fun formatElapsed(millis: Long): String {
+    val totalSeconds = millis.coerceAtLeast(0L) / 1_000L
+    val minutes = totalSeconds / 60L
+    val seconds = totalSeconds % 60L
+    return "%02d:%02d".format(minutes, seconds)
+}
+
+private fun openUri(context: Context, uri: String) {
+    val parsed = Uri.parse(uri)
+    val action = if (parsed.scheme == "tel") Intent.ACTION_DIAL else Intent.ACTION_VIEW
+    runCatching {
+        context.startActivity(Intent(action, parsed))
+    }
+}
