@@ -30,6 +30,9 @@ otherwise submit from memory. It is not a courtroom or legal-opinion product.
 - Use structured data instead of a legal-analysis AI.
 - Check source material periodically for amendments.
 - Audio and case information remain on-device unless explicitly shared.
+- Retrieve rules by exact jurisdiction and noise category from a versioned
+  offline catalog. Missing coverage must return unavailable rather than a
+  nearby or model-generated answer.
 - Win through local coverage, excellent design, correct routing, and effortless
   filing—not through decorative AI.
 

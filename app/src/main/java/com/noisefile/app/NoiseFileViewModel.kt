@@ -25,7 +25,7 @@ enum class AppScreen {
 data class NoiseFileUiState(
     val screen: AppScreen = AppScreen.HOME,
     val selectedJurisdictionId: String = RuleCatalog.SAN_JOSE_ID,
-    val selectedRuleId: String = RuleCatalog.sanJose.first().id,
+    val selectedRuleId: String = RuleCatalog.DEFAULT_RULE_ID,
     val meterReading: MeterReading = MeterReading(),
     val incidents: List<Incident> = emptyList(),
     val measurementStartedAt: Long? = null,
@@ -36,9 +36,10 @@ data class NoiseFileUiState(
 )
 
 class NoiseFileViewModel(application: Application) : AndroidViewModel(application) {
-    val jurisdictions: List<Jurisdiction> = RuleCatalog.jurisdictions
+    private val ruleCatalog = RuleCatalog.fromAssets(application)
+    val jurisdictions: List<Jurisdiction> = ruleCatalog.jurisdictions
     val workflows: List<RuleWorkflow>
-        get() = RuleCatalog.forJurisdiction(_uiState.value.selectedJurisdictionId)
+        get() = ruleCatalog.forJurisdiction(_uiState.value.selectedJurisdictionId)
 
     private val incidentStore = IncidentStore(application)
     private val noiseMeter = NoiseMeter(application)
@@ -47,15 +48,20 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
 
-    fun selectedRule(): RuleWorkflow = RuleCatalog.byId(_uiState.value.selectedRuleId)
+    fun selectedRule(): RuleWorkflow =
+        checkNotNull(ruleCatalog.byId(_uiState.value.selectedRuleId)) {
+            "Selected rule is not present in the verified catalog."
+        }
 
     fun selectedJurisdiction(): Jurisdiction =
-        RuleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)
+        checkNotNull(ruleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)) {
+            "Selected jurisdiction is not present in the verified catalog."
+        }
 
     fun selectJurisdiction(jurisdictionId: String) {
-        val jurisdiction = RuleCatalog.jurisdictionById(jurisdictionId)
+        val jurisdiction = ruleCatalog.jurisdictionById(jurisdictionId) ?: return
         if (!jurisdiction.isAvailable) return
-        val firstRule = RuleCatalog.forJurisdiction(jurisdiction.id).firstOrNull() ?: return
+        val firstRule = ruleCatalog.forJurisdiction(jurisdiction.id).firstOrNull() ?: return
         _uiState.update {
             it.copy(
                 selectedJurisdictionId = jurisdiction.id,
@@ -67,6 +73,17 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun selectRule(ruleId: String) {
+        val state = _uiState.value
+        val rule = ruleCatalog.byId(ruleId) ?: return
+        if (rule.jurisdictionId != state.selectedJurisdictionId) {
+            _uiState.update {
+                it.copy(
+                    error = "That rule does not belong to the selected city.",
+                    message = null,
+                )
+            }
+            return
+        }
         _uiState.update {
             it.copy(
                 selectedRuleId = ruleId,
@@ -169,7 +186,17 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         val state = _uiState.value
         val startedAt = state.measurementStartedAt ?: System.currentTimeMillis()
         val reading = state.meterReading
-        val rule = RuleCatalog.byId(state.selectedRuleId)
+        val rule = ruleCatalog.byId(state.selectedRuleId)
+        if (rule == null || rule.jurisdictionId != state.selectedJurisdictionId) {
+            _uiState.update {
+                it.copy(
+                    screen = AppScreen.HOME,
+                    error = "The selected rule is no longer available for this city.",
+                    message = null,
+                )
+            }
+            return
+        }
         val incident = Incident(
             id = System.currentTimeMillis(),
             ruleId = rule.id,
