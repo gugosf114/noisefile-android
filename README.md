@@ -8,12 +8,16 @@ NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the
 required incident history, and prepares the correct next action.
 
-The first complete workflow covers San José animal-noise complaints:
+The first complete city packet covers three San José workflows:
 
 - the official five-incident documentation requirement;
+- active party or amplified-music reporting;
+- construction-hour guidance and Code Enforcement routing;
 - live estimated sound-level measurement;
 - start time, duration, minimum, average, and maximum readings;
 - an on-device incident history;
+- a city selector ready for additional verified rule packets;
+- a private neighbor-invite share flow;
 - progress toward a filing-ready record.
 
 NoiseFile is deliberately local-first. Recordings and incident history remain

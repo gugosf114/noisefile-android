@@ -6,6 +6,7 @@ import com.noisefile.app.audio.NoiseMeter
 import com.noisefile.app.data.IncidentStore
 import com.noisefile.app.data.RuleCatalog
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.RuleWorkflow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,7 @@ enum class AppScreen {
 
 data class NoiseFileUiState(
     val screen: AppScreen = AppScreen.HOME,
+    val selectedJurisdictionId: String = RuleCatalog.SAN_JOSE_ID,
     val selectedRuleId: String = RuleCatalog.sanJose.first().id,
     val meterReading: MeterReading = MeterReading(),
     val incidents: List<Incident> = emptyList(),
@@ -34,7 +36,9 @@ data class NoiseFileUiState(
 )
 
 class NoiseFileViewModel(application: Application) : AndroidViewModel(application) {
-    val workflows: List<RuleWorkflow> = RuleCatalog.sanJose
+    val jurisdictions: List<Jurisdiction> = RuleCatalog.jurisdictions
+    val workflows: List<RuleWorkflow>
+        get() = RuleCatalog.forJurisdiction(_uiState.value.selectedJurisdictionId)
 
     private val incidentStore = IncidentStore(application)
     private val noiseMeter = NoiseMeter(application)
@@ -44,6 +48,23 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
 
     fun selectedRule(): RuleWorkflow = RuleCatalog.byId(_uiState.value.selectedRuleId)
+
+    fun selectedJurisdiction(): Jurisdiction =
+        RuleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)
+
+    fun selectJurisdiction(jurisdictionId: String) {
+        val jurisdiction = RuleCatalog.jurisdictionById(jurisdictionId)
+        if (!jurisdiction.isAvailable) return
+        val firstRule = RuleCatalog.forJurisdiction(jurisdiction.id).firstOrNull() ?: return
+        _uiState.update {
+            it.copy(
+                selectedJurisdictionId = jurisdiction.id,
+                selectedRuleId = firstRule.id,
+                message = null,
+                error = null,
+            )
+        }
+    }
 
     fun selectRule(ruleId: String) {
         _uiState.update {

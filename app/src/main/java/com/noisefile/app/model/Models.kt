@@ -3,10 +3,19 @@ package com.noisefile.app.model
 enum class NoiseType(val displayName: String) {
     BARKING_DOG("Barking dog"),
     PARTY_MUSIC("Party or amplified music"),
+    CONSTRUCTION("Construction"),
 }
+
+data class Jurisdiction(
+    val id: String,
+    val displayName: String,
+    val region: String,
+    val isAvailable: Boolean,
+)
 
 data class RuleWorkflow(
     val id: String,
+    val jurisdictionId: String,
     val jurisdiction: String,
     val noiseType: NoiseType,
     val title: String,
