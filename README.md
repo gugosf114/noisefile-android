@@ -1,5 +1,7 @@
 # NoiseFile
 
+[## ⬇️ DOWNLOAD NOISEFILE APK](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
+
 **Know the rule. Log the noise. File the complaint.**
 
 NoiseFile is an Android app that explains the local noise process before a
