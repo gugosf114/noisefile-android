@@ -6,6 +6,7 @@ import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
 
 class RuleCatalog private constructor(
     val schemaVersion: Int,
@@ -45,6 +46,61 @@ class RuleCatalog private constructor(
                 .all { jurisdiction -> rules.any { it.jurisdictionId == jurisdiction.id } },
         ) {
             "Every available jurisdiction must contain at least one verified rule."
+        }
+        require(jurisdictions.any { it.id == SAN_JOSE_ID && it.isAvailable }) {
+            "The default jurisdiction must exist and be available."
+        }
+        require(
+            rules.any {
+                it.id == DEFAULT_RULE_ID &&
+                    it.jurisdictionId == SAN_JOSE_ID
+            },
+        ) {
+            "The default rule must exist in the default jurisdiction."
+        }
+        require(
+            jurisdictions.all {
+                it.id.isNotBlank() &&
+                    it.displayName.isNotBlank() &&
+                    it.region.isNotBlank()
+            },
+        ) {
+            "Jurisdiction fields may not be blank."
+        }
+        require(
+            rules.all {
+                it.id.isNotBlank() &&
+                    it.jurisdictionId.isNotBlank() &&
+                    it.jurisdiction.isNotBlank() &&
+                    it.title.isNotBlank() &&
+                    it.summary.isNotBlank() &&
+                    it.captureInstruction.isNotBlank() &&
+                    it.nextAction.isNotBlank() &&
+                    it.actionLabel.isNotBlank() &&
+                    it.officialSourceLabel.isNotBlank()
+            },
+        ) {
+            "Required rule fields may not be blank."
+        }
+        require(rules.all { it.officialSourceUrl.startsWith("https://") }) {
+            "Official sources must use HTTPS."
+        }
+        require(
+            rules.all {
+                it.actionUri.startsWith("https://") || it.actionUri.startsWith("tel:")
+            },
+        ) {
+            "Rule actions must use HTTPS or a telephone URI."
+        }
+        require(rules.all { it.requiredIncidentCount == null || it.requiredIncidentCount > 0 }) {
+            "Required incident counts must be positive."
+        }
+        require(
+            rules.all { rule ->
+                runCatching { LocalDate.parse(rule.verifiedDate) }.isSuccess
+            },
+        ) {
+            "Verification dates must use ISO YYYY-MM-DD format."
         }
     }
 

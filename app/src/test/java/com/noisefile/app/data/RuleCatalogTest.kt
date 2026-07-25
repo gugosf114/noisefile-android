@@ -3,20 +3,24 @@ package com.noisefile.app.data
 import com.noisefile.app.model.NoiseType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.json.JSONObject
 import java.io.File
 
 class RuleCatalogTest {
-    private fun catalog(): RuleCatalog {
+    private fun catalogJson(): String {
         val candidates = listOf(
             File("app/src/main/assets/${RuleCatalog.ASSET_PATH}"),
             File("src/main/assets/${RuleCatalog.ASSET_PATH}"),
         )
         val catalogFile = candidates.firstOrNull { it.isFile }
             ?: error("Could not find ${RuleCatalog.ASSET_PATH}")
-        return RuleCatalog.fromJson(catalogFile.readText())
+        return catalogFile.readText()
     }
+
+    private fun catalog(): RuleCatalog = RuleCatalog.fromJson(catalogJson())
 
     @Test
     fun sanJoseBarkingWorkflowRequiresFiveIncidents() {
@@ -41,6 +45,7 @@ class RuleCatalogTest {
             ?: error("Missing San José construction rule")
 
         assertTrue(construction.summary.contains("7:00 a.m."))
+        assertTrue(construction.summary.contains("prohibits it on weekends"))
         assertTrue(construction.officialSourceLabel.contains("20.100.450"))
     }
 
@@ -60,5 +65,30 @@ class RuleCatalogTest {
 
         assertEquals(1, catalog.schemaVersion)
         assertTrue(catalog.catalogVersion.isNotBlank())
+    }
+
+    @Test
+    fun duplicateCityAndCategoryIsRejected() {
+        val root = JSONObject(catalogJson())
+        val rules = root.getJSONArray("rules")
+        val duplicate = JSONObject(rules.getJSONObject(0).toString())
+            .put("id", "duplicate-rule-id")
+        rules.put(duplicate)
+
+        assertThrows(IllegalArgumentException::class.java) {
+            RuleCatalog.fromJson(root.toString())
+        }
+    }
+
+    @Test
+    fun insecureOfficialSourceIsRejected() {
+        val root = JSONObject(catalogJson())
+        root.getJSONArray("rules")
+            .getJSONObject(0)
+            .put("officialSourceUrl", "http://example.com/not-official")
+
+        assertThrows(IllegalArgumentException::class.java) {
+            RuleCatalog.fromJson(root.toString())
+        }
     }
 }
