@@ -1,155 +1,114 @@
 # NoiseFile — session notes, 2026-07-25
 
-Written because George is running ~8 parallel sessions across 48 hours and
-needs this to survive the session, not just his memory of it. Everything
-below was discussed, decided, or flagged in this conversation. Nothing here
-has been built into the app yet except what's noted as done.
+George is running like 8 sessions at once across 48 hours, so this exists
+because his memory of "what did that session do" isn't going to hold. Not a
+transcript — this is the takeaway. Go read `acquisition-report.md` if you
+want the receipts.
 
-## What actually got built and shipped this session
+## What got built
 
-- `legal-corpus/raw/{County}/{City}/{core-noise-ordinance,construction,animals,complaints-enforcement,other}/`
-  — raw official-source acquisition for all 15 target cities. 52 files
-  downloaded (real government PDFs or faithful HTML/PDF renderings of
-  official code-portal pages), 1 blocked (URL-only, no file), 9 flagged
-  `needs_review` (usually: only reachable via an aging Wayback Machine
-  capture, or a jurisdiction/authority question that isn't confirmed by an
-  official source yet).
-- `legal-corpus/manifest.json` — 62 entries, one per source, each with city,
-  county, topic, official title, issuing authority, chapter/section, canonical
-  URL, local file path, format, SHA-256, access date, effective date (only
-  when the source displayed one), geographic scope, authority level
-  (city/county/JPA/contractor), and an acquisition note.
-- `legal-corpus/acquisition-report.md` — city-by-city checklist, what's
-  downloaded vs. URL-only vs. blocked, and every county-involvement /
-  ambiguous-authority finding (see below — this is the part that actually
-  matters for correctness, not the file-sorting).
-- Committed and pushed to `main` at `25e4ce4`.
-- `README.md` — added an "Ordinance coverage pipeline" section explaining the
-  two-stage model (raw acquisition → structured catalog) and linking to the
-  new corpus.
+Scraped all 15 target cities' actual noise ordinances off their real
+government sites — Municode, amlegal, eCode360, city law libraries,
+whatever each city happens to use — and dumped them raw into
+`legal-corpus/raw/{County}/{City}/...`. 52 files actually downloaded, 1 dead
+end (San Jose's petition form, Akamai just says no, no Wayback copy either),
+9 marked `needs_review` because something about them isn't fully nailed down
+(stale archive copy, or a jurisdiction claim I couldn't confirm — see below).
 
-## The architecture discussion (this is the part to not lose)
+Every file has a SHA-256 and the exact government URL it came from, logged in
+`manifest.json`. Pushed to main at `25e4ce4`, then README + this file at
+`52e67a8`.
 
-George asked, correctly, how the app is supposed to give a fast answer on a
-phone without a 2-5 minute AI round-trip, and whether the "origin" should be
+## The architecture thing — this is the part that matters
+
+George asked how the app answers fast on a phone instead of making someone
+wait through an AI round-trip, and whether the source of truth should just be
 Google Drive.
 
-**Answer, and it turned out to already be the documented plan in
-`docs/ORDINANCE_LIBRARY.md` and `docs/PRODUCT_BRIEF.md` before this
-conversation even started** — George had independently arrived at the same
-design the app already commits to:
+Short version: no, not Drive, and it turns out the repo already had this
+figured out before either of us said a word — `docs/ORDINANCE_LIBRARY.md`
+already spells out almost exactly what George re-derived cold: it's not a
+"legal reasoning" problem, it's a lookup table. Noisy or not. Dog barking or
+not. Construction happening or not. A few hundred facts, total, across 15
+cities. You don't need an AI thinking live for that, you need:
 
-- Not Drive. Drive is not a queryable runtime data layer.
-- This is a bounded lookup problem, not an evolving-legal-field reasoning
-  problem, per George: "It's either noisy or not, it's either the dog is
-  barking or not, it's either construction is happening or not." Roughly a
-  few hundred discrete facts total across 15 cities.
-- Two-stage pipeline:
-  1. Offline, one-time (or periodically re-run) extraction: raw ordinance
-     text → structured fact `{city, category, rule, hours/dB/thresholds,
-     source_section, source_url}`, human-verified against the source.
-  2. Ship the structured result as a static packet
-     (`app/src/main/assets/rules/catalog-v1.json`) bundled in the app. Runtime
-     = an exact `jurisdictionId` + `noiseType` dictionary lookup, no network
-     call, no LLM call, milliseconds.
-- Where AI is actually useful: (a) the offline extraction pass itself
-  (already how `catalog-v1.json`'s existing San Jose entries were presumably
-  built), and (b) optionally, at runtime, phrasing an *already-resolved* fact
-  into natural language or drafting complaint text — never re-deriving the
-  rule live. The city/category packet goes before variable incident data in
-  any such prompt so it can be prompt-cached (this is already written into
-  `ORDINANCE_LIBRARY.md`'s "Optional model layer" section).
-- Missing coverage must return "unavailable," never a nearby-city guess or a
-  model-generated answer. This was already a hard product decision before
-  today; it lines up with George's own framing.
-- Refresh cadence: periodic re-acquisition (quarterly-ish, or on an
-  amendment-detection trigger), diffed, reviewed, then a new catalog version
-  ships with an app update. Not live.
+1. Do the extraction once, offline — raw ordinance → structured fact
+   (city, category, hours/dB, source section, source URL) — human checks it
+   against the actual text.
+2. Ship that as a flat JSON file in the app
+   (`app/src/main/assets/rules/catalog-v1.json`). At runtime it's a
+   dictionary lookup. No network call. No model call. Milliseconds.
 
-**Open question raised but not settled:** whether George wants a lightweight
-backend cache in front of the bundled JSON (for over-the-air catalog updates
-without a full app release) or whether shipping a new catalog version with
-every app update is fine for now. Not decided this session.
+AI's job is stage 1 (and maybe later, phrasing an already-known answer into
+normal sentences — never re-deciding the rule live). If a city/category isn't
+in the catalog, the app says "don't have this yet," full stop — it does not
+guess from a nearby city or make something up. That was already the rule
+before today.
 
-## The "is this a Sonnet-appropriate task" tangent
+Not settled: whether catalog updates ship only via full app releases, or
+whether there's a backend cache so updates can go out without a store push.
+Didn't decide, just flagged.
 
-George wondered if this task was designed as an eval for Sonnet specifically,
-and separately whether Sonnet was the right model for what looked like mostly
-folder-sorting and file-naming work. Take, for the record:
+## "Was this built for Sonnet" tangent
 
-- No visibility either way into whether a given conversation is an eval —
-  nothing here read like one (real repo, real government sites, real bot
-  blocks to work around).
-- The mechanical part (consistent folder structure, filenames, JSON schema)
-  is trivial for any current model. The part that actually required judgment
-  and was worth getting right:
-  - Recognizing Concord's PD flyer cited an old pre-recodification code
-    section number (62-201) that doesn't match the current
-    codepublishing.com numbering (18.150.130), and flagging the mismatch
-    instead of assuming they're the same law.
-  - Distinguishing "county explicitly states it serves this city" (Sonoma
-    County ↔ Santa Rosa, Concord's own PD flyer ↔ Contra Costa, Antioch's own
-    city page ↔ Contra Costa) from "a search result mentioned a county number
-    near this city's name but no official source confirms it" (Richmond —
-    flagged `needs_review`, not asserted).
-  - Not labeling a source `downloaded` when it only came from a stale Wayback
-    capture (SF311's page is a 2023 capture; flagged, not hidden).
-  - Silicon Valley Animal Control Authority (SVACA) is a multi-city joint
-    powers authority, not Santa Clara County government and not a city
-    department — that's its own authority bucket, and conflating it with
-    "county" would have been wrong for Sunnyvale and Santa Clara both.
-- Conclusion: this didn't need a bigger model, it needed not lying about
-  confidence levels. That's a discipline thing, not a raw-capability thing.
+George's spidey sense said maybe this was an eval, and separately wondered if
+Sonnet specifically was the right fit since it looked like glorified
+file-sorting. My answer, for the record: the folder/naming part is nothing,
+any model does that fine. What actually took care:
 
-## County / authority findings worth remembering when building the catalog
+- Concord's own police-department flyer cites an old code section (62-201)
+  that doesn't match the site's current numbering (18.150.130) — caught that
+  and flagged it instead of assuming old cite = current law.
+- Told apart "city or county explicitly says the county handles this" (Santa
+  Rosa/Sonoma, Concord/Contra Costa, Antioch/Contra Costa — all stated
+  directly by an official source) from "a search result mentioned a county
+  number near this city's name and nothing official backs it up" (Richmond —
+  flagged, not asserted).
+- Didn't mark something "downloaded" when it only came from a 2023 Wayback
+  snapshot — said so instead.
+- SVACA (Sunnyvale + Santa Clara's animal control) is a multi-city joint
+  authority — not the county, not either city. Calling that "county" would
+  have been a wrong answer baked into the data forever.
 
-These are the facts that will directly shape how `catalog-v1.json` routes
-animal-noise complaints per city — don't re-derive them from scratch later,
-they're already in `acquisition-report.md`:
+None of that needed a bigger model. It needed not lying about how sure I was.
+That's the whole difference.
 
-- **County-administered (explicit):** Santa Rosa → Sonoma County Animal
-  Services. Concord → Contra Costa County (city's own PD flyer states the
-  contract). Antioch → Contra Costa County (city's own page states it).
-- **County-administered but NOT confirmed by an official city-side source:**
-  Richmond → possibly Contra Costa County, flagged `needs_review`.
-- **Joint powers authority (neither city nor county):** Sunnyvale and Santa
-  Clara → SVACA.
-- **Private nonprofit contractor (neither city nor county):** Daly City and
-  San Mateo → Peninsula Humane Society & SPCA for general animal control —
-  but PHS explicitly does NOT take barking-dog-noise-only complaints; those
-  route to city police non-emergency in both cities. This is a real trap for
-  the catalog: routing a Daly City or San Mateo barking-dog complaint to PHS
-  would be wrong.
-- **City runs its own animal-noise function, no delegation found:** San Jose,
-  San Francisco (consolidated, own Animal Care and Control), Oakland, Fremont
-  (Tri-City Animal Shelter, a multi-city shared service under Fremont PD, not
-  a county), Hayward, Vallejo, Berkeley.
+## Who handles animal-noise complaints, city by city — don't re-derive this later
 
-## Per-city gaps to close before the catalog can claim full coverage
+- **County runs it, and says so directly:** Santa Rosa (Sonoma County),
+  Concord (Contra Costa, per the city's own PD flyer), Antioch (Contra Costa,
+  per the city's own page).
+- **Probably county, not confirmed by the city itself:** Richmond — Contra
+  Costa's number showed up in a Richmond-focused search but no official
+  Richmond source says so. Flagged, not asserted.
+- **Joint powers authority, not county:** Sunnyvale + Santa Clara → SVACA.
+- **Private contractor, not county — and it matters:** Daly City + San Mateo
+  use Peninsula Humane Society for general animal control, but PHS will not
+  touch a barking-dog-noise-only complaint — that goes to city police
+  instead. If the catalog ever routes a Daly City barking complaint to PHS,
+  that's a bug, not a fact.
+- **City just handles it themselves, no delegation found:** San Jose, San
+  Francisco, Oakland, Fremont (Tri-City Animal Shelter — shared service under
+  Fremont PD, still not a county), Hayward, Vallejo, Berkeley.
 
-- **Santa Rosa** — no standalone construction-hours code section confidently
-  located; secondary sources cite hours, code section not pinned down.
-- **Daly City** — the 60/50 dBA figures cited by secondary sources weren't
-  found inside the 3-section chapter actually captured; a separate
-  zoning/performance-standards chapter probably has them and wasn't located.
-- **Vallejo** — Chapter 7.36 (Animal Nuisance) repeatedly failed to render
-  from Municode in this pass; general construction-hours provision not
-  confidently separated from the noise-disturbance chapter already captured.
-- **San Jose** — the official barking-dog abatement petition form
-  (sanjoseca.gov) is fully blocked (Akamai) with no Wayback snapshot; URL-only
-  in the manifest.
-- Several `needs_review` items are just "re-fetch this live and confirm the
-  Wayback capture still matches" — not missing data, just unconfirmed
-  freshness (SF311, SFDPH, SVACA pages, Vallejo animal control, Vallejo code
-  enforcement).
+## Loose ends per city
 
-## Immediate next step, as of end of session
+- **Santa Rosa** — couldn't pin a specific construction-hours code section.
+  Secondary sources give hours, code itself didn't cough up the section.
+- **Daly City** — the 60/50 dBA numbers everyone cites aren't in the 3-section
+  chapter I actually pulled. Probably in a zoning chapter I didn't find.
+- **Vallejo** — Ch. 7.36 (animal nuisance) wouldn't render out of Municode no
+  matter how I asked. Construction hours also not cleanly separated from the
+  noise chapter I did get.
+- **San Jose** — the barking-dog abatement form is just gone, Akamai-blocked,
+  no archive copy. URL only.
+- A handful of `needs_review` items are just "go re-check this live," nothing
+  actually missing — SF311, SFDPH, SVACA, both Vallejo pages.
 
-Extraction pass: turn the 15 raw core-ordinance sources (plus construction/
-animal/complaint material) into structured `catalog-v1.json` entries for the
-14 not-yet-covered cities, following the exact schema already established by
-the San Jose entries and the contract in `docs/ORDINANCE_LIBRARY.md`. George
-wants to build first, then run real test scenarios against it (e.g. "2am
-construction in Oakland," "dog barking 15 minutes in Concord," "10:30pm music
-in Daly City") and fix whatever the scenarios expose — not review line-by-line
-before anything's testable.
+## What's next
+
+Turn the raw sources into `catalog-v1.json` entries for the 14 cities that
+aren't San Jose, same schema San Jose already uses. George's call: build it,
+then throw real scenarios at it — 2am construction in Oakland, a dog barking
+15 minutes in Concord, music at 10:30pm in Daly City — and fix whatever
+breaks. Not a line-by-line review before there's anything to actually test.
