@@ -86,6 +86,23 @@ class RuleCatalog private constructor(
             "Official sources must use HTTPS."
         }
         require(
+            rules.none { rule ->
+                SOURCE_PLACEHOLDER_MARKERS.any { marker ->
+                    rule.officialSourceUrl.lowercase().contains(marker)
+                }
+            },
+        ) {
+            "Official sources may not use placeholder URLs."
+        }
+        require(
+            rules.none {
+                it.title == GENERIC_RULE_TITLE ||
+                    it.summary == GENERIC_RULE_SUMMARY
+            },
+        ) {
+            "Every rule must contain specific resident guidance."
+        }
+        require(
             rules.all {
                 it.actionUri.startsWith("https://") || it.actionUri.startsWith("tel:")
             },
@@ -123,6 +140,13 @@ class RuleCatalog private constructor(
         const val DEFAULT_RULE_ID = "san-jose-barking-dog"
         const val ASSET_PATH = "rules/catalog-v1.json"
         private const val SUPPORTED_SCHEMA_VERSION = 1
+        private const val GENERIC_RULE_TITLE = "Follow city procedures"
+        private const val GENERIC_RULE_SUMMARY = "Follow the local municipal code guidelines."
+        private val SOURCE_PLACEHOLDER_MARKERS = setOf(
+            "local-government-website",
+            "example.com",
+            "placeholder",
+        )
 
         fun fromAssets(context: Context): RuleCatalog {
             val json = context.assets.open(ASSET_PATH).bufferedReader().use { it.readText() }

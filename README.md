@@ -41,8 +41,9 @@ built offline in two stages, and only the second stage ships in the app:
    Clara, Vallejo, Berkeley, Richmond, Antioch, Daly City, and San Mateo.
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
-   one exact `jurisdictionId` + `noiseType` lookup at a time. All 15 acquired cities
-   in `legal-corpus/` have been extracted into the catalog. See
+   one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
+   44 structured workflows across all 15 acquired cities. Richmond barking-dog
+   routing remains unavailable until the responsible authority is confirmed. See
    [`docs/ORDINANCE_LIBRARY.md`](docs/ORDINANCE_LIBRARY.md) for the full
    retrieval contract and update pipeline from stage 1 to stage 2.
 
