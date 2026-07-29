@@ -8,6 +8,13 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -85,6 +92,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -128,6 +137,7 @@ private val impactOptions = listOf(
 fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     var showCityPicker by remember { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -136,6 +146,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     }
 
     val beginCapture = {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         if (
             ContextCompat.checkSelfPermission(
                 context,
@@ -555,6 +566,16 @@ private fun WaveDecoration(
     variant: Int = 0,
     horizontalBars: Boolean = false,
 ) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val animatedAlpha by infiniteTransition.animateFloat(
+        initialValue = alpha * 0.4f,
+        targetValue = alpha,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "WaveAlpha"
+    )
     Canvas(modifier = modifier) {
         val factors = when (variant) {
             1 -> floatArrayOf(0.88f, 0.74f, 0.58f, 0.43f, 0.30f, 0.20f, 0.12f, 0.06f, 0.02f)
@@ -567,7 +588,7 @@ private fun WaveDecoration(
             if (horizontalBars) {
                 val y = index * (size.height / (factors.size - 1))
                 drawLine(
-                    color = color.copy(alpha = alpha),
+                    color = color.copy(alpha = animatedAlpha),
                     start = Offset(size.width * (1f - factor), y),
                     end = Offset(size.width, y),
                     strokeWidth = 4.dp.toPx(),
@@ -576,7 +597,7 @@ private fun WaveDecoration(
             } else {
                 val x = index * (size.width / (factors.size - 1))
                 drawLine(
-                    color = color.copy(alpha = alpha),
+                    color = color.copy(alpha = animatedAlpha),
                     start = Offset(x, size.height * (1f - factor) / 2f),
                     end = Offset(x, size.height * (1f + factor) / 2f),
                     strokeWidth = 5.dp.toPx(),
@@ -1000,6 +1021,15 @@ private fun MeterScreen(
 @Composable
 private fun MeterGauge(reading: MeterReading) {
     val sweep = ((reading.currentDb / 100.0).coerceIn(0.0, 1.0) * 260.0).toFloat()
+    val animatedSweep by animateFloatAsState(targetValue = sweep, label = "GaugeSweep")
+    
+    val targetColor = when {
+        reading.currentDb >= 75 -> Danger
+        reading.currentDb >= 60 -> Signal
+        else -> Cobalt
+    }
+    val animatedColor by animateColorAsState(targetValue = targetColor, label = "GaugeColor")
+
     Box(
         modifier = Modifier.size(250.dp),
         contentAlignment = Alignment.Center,
@@ -1013,13 +1043,9 @@ private fun MeterGauge(reading: MeterReading) {
                 style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
             )
             drawArc(
-                color = when {
-                    reading.currentDb >= 75 -> Danger
-                    reading.currentDb >= 60 -> Signal
-                    else -> Cobalt
-                },
+                color = animatedColor,
                 startAngle = 140f,
-                sweepAngle = sweep,
+                sweepAngle = animatedSweep,
                 useCenter = false,
                 style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
             )
