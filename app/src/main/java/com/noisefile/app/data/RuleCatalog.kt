@@ -159,6 +159,8 @@ class RuleCatalog private constructor(
                         nextAction = item.getString("nextAction"),
                         actionLabel = item.getString("actionLabel"),
                         actionUri = item.getString("actionUri"),
+                        secondaryActionLabel = if (item.isNull("secondaryActionLabel")) null else item.getString("secondaryActionLabel"),
+                        secondaryActionUri = if (item.isNull("secondaryActionUri")) null else item.getString("secondaryActionUri"),
                         officialSourceLabel = item.getString("officialSourceLabel"),
                         officialSourceUrl = item.getString("officialSourceUrl"),
                         verifiedDate = item.getString("verifiedDate"),

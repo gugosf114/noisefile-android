@@ -25,6 +25,8 @@ data class RuleWorkflow(
     val nextAction: String,
     val actionLabel: String,
     val actionUri: String,
+    val secondaryActionLabel: String? = null,
+    val secondaryActionUri: String? = null,
     val officialSourceLabel: String,
     val officialSourceUrl: String,
     val verifiedDate: String,

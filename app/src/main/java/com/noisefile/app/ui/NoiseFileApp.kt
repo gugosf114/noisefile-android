@@ -1227,16 +1227,32 @@ private fun ReviewScreen(
                         )
                         
                         if (isViolation) {
-                            Button(
-                                modifier = Modifier.fillMaxWidth().height(52.dp),
-                                onClick = { onOpenUri(rule.actionUri) },
-                                shape = RoundedCornerShape(14.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Danger,
-                                    contentColor = White,
-                                )
-                            ) {
-                                Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Button(
+                                    modifier = Modifier.fillMaxWidth().height(52.dp),
+                                    onClick = { onOpenUri(rule.actionUri) },
+                                    shape = RoundedCornerShape(14.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Danger,
+                                        contentColor = White,
+                                    )
+                                ) {
+                                    Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
+                                }
+                                
+                                if (rule.secondaryActionUri != null && rule.secondaryActionLabel != null) {
+                                    OutlinedButton(
+                                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                                        onClick = { onOpenUri(rule.secondaryActionUri) },
+                                        shape = RoundedCornerShape(14.dp),
+                                        colors = ButtonDefaults.outlinedButtonColors(
+                                            contentColor = Danger,
+                                        ),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, Danger.copy(alpha = 0.5f))
+                                    ) {
+                                        Text(rule.secondaryActionLabel, style = MaterialTheme.typography.titleSmall)
+                                    }
+                                }
                             }
                         }
                     }
