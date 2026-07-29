@@ -318,18 +318,6 @@ private fun HomeScreen(
             }
 
             item {
-                RuleCard(
-                    rule = selectedRule,
-                    incidentCount = incidentCount,
-                    onOpenUri = onOpenUri,
-                )
-            }
-
-            item {
-                MicrophoneNotice()
-            }
-
-            item {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -343,8 +331,20 @@ private fun HomeScreen(
                 ) {
                     Icon(Icons.Default.RadioButtonChecked, contentDescription = null)
                     Spacer(Modifier.width(10.dp))
-                    Text("Record this incident", style = MaterialTheme.typography.titleMedium)
+                    Text("Start Recording", style = MaterialTheme.typography.titleMedium)
                 }
+            }
+
+            item {
+                RuleCard(
+                    rule = selectedRule,
+                    incidentCount = incidentCount,
+                    onOpenUri = onOpenUri,
+                )
+            }
+
+            item {
+                MicrophoneNotice()
             }
 
             item {
