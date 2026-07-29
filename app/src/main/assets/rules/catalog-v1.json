@@ -255,7 +255,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact local authorities.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.cityofsanmateo.org/4351/My-San-Mateo",
+      "actionUri": "https://www.cityofsanmateo.org/",
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -275,7 +275,7 @@
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.cityofsanmateo.org/4351/My-San-Mateo",
+      "secondaryActionUri": "https://www.cityofsanmateo.org/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -289,7 +289,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact local authorities.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.cityofsanmateo.org/4351/My-San-Mateo",
+      "actionUri": "https://www.cityofsanmateo.org/",
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -605,7 +605,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Sonoma County Animal Services to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.srcity.org/244/Animal-Services",
+      "actionUri": "https://www.srcity.org/",
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -625,7 +625,7 @@
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.srcity.org/2539/Code-Enforcement",
+      "secondaryActionUri": "https://www.srcity.org/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -639,7 +639,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department / Code Enforcement to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.srcity.org/2539/Code-Enforcement",
+      "actionUri": "https://www.srcity.org/",
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -705,7 +705,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Care and Control (ACC) and SFPD to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://sf311.org/services/animal-complaints",
+      "actionUri": "https://sf311.org/",
       "officialSourceLabel": "San Francisco Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -739,7 +739,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Department of Building Inspection or Department of Public Works to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://sf311.org/services/noise-complaints/construction-noise",
+      "actionUri": "https://sf311.org/",
       "officialSourceLabel": "San Francisco Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -755,7 +755,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact the Peninsula Humane Society & SPCA to report an animal nuisance.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.dalycity.gov/iHelp",
+      "actionUri": "https://www.dalycity.org/iHelp",
       "officialSourceLabel": "Daly City Animal Control FAQ",
       "officialSourceUrl": "https://www.dalycity.org/faq.aspx?TID=33",
       "verifiedDate": "2026-07-25"
@@ -775,7 +775,7 @@
       "officialSourceLabel": "Daly City Municipal Code \u00a79.22.030",
       "officialSourceUrl": "https://library.municode.com/ca/daly_city/codes/code_of_ordinances?nodeId=TIT9PUPEMOWE_IVOFAGPUPE_CH9.22DIPE",
       "verifiedDate": "2026-07-25",
-      "secondaryActionUri": "https://www.dalycity.gov/iHelp",
+      "secondaryActionUri": "https://www.dalycity.org/iHelp",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -789,7 +789,7 @@
       "requiredIncidentCount": null,
       "nextAction": "If construction occurs between 10:00 p.m. and 6:00 a.m., call the Daly City Police Department non-emergency line.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.dalycity.gov/iHelp",
+      "actionUri": "https://www.dalycity.org/iHelp",
       "officialSourceLabel": "Daly City Municipal Code \u00a79.22.030",
       "officialSourceUrl": "https://library.municode.com/ca/daly_city/codes/code_of_ordinances?nodeId=TIT9PUPEMOWE_IVOFAGPUPE_CH9.22DIPE",
       "verifiedDate": "2026-07-25"
