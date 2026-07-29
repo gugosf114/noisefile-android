@@ -250,10 +250,6 @@ private fun HomeScreen(
                 )
             }
 
-            item {
-                HeroCard()
-            }
-
             if (state.message != null) {
                 item {
                     StatusMessage(
@@ -349,6 +345,10 @@ private fun HomeScreen(
                     Spacer(Modifier.width(10.dp))
                     Text("Record this incident", style = MaterialTheme.typography.titleMedium)
                 }
+            }
+
+            item {
+                HeroCard()
             }
 
             item {
