@@ -44,9 +44,14 @@ class RuleCatalog private constructor(
         require(
             jurisdictions
                 .filter { it.isAvailable }
-                .all { jurisdiction -> rules.any { it.jurisdictionId == jurisdiction.id } },
+                .all { jurisdiction ->
+                    rules
+                        .filter { it.jurisdictionId == jurisdiction.id }
+                        .map { it.noiseType }
+                        .toSet() == NoiseType.entries.toSet()
+                },
         ) {
-            "Every available jurisdiction must contain at least one verified rule."
+            "Every available jurisdiction must contain one verified rule for every noise category."
         }
         require(jurisdictions.any { it.id == SAN_JOSE_ID && it.isAvailable }) {
             "The default jurisdiction must exist and be available."
@@ -103,12 +108,22 @@ class RuleCatalog private constructor(
         ) {
             "Every rule must contain specific resident guidance."
         }
+        require(rules.all { it.actionUri.hasSupportedActionScheme() }) {
+            "Rule actions must use HTTPS, telephone, or email URIs."
+        }
         require(
             rules.all {
-                it.actionUri.startsWith("https://") || it.actionUri.startsWith("tel:")
+                (it.secondaryActionLabel == null) == (it.secondaryActionUri == null)
             },
         ) {
-            "Rule actions must use HTTPS or a telephone URI."
+            "Secondary action labels and URIs must be provided together."
+        }
+        require(
+            rules.all {
+                it.secondaryActionUri == null || it.secondaryActionUri.hasSupportedActionScheme()
+            },
+        ) {
+            "Secondary rule actions must use HTTPS, telephone, or email URIs."
         }
         require(rules.all { it.requiredIncidentCount == null || it.requiredIncidentCount > 0 }) {
             "Required incident counts must be positive."
@@ -209,6 +224,9 @@ class RuleCatalog private constructor(
 
         private fun JSONObject.optionalInt(name: String): Int? =
             if (has(name) && !isNull(name)) getInt(name) else null
+
+        private fun String.hasSupportedActionScheme(): Boolean =
+            startsWith("https://") || startsWith("tel:") || startsWith("mailto:")
 
         private inline fun <T> JSONArray.mapObjects(transform: (JSONObject) -> T): List<T> =
             buildList {

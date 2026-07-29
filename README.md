@@ -8,16 +8,16 @@ NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the
 required incident history, and prepares the correct next action.
 
-The verified catalog covers 44 animal, general-noise, and construction
+The verified catalog covers 45 animal, general-noise, and construction
 workflows across 15 Bay Area cities:
 
 - the official five-incident documentation requirement;
 - active party or amplified-music reporting;
 - construction-hour guidance and Code Enforcement routing;
 - live estimated sound-level measurement;
-- a live city-rule check that evaluates cataloged dB limits, current
-  day/time, recording duration, and incident-count progress, then identifies
-  any distance, baseline, zoning, permit, witness, or disturbance evidence
+- a live city-rule check that shows the exact local requirement, evaluates
+  safely structured incident-count progress, and identifies the distance,
+  baseline, zoning, permit, witness, measurement, or disturbance evidence
   the phone still needs from the resident;
 - start time, duration, minimum, average, and maximum readings;
 - an on-device incident history;
@@ -27,8 +27,8 @@ workflows across 15 Bay Area cities:
 - one-tap copying before the official city form or contact route opens;
 - progress toward a filing-ready record.
 
-NoiseFile is deliberately local-first. Recordings and incident history remain
-on the device unless the user explicitly exports or shares them.
+NoiseFile is deliberately local-first. Incident measurements and history
+remain on the device unless the user explicitly exports or shares them.
 
 ## Ordinance coverage pipeline
 
@@ -49,8 +49,8 @@ built offline in two stages, and only the second stage ships in the app:
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
    one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
-   44 structured workflows across all 15 acquired cities. Richmond barking-dog
-   routing remains unavailable until the responsible authority is confirmed. See
+   45 structured workflows across all 15 acquired cities, including Richmond
+   barking-dog routing through Contra Costa County Animal Services. See
    [`docs/ORDINANCE_LIBRARY.md`](docs/ORDINANCE_LIBRARY.md) for the full
    retrieval contract and update pipeline from stage 1 to stage 2.
 

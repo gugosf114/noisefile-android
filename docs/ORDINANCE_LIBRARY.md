@@ -31,11 +31,12 @@ The Android build validates unique IDs, jurisdiction references, supported
 schema versions, and the presence of rules for every enabled city.
 
 During capture and review, every workflow shows its verified requirement. The
-rule checker evaluates the incident facts the phone already knows: fixed or
-day/night dB limits, current day and time, recording duration, and saved
-incident-count progress. It separately names any zoning, distance, ambient
-sound, permit, witness, documentation, or reasonable-person evidence that
-still requires the resident's observation instead of inventing an answer.
+rule checker evaluates only incident facts that safely match a structured
+requirement, such as saved incident-count progress. It separately names any
+official measurement, zoning, distance, ambient sound, permit, witness,
+documentation, duration, time, or reasonable-person evidence that still
+requires the resident's observation or the enforcing agency instead of
+inventing an answer from a phone estimate.
 
 ## Update pipeline
 

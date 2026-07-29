@@ -29,6 +29,24 @@ class NoiseFileCopyTest {
         assertFalse(source.contains("dB avg"))
     }
 
+    @Test
+    fun missingRequiredConditionUsesWarningColorInsteadOfSuccessColor() {
+        val source = sourceFile().readText()
+
+        assertTrue(
+            source.contains(
+                "MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Signal",
+            ),
+        )
+        assertTrue(source.contains("RuleConditionOutcome.NOT_REACHED -> Signal"))
+        assertFalse(
+            source.contains(
+                "MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Success",
+            ),
+        )
+        assertFalse(source.contains("RuleConditionOutcome.NOT_REACHED -> Success"))
+    }
+
     private fun sourceFile(): File {
         val relativePath = "app/src/main/java/com/noisefile/app/ui/NoiseFileApp.kt"
         return listOf(

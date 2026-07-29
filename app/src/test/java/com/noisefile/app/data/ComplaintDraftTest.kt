@@ -38,6 +38,7 @@ class ComplaintDraftTest {
         )
 
         assertTrue(destination.isOnlineForm)
+        assertFalse(destination.isDocumentPacket)
         assertEquals("https://city.example.gov/noise-complaint", destination.uri)
     }
 
@@ -51,6 +52,37 @@ class ComplaintDraftTest {
         )
 
         assertFalse(destination.isOnlineForm)
+        assertFalse(destination.isDocumentPacket)
+        assertEquals("tel:311", destination.uri)
+    }
+
+    @Test
+    fun requiredDocumentPacketIsNotCalledAnOnlineForm() {
+        val destination = complaintDestination(
+            rule(
+                actionUri = "tel:311",
+                secondaryActionUri = "https://city.example.gov/animal-petition",
+                secondaryActionLabel = "Open Five-Incident Petition",
+            ),
+        )
+
+        assertFalse(destination.isOnlineForm)
+        assertTrue(destination.isDocumentPacket)
+        assertEquals("https://city.example.gov/animal-petition", destination.uri)
+    }
+
+    @Test
+    fun informationPageDoesNotReplacePrimaryComplaintContact() {
+        val destination = complaintDestination(
+            rule(
+                actionUri = "tel:311",
+                secondaryActionUri = "https://city.example.gov/barking-procedure",
+                secondaryActionLabel = "Open Official Barking Procedure",
+            ),
+        )
+
+        assertFalse(destination.isOnlineForm)
+        assertFalse(destination.isDocumentPacket)
         assertEquals("tel:311", destination.uri)
     }
 
@@ -71,6 +103,7 @@ class ComplaintDraftTest {
     private fun rule(
         actionUri: String = "https://city.example.gov/noise-complaint",
         secondaryActionUri: String? = null,
+        secondaryActionLabel: String? = secondaryActionUri?.let { "Open written complaint" },
     ) = RuleWorkflow(
         id = "example-party",
         jurisdictionId = "example",
@@ -83,7 +116,7 @@ class ComplaintDraftTest {
         nextAction = "Submit the city complaint form.",
         actionLabel = "Open complaint form",
         actionUri = actionUri,
-        secondaryActionLabel = secondaryActionUri?.let { "Open written complaint" },
+        secondaryActionLabel = secondaryActionLabel,
         secondaryActionUri = secondaryActionUri,
         officialSourceLabel = "City noise code",
         officialSourceUrl = "https://city.example.gov/noise-code",

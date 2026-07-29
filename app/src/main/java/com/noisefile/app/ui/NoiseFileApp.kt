@@ -1175,7 +1175,7 @@ private fun RuleAssessmentCard(
     val statusColor = when (assessment.status) {
         MeterAssessmentStatus.LISTENING -> Muted
         MeterAssessmentStatus.REACHES_LISTED_CONDITION -> Danger
-        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Success
+        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Signal
         MeterAssessmentStatus.NEEDS_INFORMATION -> Cobalt
     }
     val statusLabel = when (assessment.status) {
@@ -1216,7 +1216,7 @@ private fun RuleAssessmentCard(
             assessment.conditions.forEach { condition ->
                 val conditionColor = when (condition.outcome) {
                     RuleConditionOutcome.REACHED -> Danger
-                    RuleConditionOutcome.NOT_REACHED -> Success
+                    RuleConditionOutcome.NOT_REACHED -> Signal
                     RuleConditionOutcome.NEEDS_INFORMATION -> Cobalt
                 }
                 val marker = when (condition.outcome) {
@@ -1420,10 +1420,10 @@ private fun ReviewScreen(
                     Icon(Icons.Default.OpenInNew, contentDescription = null)
                     Spacer(Modifier.width(9.dp))
                     Text(
-                        text = if (destination.isOnlineForm) {
-                            "Save, copy & open city form"
-                        } else {
-                            "Save, copy & open city contact"
+                        text = when {
+                            destination.isOnlineForm -> "Save, copy & open city form"
+                            destination.isDocumentPacket -> "Save, copy & open city packet"
+                            else -> "Save, copy & open city contact"
                         },
                         style = MaterialTheme.typography.titleMedium,
                     )
@@ -1783,10 +1783,10 @@ private fun IncidentCard(
                     Icon(Icons.Default.OpenInNew, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = if (destination.isOnlineForm) {
-                            "Copy complaint & open city form"
-                        } else {
-                            "Copy complaint & open city contact"
+                        text = when {
+                            destination.isOnlineForm -> "Copy complaint & open city form"
+                            destination.isDocumentPacket -> "Copy complaint & open city packet"
+                            else -> "Copy complaint & open city contact"
                         },
                         style = MaterialTheme.typography.titleSmall,
                     )
@@ -1901,10 +1901,11 @@ private fun copyComplaintAndOpenDestination(
     clipboard.setPrimaryClip(ClipData.newPlainText("NoiseFile complaint", complaint))
     Toast.makeText(
         context,
-        if (destination.isOnlineForm) {
-            "Complaint copied. Paste it into the city form."
-        } else {
-            "Complaint copied. The city contact is opening."
+        when {
+            destination.isOnlineForm -> "Complaint copied. Paste it into the city form."
+            destination.isDocumentPacket ->
+                "Incident summary copied. Complete and sign the city packet."
+            else -> "Complaint copied. The city contact is opening."
         },
         Toast.LENGTH_LONG,
     ).show()

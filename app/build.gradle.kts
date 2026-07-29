@@ -6,6 +6,17 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val releaseKeystoreFile = providers.gradleProperty("NOISEFILE_KEYSTORE_FILE").orNull
+val releaseStorePassword = providers.gradleProperty("NOISEFILE_STORE_PASSWORD").orNull
+val releaseKeyAlias = providers.gradleProperty("NOISEFILE_KEY_ALIAS").orNull
+val releaseKeyPassword = providers.gradleProperty("NOISEFILE_KEY_PASSWORD").orNull
+val hasReleaseSigning = listOf(
+    releaseKeystoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
+
 android {
     namespace = "com.noisefile.app"
     compileSdk = 36
@@ -22,6 +33,17 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseKeystoreFile!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -29,6 +51,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

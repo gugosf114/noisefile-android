@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   android:
     name: Test, lint, and build
@@ -16,8 +19,31 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew testDebugUnitTest lintDebug assembleDebug bundleRelease --no-daemon
+      - run: ./gradlew testDebugUnitTest lintDebug assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
           name: noisefile-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Restore Play upload key
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          NOISEFILE_KEYSTORE_BASE64: ${{ secrets.NOISEFILE_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$NOISEFILE_KEYSTORE_BASE64"
+          printf '%s' "$NOISEFILE_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/noisefile-upload.jks"
+          chmod 600 "$RUNNER_TEMP/noisefile-upload.jks"
+      - name: Build and verify signed Play bundle
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_NOISEFILE_KEYSTORE_FILE: ${{ runner.temp }}/noisefile-upload.jks
+          ORG_GRADLE_PROJECT_NOISEFILE_STORE_PASSWORD: ${{ secrets.NOISEFILE_STORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_NOISEFILE_KEY_ALIAS: noisefile-upload
+          ORG_GRADLE_PROJECT_NOISEFILE_KEY_PASSWORD: ${{ secrets.NOISEFILE_KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease --no-daemon
+          jarsigner -verify app/build/outputs/bundle/release/app-release.aab
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          name: noisefile-play-aab
+          path: app/build/outputs/bundle/release/app-release.aab

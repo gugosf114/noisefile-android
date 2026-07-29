@@ -11,22 +11,40 @@ data class ComplaintDestination(
     val uri: String,
     val label: String,
     val isOnlineForm: Boolean,
+    val isDocumentPacket: Boolean,
 )
 
 fun complaintDestination(rule: RuleWorkflow): ComplaintDestination {
     val actions = buildList {
-        add(rule.actionUri to rule.actionLabel)
+        add(ComplaintAction(rule.actionUri, rule.actionLabel))
         if (rule.secondaryActionUri != null && rule.secondaryActionLabel != null) {
-            add(rule.secondaryActionUri to rule.secondaryActionLabel)
+            add(ComplaintAction(rule.secondaryActionUri, rule.secondaryActionLabel))
         }
     }
-    val selected = actions.firstOrNull { (uri, _) -> uri.startsWith("https://") }
+    val selected = actions.firstOrNull { it.isOnlineForm }
+        ?: actions.firstOrNull { it.isDocumentPacket }
         ?: actions.first()
     return ComplaintDestination(
-        uri = selected.first,
-        label = selected.second,
-        isOnlineForm = selected.first.startsWith("https://"),
+        uri = selected.uri,
+        label = selected.label,
+        isOnlineForm = selected.isOnlineForm,
+        isDocumentPacket = selected.isDocumentPacket,
     )
+}
+
+private data class ComplaintAction(
+    val uri: String,
+    val label: String,
+) {
+    val isDocumentPacket: Boolean =
+        uri.startsWith("https://") &&
+            (label.contains("packet", ignoreCase = true) ||
+                label.contains("petition", ignoreCase = true))
+
+    val isOnlineForm: Boolean =
+        uri.startsWith("https://") &&
+            !isDocumentPacket &&
+            !label.contains("procedure", ignoreCase = true)
 }
 
 fun buildComplaintDraft(
