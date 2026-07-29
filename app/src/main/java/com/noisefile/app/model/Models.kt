@@ -1,9 +1,9 @@
 package com.noisefile.app.model
 
 enum class NoiseType(val displayName: String) {
-    BARKING_DOG("Barking dog"),
-    PARTY_MUSIC("Party or amplified music"),
-    CONSTRUCTION("Construction"),
+    BARKING_DOG("Animal noise (e.g. barking, pets)"),
+    PARTY_MUSIC("General noise (e.g. voices, music)"),
+    CONSTRUCTION("Mechanical or Construction"),
 }
 
 data class Jurisdiction(

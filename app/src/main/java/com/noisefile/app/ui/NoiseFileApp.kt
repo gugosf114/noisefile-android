@@ -990,8 +990,15 @@ private fun MeterScreen(
                     letterSpacing = 1.sp,
                 )
                 Spacer(Modifier.height(7.dp))
+                
+                val bestPractices = if (rule.noiseType == NoiseType.CONSTRUCTION) {
+                    "• Stand at the property line facing the noise.\n• Ensure clear line of sight to the source.\n• Remain completely silent while capturing."
+                } else {
+                    "• Close all windows and doors.\n• Hold phone steady in the center of the room.\n• Remain completely silent while capturing."
+                }
+                
                 Text(
-                    text = "• Close all windows and doors.\n• Hold phone steady in the center of the room.\n• Remain completely silent while capturing.\n\n${rule.captureInstruction}",
+                    text = "$bestPractices\n\n${rule.captureInstruction}",
                     color = White,
                     style = MaterialTheme.typography.bodyLarge,
                 )
