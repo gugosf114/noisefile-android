@@ -1182,7 +1182,7 @@ private fun RuleAssessmentCard(
         MeterAssessmentStatus.LISTENING -> "CHECKING CITY RULE"
         MeterAssessmentStatus.REACHES_LISTED_CONDITION -> "LISTED CONDITION REACHED"
         MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> "CONDITION NOT YET REACHED"
-        MeterAssessmentStatus.NEEDS_INFORMATION -> "MORE EVIDENCE NEEDED"
+        MeterAssessmentStatus.NEEDS_INFORMATION -> "METER CANNOT DECIDE"
     }
 
     Surface(
@@ -1232,17 +1232,25 @@ private fun RuleAssessmentCard(
                 )
             }
             HorizontalDivider(color = Line)
-            Text(
-                text = rule.title,
-                color = Ink,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = "Phone estimate only. City enforcement uses the required equipment, position, duration, and other rule conditions.",
-                color = Muted,
-                fontSize = 12.sp,
-            )
+            if (assessment.status == MeterAssessmentStatus.NEEDS_INFORMATION) {
+                Text(
+                    text = "The phone reading remains useful evidence. The city makes the final determination.",
+                    color = Muted,
+                    fontSize = 12.sp,
+                )
+            } else {
+                Text(
+                    text = rule.title,
+                    color = Ink,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = "Phone estimate only. City enforcement uses the required equipment, position, duration, and other rule conditions.",
+                    color = Muted,
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }

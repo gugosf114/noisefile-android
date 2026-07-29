@@ -112,7 +112,11 @@ class MeterRuleAssessmentTest {
 
     @Test
     fun everyRuleProducesAnExplicitResultAndReason() {
-        catalog().rules.forEach { rule ->
+        val catalog = catalog()
+        assertEquals(15, catalog.jurisdictions.size)
+        assertEquals(44, catalog.rules.size)
+
+        val assessments = catalog.rules.map { rule ->
             val assessment = assessMeterReading(
                 rule = rule,
                 reading = reading(),
@@ -130,7 +134,48 @@ class MeterRuleAssessmentTest {
                 "${rule.id} omitted its capture requirement",
                 assessment.conditionText().contains(rule.captureInstruction),
             )
+            if (assessment.status == MeterAssessmentStatus.NEEDS_INFORMATION) {
+                assertTrue(
+                    "${rule.id} does not explain the phone reading",
+                    assessment.headline.contains("65 dB reading cannot pass or fail"),
+                )
+                assertTrue(
+                    "${rule.id} does not name its city",
+                    assessment.headline.contains(rule.jurisdiction.substringBefore(",")),
+                )
+            }
+            assessment
         }
+
+        assertEquals(
+            "Unexpected number of rules that need a city-specific manual test",
+            19,
+            assessments.count { it.status == MeterAssessmentStatus.NEEDS_INFORMATION },
+        )
+        assertEquals(
+            "Unexpected number of rules with an automatic dB, time, duration, or incident-count check",
+            25,
+            assessments.count { it.status != MeterAssessmentStatus.NEEDS_INFORMATION },
+        )
+    }
+
+    @Test
+    fun sanJoseGeneralNoiseSaysExactlyWhatTheMeterCanAndCannotDecide() {
+        val rule = catalog().retrieve("san-jose", NoiseType.PARTY_MUSIC)
+            ?: error("Missing San Jose general-noise rule")
+
+        val assessment = assessMeterReading(
+            rule = rule,
+            reading = reading(maximumDb = 60.0, elapsedSeconds = 3),
+            localDateTime = LocalDateTime.of(2026, 7, 29, 7, 16),
+        )
+
+        assertEquals(MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
+        assertEquals(
+            "This 60 dB reading cannot pass or fail the San Jose rule by itself",
+            assessment.headline,
+        )
+        assertTrue(assessment.conditionText().contains("Police Department's non-emergency line"))
     }
 
     private fun MeterRuleAssessment.conditionText(): String =

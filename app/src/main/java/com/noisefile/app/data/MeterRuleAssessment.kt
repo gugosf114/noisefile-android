@@ -177,8 +177,8 @@ fun assessMeterReading(
 
         else -> MeterRuleAssessment(
             status = MeterAssessmentStatus.NEEDS_INFORMATION,
-            headline = "This ordinance depends on evidence beyond the meter",
-            detail = "The city requirement below explains what must be observed or documented.",
+            headline = "This ${reading.maximumDb.roundToInt()} dB reading cannot pass or fail the ${rule.jurisdiction.substringBefore(",")} rule by itself",
+            detail = "The city uses the specific requirement below. The phone reading is supporting evidence.",
             conditions = conditions,
         )
     }
