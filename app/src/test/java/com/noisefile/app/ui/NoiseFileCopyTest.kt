@@ -19,6 +19,16 @@ class NoiseFileCopyTest {
         assertTrue(source.contains("City enforcement uses the required equipment"))
     }
 
+    @Test
+    fun reviewAndIncidentCardsLeadWithMaximumInsteadOfAverage() {
+        val source = sourceFile().readText()
+
+        assertTrue(source.contains("maximum estimated dB"))
+        assertTrue(source.contains("dB max"))
+        assertFalse(source.contains("estimated average dB"))
+        assertFalse(source.contains("dB avg"))
+    }
+
     private fun sourceFile(): File {
         val relativePath = "app/src/main/java/com/noisefile/app/ui/NoiseFileApp.kt"
         return listOf(

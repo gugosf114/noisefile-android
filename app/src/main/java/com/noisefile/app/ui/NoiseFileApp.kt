@@ -1470,18 +1470,18 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow) {
             ) {
                 Column {
                     Text(
-                        text = reading.averageDb.roundToInt().toString(),
+                        text = reading.maximumDb.roundToInt().toString(),
                         color = White,
                         fontSize = 54.sp,
                         lineHeight = 56.sp,
                         fontWeight = FontWeight.Bold,
                     )
-                    Text("estimated average dB", color = White.copy(alpha = 0.62f))
+                    Text("maximum estimated dB", color = White.copy(alpha = 0.62f))
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(formatElapsed(reading.elapsedMillis), color = White)
                     Text(
-                        "MAX ${reading.maximumDb.roundToInt()} dB",
+                        "AVERAGE ${reading.averageDb.roundToInt()} dB",
                         color = White.copy(alpha = 0.62f),
                         fontWeight = FontWeight.Bold,
                     )
@@ -1682,7 +1682,7 @@ private fun IncidentCard(
                     color = Signal.copy(alpha = 0.20f),
                 ) {
                     Text(
-                        text = "${incident.averageDb.roundToInt()} dB avg",
+                        text = "${incident.maximumDb.roundToInt()} dB max",
                         modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
                         color = Ink,
                         fontWeight = FontWeight.Bold,
@@ -1810,7 +1810,7 @@ private fun IncidentCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
-                Text("Max ${incident.maximumDb.roundToInt()} dB", color = Muted)
+                Text("Average ${incident.averageDb.roundToInt()} dB", color = Muted)
             }
         }
     }
