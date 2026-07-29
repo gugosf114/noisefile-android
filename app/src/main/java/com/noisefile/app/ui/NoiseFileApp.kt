@@ -1,10 +1,13 @@
 package com.noisefile.app.ui
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
@@ -110,7 +113,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
+import com.noisefile.app.data.buildComplaintDraft
 import com.noisefile.app.data.buildIncidentHistoryReport
+import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterReading
@@ -188,22 +193,34 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onStop = viewModel::stopMeasurement,
         )
 
-        AppScreen.REVIEW -> ReviewScreen(
-            state = state,
-            rule = viewModel.selectedRule(),
-            onImpactChange = viewModel::setImpact,
-            onNotesChange = viewModel::setNotes,
-            onSave = viewModel::saveIncident,
-            onDiscard = viewModel::showHome,
-            onOpenUri = { openUri(context, it) },
-        )
+        AppScreen.REVIEW -> {
+            val rule = viewModel.selectedRule()
+            ReviewScreen(
+                state = state,
+                rule = rule,
+                onLocationChange = viewModel::setLocation,
+                onImpactChange = viewModel::setImpact,
+                onNotesChange = viewModel::setNotes,
+                onSave = { viewModel.saveIncident() },
+                onSaveAndPrepare = {
+                    viewModel.saveIncident()?.let { incident ->
+                        copyComplaintAndOpenDestination(context, incident, rule)
+                    }
+                },
+                onDiscard = viewModel::showHome,
+            )
+        }
 
         AppScreen.HISTORY -> HistoryScreen(
             incidents = state.incidents,
+            ruleForIncident = viewModel::ruleForIncident,
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
             onExport = { shareHistory(context, state.incidents) },
-            onUpdateNotes = viewModel::updateIncidentNotes,
+            onUpdateDetails = viewModel::updateIncidentDetails,
+            onPrepareComplaint = { incident, rule ->
+                copyComplaintAndOpenDestination(context, incident, rule)
+            },
         )
     }
 
@@ -1155,11 +1172,12 @@ private fun MeterStat(label: String, value: Double, modifier: Modifier = Modifie
 private fun ReviewScreen(
     state: NoiseFileUiState,
     rule: RuleWorkflow,
+    onLocationChange: (String) -> Unit,
     onImpactChange: (String) -> Unit,
     onNotesChange: (String) -> Unit,
     onSave: () -> Unit,
+    onSaveAndPrepare: () -> Unit,
     onDiscard: () -> Unit,
-    onOpenUri: (String) -> Unit,
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -1227,33 +1245,46 @@ private fun ReviewScreen(
                             color = Muted,
                             style = MaterialTheme.typography.bodyMedium,
                         )
-                        Button(
-                            modifier = Modifier.fillMaxWidth().height(52.dp),
-                            onClick = { onOpenUri(rule.actionUri) },
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Cobalt,
-                                contentColor = White,
-                            ),
-                        ) {
-                            Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
-                        }
-
-                        if (rule.secondaryActionUri != null && rule.secondaryActionLabel != null) {
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth().height(52.dp),
-                                onClick = { onOpenUri(rule.secondaryActionUri) },
-                                shape = RoundedCornerShape(14.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    contentColor = Cobalt,
-                                ),
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.5f)),
-                            ) {
-                                Text(rule.secondaryActionLabel, style = MaterialTheme.typography.titleSmall)
-                            }
-                        }
+                        Text(
+                            text = "Save the incident below. NoiseFile will copy a completed complaint and open the best available city route.",
+                            color = Ink,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                 }
+            }
+
+            state.error?.let { error ->
+                item {
+                    StatusMessage(
+                        text = error,
+                        color = Danger,
+                        icon = Icons.Default.Shield,
+                    )
+                }
+            }
+
+            item {
+                SectionTitle(
+                    eyebrow = "LOCATION",
+                    title = "Where was the noise?",
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.draftLocation,
+                    onValueChange = onLocationChange,
+                    label = { Text("Address or approximate location") },
+                    placeholder = { Text("Example: 440 Price Avenue, next-door property") },
+                    supportingText = {
+                        Text("Required for the prepared complaint. Stored only on this phone.")
+                    },
+                    isError = state.error != null && state.draftLocation.isBlank(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(18.dp),
+                )
             }
 
             item {
@@ -1284,20 +1315,40 @@ private fun ReviewScreen(
             }
 
             item {
+                val destination = complaintDestination(rule)
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp),
-                    onClick = onSave,
+                    onClick = onSaveAndPrepare,
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Cobalt,
                         contentColor = White,
                     ),
                 ) {
+                    Icon(Icons.Default.OpenInNew, contentDescription = null)
+                    Spacer(Modifier.width(9.dp))
+                    Text(
+                        text = if (destination.isOnlineForm) {
+                            "Save, copy & open city form"
+                        } else {
+                            "Save, copy & open city contact"
+                        },
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    onClick = onSave,
+                    shape = RoundedCornerShape(18.dp),
+                ) {
                     Icon(Icons.Default.CheckCircle, contentDescription = null)
                     Spacer(Modifier.width(9.dp))
-                    Text("Save to private history", style = MaterialTheme.typography.titleMedium)
+                    Text("Save only", style = MaterialTheme.typography.titleSmall)
                 }
             }
         }
@@ -1399,10 +1450,12 @@ private fun ImpactOption(
 @Composable
 private fun HistoryScreen(
     incidents: List<Incident>,
+    ruleForIncident: (String) -> RuleWorkflow?,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
     onExport: () -> Unit,
-    onUpdateNotes: (Long, String) -> Unit,
+    onUpdateDetails: (Long, String, String) -> Unit,
+    onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
 ) {
     AppScaffold(
         selectedScreen = AppScreen.HISTORY,
@@ -1448,7 +1501,9 @@ private fun HistoryScreen(
                 items(incidents, key = { it.id }) { incident ->
                     IncidentCard(
                         incident = incident,
-                        onUpdateNotes = onUpdateNotes,
+                        rule = ruleForIncident(incident.ruleId),
+                        onUpdateDetails = onUpdateDetails,
+                        onPrepareComplaint = onPrepareComplaint,
                     )
                 }
             }
@@ -1497,9 +1552,12 @@ private fun EmptyHistory() {
 @Composable
 private fun IncidentCard(
     incident: Incident,
-    onUpdateNotes: (Long, String) -> Unit,
+    rule: RuleWorkflow?,
+    onUpdateDetails: (Long, String, String) -> Unit,
+    onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
 ) {
-    var isEditingNotes by remember(incident.id) { mutableStateOf(false) }
+    var isEditingDetails by remember(incident.id) { mutableStateOf(false) }
+    var locationDraft by remember(incident.id, incident.location) { mutableStateOf(incident.location) }
     var noteDraft by remember(incident.id, incident.notes) { mutableStateOf(incident.notes) }
     val date = DateTimeFormatter
         .ofPattern("EEE, MMM d · h:mm a", Locale.US)
@@ -1543,7 +1601,16 @@ private fun IncidentCard(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
-            if (isEditingNotes) {
+            if (isEditingDetails) {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = locationDraft,
+                    onValueChange = { locationDraft = it },
+                    label = { Text("Address or approximate location") },
+                    placeholder = { Text("Where did the disturbance come from?") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(16.dp),
+                )
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = noteDraft,
@@ -1559,23 +1626,38 @@ private fun IncidentCard(
                 ) {
                     TextButton(
                         onClick = {
+                            locationDraft = incident.location
                             noteDraft = incident.notes
-                            isEditingNotes = false
+                            isEditingDetails = false
                         },
                     ) {
                         Text("Cancel")
                     }
                     TextButton(
                         onClick = {
-                            onUpdateNotes(incident.id, noteDraft)
-                            isEditingNotes = false
+                            onUpdateDetails(incident.id, locationDraft, noteDraft)
+                            isEditingDetails = false
                         },
+                        enabled = locationDraft.isNotBlank(),
                     ) {
-                        Text("Save notes")
+                        Text("Save details")
                     }
                 }
             } else {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    Text(
+                        text = "LOCATION",
+                        color = Cobalt,
+                        fontSize = 11.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = incident.location.ifBlank { "No location added." },
+                        color = if (incident.location.isBlank()) Muted else Ink,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Spacer(Modifier.height(5.dp))
                     Text(
                         text = "NOTES",
                         color = Cobalt,
@@ -1590,11 +1672,48 @@ private fun IncidentCard(
                     )
                     TextButton(
                         modifier = Modifier.align(Alignment.End),
-                        onClick = { isEditingNotes = true },
+                        onClick = { isEditingDetails = true },
                     ) {
-                        Text(if (incident.notes.isBlank()) "Add notes" else "Edit notes")
+                        Text("Edit details")
                     }
                 }
+            }
+            if (rule != null) {
+                val destination = complaintDestination(rule)
+                Button(
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    onClick = { onPrepareComplaint(incident, rule) },
+                    enabled = incident.location.isNotBlank(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Cobalt,
+                        contentColor = White,
+                    ),
+                ) {
+                    Icon(Icons.Default.OpenInNew, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = if (destination.isOnlineForm) {
+                            "Copy complaint & open city form"
+                        } else {
+                            "Copy complaint & open city contact"
+                        },
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+                if (incident.location.isBlank()) {
+                    Text(
+                        text = "Add the incident location before preparing the complaint.",
+                        color = Danger,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            } else {
+                Text(
+                    text = "This incident's city rule is no longer available.",
+                    color = Danger,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1679,6 +1798,27 @@ private fun formatElapsed(millis: Long): String {
     val minutes = totalSeconds / 60L
     val seconds = totalSeconds % 60L
     return "%02d:%02d".format(minutes, seconds)
+}
+
+private fun copyComplaintAndOpenDestination(
+    context: Context,
+    incident: Incident,
+    rule: RuleWorkflow,
+) {
+    val complaint = buildComplaintDraft(incident, rule)
+    val destination = complaintDestination(rule)
+    val clipboard = context.getSystemService(ClipboardManager::class.java)
+    clipboard.setPrimaryClip(ClipData.newPlainText("NoiseFile complaint", complaint))
+    Toast.makeText(
+        context,
+        if (destination.isOnlineForm) {
+            "Complaint copied. Paste it into the city form."
+        } else {
+            "Complaint copied. The city contact is opening."
+        },
+        Toast.LENGTH_LONG,
+    ).show()
+    openUri(context, destination.uri)
 }
 
 private fun openUri(context: Context, uri: String) {

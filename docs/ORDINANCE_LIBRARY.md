@@ -41,9 +41,15 @@ City packets are prepared outside the production app:
 This is the first retrieval layer. It is deliberately simpler and safer than a
 vector database for a small number of cities.
 
-## Optional model layer
+## Complaint drafting and optional model layer
 
-AI may later explain a retrieved rule or draft a complaint. It receives only:
+NoiseFile prepares complaint text deterministically from the verified rule and
+the resident's saved incident. It copies that text and opens the best available
+official city form or contact route. This works without an account, network
+model call, or invented legal facts.
+
+AI may later explain a retrieved rule or polish the complaint's wording. It
+receives only:
 
 - fixed NoiseFile instructions;
 - the exact retrieved city/category packet;

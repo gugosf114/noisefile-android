@@ -18,6 +18,8 @@ The first complete city packet covers three San Jose workflows:
 - an on-device incident history;
 - a city selector ready for additional verified rule packets;
 - a private neighbor-invite share flow;
+- complaint text prepared from the saved incident and verified city rule;
+- one-tap copying before the official city form or contact route opens;
 - progress toward a filing-ready record.
 
 NoiseFile is deliberately local-first. Recordings and incident history remain

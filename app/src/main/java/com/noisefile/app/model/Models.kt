@@ -50,6 +50,7 @@ data class Incident(
     val minimumDb: Double,
     val averageDb: Double,
     val maximumDb: Double,
+    val location: String,
     val impact: String,
     val notes: String,
 )

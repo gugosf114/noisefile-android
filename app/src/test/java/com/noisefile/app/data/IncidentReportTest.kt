@@ -16,6 +16,7 @@ class IncidentReportTest {
         )
 
         assertTrue(report.contains("Notes: Bass was vibrating the bedroom window."))
+        assertTrue(report.contains("Location: 440 Price Avenue"))
     }
 
     @Test
@@ -38,6 +39,7 @@ class IncidentReportTest {
         minimumDb = 41.2,
         averageDb = 58.7,
         maximumDb = 67.9,
+        location = "440 Price Avenue",
         impact = "Interrupted rest or quiet use",
         notes = notes,
     )

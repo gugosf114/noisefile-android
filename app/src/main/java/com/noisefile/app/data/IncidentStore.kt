@@ -33,10 +33,17 @@ class IncidentStore(context: Context) {
     }
 
     @Synchronized
-    fun updateNotes(incidentId: Long, notes: String): List<Incident> {
+    fun updateDetails(
+        incidentId: Long,
+        location: String,
+        notes: String,
+    ): List<Incident> {
         val incidents = load().map { incident ->
             if (incident.id == incidentId) {
-                incident.copy(notes = notes.trim())
+                incident.copy(
+                    location = location.trim(),
+                    notes = notes.trim(),
+                )
             } else {
                 incident
             }
@@ -60,6 +67,7 @@ class IncidentStore(context: Context) {
         .put("minimumDb", minimumDb)
         .put("averageDb", averageDb)
         .put("maximumDb", maximumDb)
+        .put("location", location)
         .put("impact", impact)
         .put("notes", notes)
 
@@ -72,6 +80,7 @@ class IncidentStore(context: Context) {
         minimumDb = getDouble("minimumDb"),
         averageDb = getDouble("averageDb"),
         maximumDb = getDouble("maximumDb"),
+        location = optString("location"),
         impact = getString("impact"),
         notes = optString("notes"),
     )

@@ -29,6 +29,7 @@ data class NoiseFileUiState(
     val meterReading: MeterReading = MeterReading(),
     val incidents: List<Incident> = emptyList(),
     val measurementStartedAt: Long? = null,
+    val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
     val draftNotes: String = "",
     val message: String? = null,
@@ -178,12 +179,26 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update { it.copy(draftImpact = impact) }
     }
 
+    fun setLocation(location: String) {
+        _uiState.update { it.copy(draftLocation = location, error = null) }
+    }
+
     fun setNotes(notes: String) {
         _uiState.update { it.copy(draftNotes = notes) }
     }
 
-    fun saveIncident() {
+    fun saveIncident(): Incident? {
         val state = _uiState.value
+        val location = state.draftLocation.trim()
+        if (location.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    error = "Add the location of the disturbance before saving.",
+                    message = null,
+                )
+            }
+            return null
+        }
         val startedAt = state.measurementStartedAt ?: System.currentTimeMillis()
         val reading = state.meterReading
         val rule = ruleCatalog.byId(state.selectedRuleId)
@@ -195,7 +210,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                     message = null,
                 )
             }
-            return
+            return null
         }
         val incident = Incident(
             id = System.currentTimeMillis(),
@@ -206,6 +221,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             minimumDb = reading.minimumDb,
             averageDb = reading.averageDb,
             maximumDb = reading.maximumDb,
+            location = location,
             impact = state.draftImpact,
             notes = state.draftNotes.trim(),
         )
@@ -221,18 +237,25 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 error = null,
             )
         }
+        return incident
     }
 
-    fun updateIncidentNotes(incidentId: Long, notes: String) {
-        val incidents = incidentStore.updateNotes(incidentId, notes)
+    fun updateIncidentDetails(
+        incidentId: Long,
+        location: String,
+        notes: String,
+    ) {
+        val incidents = incidentStore.updateDetails(incidentId, location, notes)
         _uiState.update {
             it.copy(
                 incidents = incidents,
-                message = "Incident notes updated.",
+                message = "Incident details updated.",
                 error = null,
             )
         }
     }
+
+    fun ruleForIncident(ruleId: String): RuleWorkflow? = ruleCatalog.byId(ruleId)
 
     fun incidentCountFor(ruleId: String): Int =
         _uiState.value.incidents.count { it.ruleId == ruleId }
