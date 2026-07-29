@@ -7,24 +7,24 @@ import org.junit.Test
 class NoiseMathTest {
     @Test
     fun silenceReturnsZero() {
-        assertEquals(0.0, NoiseMath.rmsToEstimatedDb(ShortArray(128)), 0.001)
+        assertEquals(0.0, NoiseMath.rmsToEstimatedDbA(DoubleArray(128)), 0.001)
     }
 
     @Test
     fun louderSignalProducesHigherReading() {
-        val quiet = ShortArray(128) { 100 }
-        val loud = ShortArray(128) { 5_000 }
+        val quiet = DoubleArray(128) { 100.0 }
+        val loud = DoubleArray(128) { 5_000.0 }
 
         assertTrue(
-            NoiseMath.rmsToEstimatedDb(loud) >
-                NoiseMath.rmsToEstimatedDb(quiet),
+            NoiseMath.rmsToEstimatedDbA(loud) >
+                NoiseMath.rmsToEstimatedDbA(quiet),
         )
     }
 
     @Test
     fun readingIsClampedToDisplayRange() {
-        val fullScale = ShortArray(128) { Short.MAX_VALUE }
-        val reading = NoiseMath.rmsToEstimatedDb(fullScale)
+        val fullScale = DoubleArray(128) { Short.MAX_VALUE.toDouble() }
+        val reading = NoiseMath.rmsToEstimatedDbA(fullScale)
 
         assertTrue(reading in 0.0..100.0)
     }
