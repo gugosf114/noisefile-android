@@ -975,6 +975,33 @@ private fun MeterScreen(
             MeterStat("MAX", reading.maximumDb, Modifier.weight(1f))
         }
 
+        Spacer(Modifier.height(16.dp))
+        
+        val avg = reading.averageDb
+        val (thresholdText, thresholdColor) = when {
+            avg <= 0f -> "Listening..." to White.copy(alpha = 0.5f)
+            avg < 45f -> "Quiet: Unlikely to be a violation" to White.copy(alpha = 0.7f)
+            avg < 55f -> "Moderate: Nighttime violation in many cities" to Signal
+            avg < 65f -> "Loud: Daytime violation in most zones" to Danger
+            else -> "Very Loud: Clear violation in most zones" to Danger
+        }
+        
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = thresholdColor.copy(alpha = 0.1f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, thresholdColor.copy(alpha = 0.3f)),
+        ) {
+            Text(
+                text = thresholdText,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                color = thresholdColor,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+        }
+
         Spacer(Modifier.height(22.dp))
         Surface(
             modifier = Modifier.fillMaxWidth(),
