@@ -53,6 +53,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.Pets
@@ -291,9 +292,9 @@ private fun HomeScreen(
                             label = {
                                 Text(
                                     text = when (workflow.noiseType) {
-                                        NoiseType.BARKING_DOG -> "Dog"
-                                        NoiseType.PARTY_MUSIC -> "Music"
-                                        NoiseType.CONSTRUCTION -> "Construction"
+                                        NoiseType.BARKING_DOG -> "Animal"
+                                        NoiseType.PARTY_MUSIC -> "General"
+                                        NoiseType.CONSTRUCTION -> "Machine"
                                     },
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
@@ -303,7 +304,7 @@ private fun HomeScreen(
                                 Icon(
                                     imageVector = when (workflow.noiseType) {
                                         NoiseType.BARKING_DOG -> Icons.Default.Pets
-                                        NoiseType.PARTY_MUSIC -> Icons.Default.MusicNote
+                                        NoiseType.PARTY_MUSIC -> Icons.Default.VolumeUp
                                         NoiseType.CONSTRUCTION -> Icons.Default.Construction
                                     },
                                     contentDescription = null,
