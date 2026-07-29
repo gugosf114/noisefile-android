@@ -193,6 +193,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onNotesChange = viewModel::setNotes,
             onSave = viewModel::saveIncident,
             onDiscard = viewModel::showHome,
+            onOpenUri = { openUri(context, it) },
         )
 
         AppScreen.HISTORY -> HistoryScreen(
@@ -1144,6 +1145,7 @@ private fun ReviewScreen(
     onNotesChange: (String) -> Unit,
     onSave: () -> Unit,
     onDiscard: () -> Unit,
+    onOpenUri: (String) -> Unit,
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -1180,6 +1182,49 @@ private fun ReviewScreen(
 
             item {
                 MeasurementSummary(state.meterReading, rule)
+            }
+
+            item {
+                val avg = state.meterReading.averageDb
+                val isViolation = avg >= 55f
+                val thresholdText = if (isViolation) {
+                    "This reading exceeds typical residential ordinance thresholds (55+ dB)."
+                } else {
+                    "This reading is below typical residential ordinance thresholds."
+                }
+                
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    color = if (isViolation) Danger.copy(alpha = 0.1f) else Muted.copy(alpha = 0.2f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isViolation) Danger.copy(alpha = 0.3f) else Muted.copy(alpha = 0.3f)),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                    ) {
+                        Text(
+                            text = thresholdText,
+                            color = if (isViolation) Danger else Ink,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        
+                        if (isViolation) {
+                            Button(
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                onClick = { onOpenUri(rule.actionUri) },
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Danger,
+                                    contentColor = White,
+                                )
+                            ) {
+                                Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
+                            }
+                        }
+                    }
+                }
             }
 
             item {
