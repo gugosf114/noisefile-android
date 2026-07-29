@@ -198,6 +198,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             incidents = state.incidents,
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
+            onExport = { shareHistory(context, state.incidents) }
         )
     }
 
@@ -1291,6 +1292,7 @@ private fun HistoryScreen(
     incidents: List<Incident>,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
+    onExport: () -> Unit,
 ) {
     AppScaffold(
         selectedScreen = AppScreen.HISTORY,
@@ -1311,6 +1313,21 @@ private fun HistoryScreen(
                     eyebrow = "PRIVATE · ON THIS PHONE",
                     title = "Incident history",
                 )
+            }
+
+            if (incidents.isNotEmpty()) {
+                item {
+                    Button(
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        onClick = onExport,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White)
+                    ) {
+                        Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Export Official History", style = MaterialTheme.typography.titleSmall)
+                    }
+                }
             }
 
             if (incidents.isEmpty()) {
@@ -1513,12 +1530,37 @@ private fun shareNeighborInvite(context: Context, rule: RuleWorkflow) {
         Please describe only what you personally observed. NoiseFile keeps each person's account separate.
     """.trimIndent()
 
-    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, "Can you independently confirm this noise incident?")
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_TEXT, message)
+        type = "text/plain"
     }
-    runCatching {
-        context.startActivity(Intent.createChooser(shareIntent, "Invite a neighbor"))
+    context.startActivity(Intent.createChooser(sendIntent, "Share with Neighbor"))
+}
+
+private fun shareHistory(context: Context, incidents: List<Incident>) {
+    val report = buildString {
+        appendLine("NOISEFILE INCIDENT LOG")
+        appendLine("Generated on: ${java.util.Date()}")
+        appendLine("Total incidents: ${incidents.size}")
+        appendLine()
+        incidents.forEachIndexed { i, inc ->
+            val date = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy · h:mm a", Locale.US).format(
+                Instant.ofEpochMilli(inc.startedAtEpochMillis).atZone(ZoneId.systemDefault())
+            )
+            appendLine("Incident ${i + 1}")
+            appendLine("Date: $date")
+            appendLine("Type: ${inc.noiseType.displayName}")
+            appendLine("Duration: ${inc.durationSeconds} sec")
+            appendLine("Levels: ${inc.averageDb.toInt()} dB avg / ${inc.maximumDb.toInt()} dB max")
+            appendLine("Impact: ${inc.impact}")
+            appendLine()
+        }
     }
+    val sendIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, report)
+        type = "text/plain"
+    }
+    context.startActivity(Intent.createChooser(sendIntent, "Export Evidence Log"))
 }
