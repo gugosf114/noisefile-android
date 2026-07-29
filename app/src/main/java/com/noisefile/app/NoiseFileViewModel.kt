@@ -223,6 +223,17 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun updateIncidentNotes(incidentId: Long, notes: String) {
+        val incidents = incidentStore.updateNotes(incidentId, notes)
+        _uiState.update {
+            it.copy(
+                incidents = incidents,
+                message = "Incident notes updated.",
+                error = null,
+            )
+        }
+    }
+
     fun incidentCountFor(ruleId: String): Int =
         _uiState.value.incidents.count { it.ruleId == ruleId }
 

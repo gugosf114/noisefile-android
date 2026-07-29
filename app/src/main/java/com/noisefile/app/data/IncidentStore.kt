@@ -28,10 +28,27 @@ class IncidentStore(context: Context) {
         val incidents = (listOf(incident) + load())
             .distinctBy { it.id }
             .take(MAX_INCIDENTS)
+        persist(incidents)
+        return incidents
+    }
+
+    @Synchronized
+    fun updateNotes(incidentId: Long, notes: String): List<Incident> {
+        val incidents = load().map { incident ->
+            if (incident.id == incidentId) {
+                incident.copy(notes = notes.trim())
+            } else {
+                incident
+            }
+        }
+        persist(incidents)
+        return incidents
+    }
+
+    private fun persist(incidents: List<Incident>) {
         val array = JSONArray()
         incidents.forEach { array.put(it.toJson()) }
         preferences.edit().putString(KEY_INCIDENTS, array.toString()).apply()
-        return incidents
     }
 
     private fun Incident.toJson(): JSONObject = JSONObject()

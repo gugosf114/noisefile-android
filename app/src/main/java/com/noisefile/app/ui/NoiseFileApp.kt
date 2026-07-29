@@ -110,6 +110,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
+import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterReading
@@ -201,7 +202,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             incidents = state.incidents,
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
-            onExport = { shareHistory(context, state.incidents) }
+            onExport = { shareHistory(context, state.incidents) },
+            onUpdateNotes = viewModel::updateIncidentNotes,
         )
     }
 
@@ -987,25 +989,20 @@ private fun MeterScreen(
 
         Spacer(Modifier.height(16.dp))
         
-        val avg = reading.averageDb
-        val (thresholdText, thresholdColor) = when {
-            avg <= 0f -> "Listening..." to White.copy(alpha = 0.5f)
-            avg < 45f -> "Quiet: Unlikely to be a violation" to White.copy(alpha = 0.7f)
-            avg < 55f -> "Moderate: Nighttime violation in many cities" to Signal
-            avg < 65f -> "Loud: Daytime violation in most zones" to Danger
-            else -> "Very Loud: Clear violation in most zones" to Danger
-        }
-        
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = thresholdColor.copy(alpha = 0.1f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, thresholdColor.copy(alpha = 0.3f)),
+            color = White.copy(alpha = 0.08f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, White.copy(alpha = 0.18f)),
         ) {
             Text(
-                text = thresholdText,
+                text = if (reading.sampleWindows == 0) {
+                    "Listening…"
+                } else {
+                    "PHONE ESTIMATE · Compare this reading with the verified city rule after recording."
+                },
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                color = thresholdColor,
+                color = White.copy(alpha = 0.82f),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
@@ -1202,58 +1199,57 @@ private fun ReviewScreen(
             }
 
             item {
-                val avg = state.meterReading.averageDb
-                val isViolation = avg >= 55f
-                val thresholdText = if (isViolation) {
-                    "This reading exceeds typical residential ordinance thresholds (55+ dB)."
-                } else {
-                    "This reading is below typical residential ordinance thresholds."
-                }
-                
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    color = if (isViolation) Danger.copy(alpha = 0.1f) else Muted.copy(alpha = 0.2f),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isViolation) Danger.copy(alpha = 0.3f) else Muted.copy(alpha = 0.3f)),
+                    color = Cobalt.copy(alpha = 0.08f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.25f)),
                 ) {
                     Column(
                         modifier = Modifier.padding(18.dp),
-                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
                         Text(
-                            text = thresholdText,
-                            color = if (isViolation) Danger else Ink,
+                            text = "CITY-SPECIFIC NEXT STEP",
+                            color = Cobalt,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = "Phone readings are estimates. The city rule can also depend on time, duration, location, and noise source.",
+                            color = Ink,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
-                        
-                        if (isViolation) {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Button(
-                                    modifier = Modifier.fillMaxWidth().height(52.dp),
-                                    onClick = { onOpenUri(rule.actionUri) },
-                                    shape = RoundedCornerShape(14.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Danger,
-                                        contentColor = White,
-                                    )
-                                ) {
-                                    Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
-                                }
-                                
-                                if (rule.secondaryActionUri != null && rule.secondaryActionLabel != null) {
-                                    OutlinedButton(
-                                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                                        onClick = { onOpenUri(rule.secondaryActionUri) },
-                                        shape = RoundedCornerShape(14.dp),
-                                        colors = ButtonDefaults.outlinedButtonColors(
-                                            contentColor = Danger,
-                                        ),
-                                        border = androidx.compose.foundation.BorderStroke(1.dp, Danger.copy(alpha = 0.5f))
-                                    ) {
-                                        Text(rule.secondaryActionLabel, style = MaterialTheme.typography.titleSmall)
-                                    }
-                                }
+                        Text(
+                            text = rule.nextAction,
+                            color = Muted,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Button(
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            onClick = { onOpenUri(rule.actionUri) },
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Cobalt,
+                                contentColor = White,
+                            ),
+                        ) {
+                            Text(rule.actionLabel, style = MaterialTheme.typography.titleSmall)
+                        }
+
+                        if (rule.secondaryActionUri != null && rule.secondaryActionLabel != null) {
+                            OutlinedButton(
+                                modifier = Modifier.fillMaxWidth().height(52.dp),
+                                onClick = { onOpenUri(rule.secondaryActionUri) },
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Cobalt,
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.5f)),
+                            ) {
+                                Text(rule.secondaryActionLabel, style = MaterialTheme.typography.titleSmall)
                             }
                         }
                     }
@@ -1280,8 +1276,8 @@ private fun ReviewScreen(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.draftNotes,
                     onValueChange = onNotesChange,
-                    label = { Text("Optional notes") },
-                    placeholder = { Text("What could you hear or feel?") },
+                    label = { Text("Incident notes") },
+                    placeholder = { Text("Describe the sound, source, and anything you observed.") },
                     minLines = 3,
                     shape = RoundedCornerShape(18.dp),
                 )
@@ -1406,6 +1402,7 @@ private fun HistoryScreen(
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
     onExport: () -> Unit,
+    onUpdateNotes: (Long, String) -> Unit,
 ) {
     AppScaffold(
         selectedScreen = AppScreen.HISTORY,
@@ -1438,7 +1435,7 @@ private fun HistoryScreen(
                     ) {
                         Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Export Official History", style = MaterialTheme.typography.titleSmall)
+                        Text("Share incident history", style = MaterialTheme.typography.titleSmall)
                     }
                 }
             }
@@ -1449,7 +1446,10 @@ private fun HistoryScreen(
                 }
             } else {
                 items(incidents, key = { it.id }) { incident ->
-                    IncidentCard(incident)
+                    IncidentCard(
+                        incident = incident,
+                        onUpdateNotes = onUpdateNotes,
+                    )
                 }
             }
         }
@@ -1495,7 +1495,12 @@ private fun EmptyHistory() {
 }
 
 @Composable
-private fun IncidentCard(incident: Incident) {
+private fun IncidentCard(
+    incident: Incident,
+    onUpdateNotes: (Long, String) -> Unit,
+) {
+    var isEditingNotes by remember(incident.id) { mutableStateOf(false) }
+    var noteDraft by remember(incident.id, incident.notes) { mutableStateOf(incident.notes) }
     val date = DateTimeFormatter
         .ofPattern("EEE, MMM d · h:mm a", Locale.US)
         .format(
@@ -1538,6 +1543,59 @@ private fun IncidentCard(incident: Incident) {
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
+            if (isEditingNotes) {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = noteDraft,
+                    onValueChange = { noteDraft = it },
+                    label = { Text("Incident notes") },
+                    placeholder = { Text("Describe the sound, source, and anything you observed.") },
+                    minLines = 3,
+                    shape = RoundedCornerShape(16.dp),
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(
+                        onClick = {
+                            noteDraft = incident.notes
+                            isEditingNotes = false
+                        },
+                    ) {
+                        Text("Cancel")
+                    }
+                    TextButton(
+                        onClick = {
+                            onUpdateNotes(incident.id, noteDraft)
+                            isEditingNotes = false
+                        },
+                    ) {
+                        Text("Save notes")
+                    }
+                }
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "NOTES",
+                        color = Cobalt,
+                        fontSize = 11.sp,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = incident.notes.ifBlank { "No notes added." },
+                        color = if (incident.notes.isBlank()) Muted else Ink,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        onClick = { isEditingNotes = true },
+                    ) {
+                        Text(if (incident.notes.isBlank()) "Add notes" else "Edit notes")
+                    }
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1652,28 +1710,11 @@ private fun shareNeighborInvite(context: Context, rule: RuleWorkflow) {
 }
 
 private fun shareHistory(context: Context, incidents: List<Incident>) {
-    val report = buildString {
-        appendLine("NOISEFILE INCIDENT LOG")
-        appendLine("Generated on: ${java.util.Date()}")
-        appendLine("Total incidents: ${incidents.size}")
-        appendLine()
-        incidents.forEachIndexed { i, inc ->
-            val date = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy · h:mm a", Locale.US).format(
-                Instant.ofEpochMilli(inc.startedAtEpochMillis).atZone(ZoneId.systemDefault())
-            )
-            appendLine("Incident ${i + 1}")
-            appendLine("Date: $date")
-            appendLine("Type: ${inc.noiseType.displayName}")
-            appendLine("Duration: ${inc.durationSeconds} sec")
-            appendLine("Levels: ${inc.averageDb.toInt()} dB avg / ${inc.maximumDb.toInt()} dB max")
-            appendLine("Impact: ${inc.impact}")
-            appendLine()
-        }
-    }
+    val report = buildIncidentHistoryReport(incidents)
     val sendIntent = Intent().apply {
         action = Intent.ACTION_SEND
         putExtra(Intent.EXTRA_TEXT, report)
         type = "text/plain"
     }
-    context.startActivity(Intent.createChooser(sendIntent, "Export Evidence Log"))
+    context.startActivity(Intent.createChooser(sendIntent, "Share Incident Log"))
 }
