@@ -114,6 +114,7 @@ import com.noisefile.app.AppScreen
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
 import com.noisefile.app.data.MeterAssessmentStatus
+import com.noisefile.app.data.RuleConditionOutcome
 import com.noisefile.app.data.assessMeterReading
 import com.noisefile.app.data.buildComplaintDraft
 import com.noisefile.app.data.buildIncidentHistoryReport
@@ -192,6 +193,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
         AppScreen.METER -> MeterScreen(
             rule = viewModel.selectedRule(),
             reading = state.meterReading,
+            incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
             onStop = viewModel::stopMeasurement,
         )
 
@@ -200,6 +202,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             ReviewScreen(
                 state = state,
                 rule = rule,
+                incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
                 onLocationChange = viewModel::setLocation,
                 onImpactChange = viewModel::setImpact,
                 onNotesChange = viewModel::setNotes,
@@ -926,6 +929,7 @@ private fun ThreeStepStrip() {
 private fun MeterScreen(
     rule: RuleWorkflow,
     reading: MeterReading,
+    incidentCount: Int,
     onStop: () -> Unit,
 ) {
     val view = LocalView.current
@@ -1014,7 +1018,11 @@ private fun MeterScreen(
 
         Spacer(Modifier.height(16.dp))
         
-        RuleAssessmentCard(rule = rule, reading = reading)
+        RuleAssessmentCard(
+            rule = rule,
+            reading = reading,
+            incidentCount = incidentCount,
+        )
 
         Spacer(Modifier.height(22.dp))
         Surface(
@@ -1157,19 +1165,24 @@ private fun MeterStat(label: String, value: Double, modifier: Modifier = Modifie
 private fun RuleAssessmentCard(
     rule: RuleWorkflow,
     reading: MeterReading,
+    incidentCount: Int,
 ) {
-    val assessment = assessMeterReading(rule = rule, reading = reading)
+    val assessment = assessMeterReading(
+        rule = rule,
+        reading = reading,
+        incidentCount = incidentCount,
+    )
     val statusColor = when (assessment.status) {
         MeterAssessmentStatus.LISTENING -> Muted
-        MeterAssessmentStatus.BELOW_LISTED_LIMIT -> Success
-        MeterAssessmentStatus.AT_OR_ABOVE_LISTED_LIMIT -> Danger
-        MeterAssessmentStatus.CONDITIONS_REQUIRED -> Cobalt
+        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> Danger
+        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Success
+        MeterAssessmentStatus.NEEDS_INFORMATION -> Cobalt
     }
     val statusLabel = when (assessment.status) {
         MeterAssessmentStatus.LISTENING -> "CHECKING CITY RULE"
-        MeterAssessmentStatus.BELOW_LISTED_LIMIT -> "BELOW LISTED dB LIMIT"
-        MeterAssessmentStatus.AT_OR_ABOVE_LISTED_LIMIT -> "AT OR ABOVE LISTED dB LIMIT"
-        MeterAssessmentStatus.CONDITIONS_REQUIRED -> "CITY RULE NEEDS MORE THAN dB"
+        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> "LISTED CONDITION REACHED"
+        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> "CONDITION NOT YET REACHED"
+        MeterAssessmentStatus.NEEDS_INFORMATION -> "MORE EVIDENCE NEEDED"
     }
 
     Surface(
@@ -1200,17 +1213,30 @@ private fun RuleAssessmentCard(
                 color = Muted,
                 style = MaterialTheme.typography.bodyMedium,
             )
+            assessment.conditions.forEach { condition ->
+                val conditionColor = when (condition.outcome) {
+                    RuleConditionOutcome.REACHED -> Danger
+                    RuleConditionOutcome.NOT_REACHED -> Success
+                    RuleConditionOutcome.NEEDS_INFORMATION -> Cobalt
+                }
+                val marker = when (condition.outcome) {
+                    RuleConditionOutcome.REACHED -> "✓"
+                    RuleConditionOutcome.NOT_REACHED -> "○"
+                    RuleConditionOutcome.NEEDS_INFORMATION -> "•"
+                }
+                Text(
+                    text = "$marker ${condition.text}",
+                    color = conditionColor,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
             HorizontalDivider(color = Line)
             Text(
                 text = rule.title,
                 color = Ink,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-            )
-            Text(
-                text = rule.summary,
-                color = Ink,
-                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
                 text = "Phone estimate only. City enforcement uses the required equipment, position, duration, and other rule conditions.",
@@ -1225,6 +1251,7 @@ private fun RuleAssessmentCard(
 private fun ReviewScreen(
     state: NoiseFileUiState,
     rule: RuleWorkflow,
+    incidentCount: Int,
     onLocationChange: (String) -> Unit,
     onImpactChange: (String) -> Unit,
     onNotesChange: (String) -> Unit,
@@ -1270,7 +1297,11 @@ private fun ReviewScreen(
             }
 
             item {
-                RuleAssessmentCard(rule = rule, reading = state.meterReading)
+                RuleAssessmentCard(
+                    rule = rule,
+                    reading = state.meterReading,
+                    incidentCount = incidentCount,
+                )
             }
 
             item {

@@ -15,9 +15,10 @@ workflows across 15 Bay Area cities:
 - active party or amplified-music reporting;
 - construction-hour guidance and Code Enforcement routing;
 - live estimated sound-level measurement;
-- a live city-rule check that compares clear cataloged dB limits and explains
-  the exact time, duration, distance, baseline, or disturbance test when one
-  phone number cannot decide the rule;
+- a live city-rule check that evaluates cataloged dB limits, current
+  day/time, recording duration, and incident-count progress, then identifies
+  any distance, baseline, zoning, permit, witness, or disturbance evidence
+  the phone still needs from the resident;
 - start time, duration, minimum, average, and maximum readings;
 - an on-device incident history;
 - a city selector ready for additional verified rule packets;

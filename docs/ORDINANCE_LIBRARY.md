@@ -30,11 +30,12 @@ guess from model memory, or silently substitute a general rule.
 The Android build validates unique IDs, jurisdiction references, supported
 schema versions, and the presence of rules for every enabled city.
 
-During capture and review, every workflow shows its verified requirement. A
-structured fixed or day/night dB limit receives a live comparison against the
-highest phone estimate. Rules based on zoning, duration, distance, ambient
-sound, permitted hours, documentation, or reasonable-person disturbance show
-those conditions instead of an invented pass/fail cutoff.
+During capture and review, every workflow shows its verified requirement. The
+rule checker evaluates the incident facts the phone already knows: fixed or
+day/night dB limits, current day and time, recording duration, and saved
+incident-count progress. It separately names any zoning, distance, ambient
+sound, permit, witness, documentation, or reasonable-person evidence that
+still requires the resident's observation instead of inventing an answer.
 
 ## Update pipeline
 

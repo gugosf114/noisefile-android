@@ -14,7 +14,7 @@ class NoiseFileCopyTest {
         assertFalse(source.contains("Clear violation in most zones"))
         assertFalse(source.contains("avg >= 55"))
         assertFalse(source.contains("legally admissible", ignoreCase = true))
-        assertTrue(source.contains("CITY RULE NEEDS MORE THAN dB"))
+        assertTrue(source.contains("MORE EVIDENCE NEEDED"))
         assertTrue(source.contains("City enforcement uses the required equipment"))
     }
 
