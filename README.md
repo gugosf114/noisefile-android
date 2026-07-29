@@ -8,12 +8,16 @@ NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the
 required incident history, and prepares the correct next action.
 
-The first complete city packet covers three San Jose workflows:
+The verified catalog covers 44 animal, general-noise, and construction
+workflows across 15 Bay Area cities:
 
 - the official five-incident documentation requirement;
 - active party or amplified-music reporting;
 - construction-hour guidance and Code Enforcement routing;
 - live estimated sound-level measurement;
+- a live city-rule check that compares clear cataloged dB limits and explains
+  the exact time, duration, distance, baseline, or disturbance test when one
+  phone number cannot decide the rule;
 - start time, duration, minimum, average, and maximum readings;
 - an on-device incident history;
 - a city selector ready for additional verified rule packets;

@@ -62,11 +62,17 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     fun selectJurisdiction(jurisdictionId: String) {
         val jurisdiction = ruleCatalog.jurisdictionById(jurisdictionId) ?: return
         if (!jurisdiction.isAvailable) return
-        val firstRule = ruleCatalog.forJurisdiction(jurisdiction.id).firstOrNull() ?: return
         _uiState.update {
+            val currentNoiseType = ruleCatalog.byId(it.selectedRuleId)?.noiseType
+            val matchingRule = currentNoiseType?.let { noiseType ->
+                ruleCatalog.retrieve(jurisdiction.id, noiseType)
+            }
+            val selectedRule = matchingRule
+                ?: ruleCatalog.forJurisdiction(jurisdiction.id).firstOrNull()
+                ?: return@update it
             it.copy(
                 selectedJurisdictionId = jurisdiction.id,
-                selectedRuleId = firstRule.id,
+                selectedRuleId = selectedRule.id,
                 message = null,
                 error = null,
             )

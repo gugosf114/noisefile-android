@@ -61,9 +61,11 @@ class RuleCatalogTest {
             ?: error("Missing San Mateo construction rule")
 
         assertTrue(barking.summary.contains("11:00 p.m."))
-        assertTrue(music.summary.contains("7:00 a.m."))
+        assertTrue(music.summary.contains("50\u201360 dB"))
+        assertTrue(music.summary.contains("noise zone"))
         assertTrue(construction.summary.contains("Sundays and holidays from noon to 4:00 p.m."))
         assertTrue(construction.summary.contains("90 dB"))
+        assertEquals(90.0, construction.meterLimit?.fixedMaximumDb ?: 0.0, 0.0)
     }
 
     @Test
@@ -141,6 +143,23 @@ class RuleCatalogTest {
         root.getJSONArray("rules")
             .getJSONObject(0)
             .put("officialSourceUrl", "https://local-government-website.gov")
+
+        assertThrows(IllegalArgumentException::class.java) {
+            RuleCatalog.fromJson(root.toString())
+        }
+    }
+
+    @Test
+    fun incompleteMeterLimitIsRejected() {
+        val root = JSONObject(catalogJson())
+        root.getJSONArray("rules")
+            .getJSONObject(0)
+            .put(
+                "meterLimit",
+                JSONObject()
+                    .put("daytimeMaximumDb", 60)
+                    .put("comparisonContext", "Residential property"),
+            )
 
         assertThrows(IllegalArgumentException::class.java) {
             RuleCatalog.fromJson(root.toString())

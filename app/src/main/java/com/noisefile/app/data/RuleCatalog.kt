@@ -2,6 +2,7 @@ package com.noisefile.app.data
 
 import android.content.Context
 import com.noisefile.app.model.Jurisdiction
+import com.noisefile.app.model.MeterLimit
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
 import org.json.JSONArray
@@ -188,10 +189,26 @@ class RuleCatalog private constructor(
                         officialSourceLabel = item.getString("officialSourceLabel"),
                         officialSourceUrl = item.getString("officialSourceUrl"),
                         verifiedDate = item.getString("verifiedDate"),
+                        meterLimit = item.optJSONObject("meterLimit")?.let { limit ->
+                            MeterLimit(
+                                fixedMaximumDb = limit.optionalDouble("fixedMaximumDb"),
+                                daytimeMaximumDb = limit.optionalDouble("daytimeMaximumDb"),
+                                nighttimeMaximumDb = limit.optionalDouble("nighttimeMaximumDb"),
+                                daytimeStartsHour = limit.optionalInt("daytimeStartsHour"),
+                                nighttimeStartsHour = limit.optionalInt("nighttimeStartsHour"),
+                                comparisonContext = limit.getString("comparisonContext"),
+                            )
+                        },
                     )
                 },
             )
         }
+
+        private fun JSONObject.optionalDouble(name: String): Double? =
+            if (has(name) && !isNull(name)) getDouble(name) else null
+
+        private fun JSONObject.optionalInt(name: String): Int? =
+            if (has(name) && !isNull(name)) getInt(name) else null
 
         private inline fun <T> JSONArray.mapObjects(transform: (JSONObject) -> T): List<T> =
             buildList {

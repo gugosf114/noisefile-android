@@ -113,6 +113,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
+import com.noisefile.app.data.MeterAssessmentStatus
+import com.noisefile.app.data.assessMeterReading
 import com.noisefile.app.data.buildComplaintDraft
 import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.data.complaintDestination
@@ -954,7 +956,11 @@ private fun MeterScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 12.dp),
+            ) {
                 Text(
                     text = "MEASURING NOW",
                     color = Signal,
@@ -963,9 +969,11 @@ private fun MeterScreen(
                     letterSpacing = 1.2.sp,
                 )
                 Text(
-                    text = rule.noiseType.displayName,
+                    text = "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}",
                     color = White,
                     style = MaterialTheme.typography.titleLarge,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Surface(
@@ -1006,25 +1014,7 @@ private fun MeterScreen(
 
         Spacer(Modifier.height(16.dp))
         
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            color = White.copy(alpha = 0.08f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, White.copy(alpha = 0.18f)),
-        ) {
-            Text(
-                text = if (reading.sampleWindows == 0) {
-                    "Listening…"
-                } else {
-                    "PHONE ESTIMATE · Compare this reading with the verified city rule after recording."
-                },
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                color = White.copy(alpha = 0.82f),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-        }
+        RuleAssessmentCard(rule = rule, reading = reading)
 
         Spacer(Modifier.height(22.dp))
         Surface(
@@ -1043,14 +1033,9 @@ private fun MeterScreen(
                 )
                 Spacer(Modifier.height(7.dp))
                 
-                val bestPractices = if (rule.noiseType == NoiseType.CONSTRUCTION) {
-                    "• Stand at the property line facing the noise.\n• Ensure clear line of sight to the source.\n• Remain completely silent while capturing."
-                } else {
-                    "• Close all windows and doors.\n• Hold phone steady in the center of the room.\n• Remain completely silent while capturing."
-                }
-                
                 Text(
-                    text = "$bestPractices\n\n${rule.captureInstruction}",
+                    text = "• Hold the phone steady with its microphone uncovered.\n" +
+                        "• Stay quiet while measuring.\n\n${rule.captureInstruction}",
                     color = White,
                     style = MaterialTheme.typography.bodyLarge,
                 )
@@ -1169,6 +1154,74 @@ private fun MeterStat(label: String, value: Double, modifier: Modifier = Modifie
 }
 
 @Composable
+private fun RuleAssessmentCard(
+    rule: RuleWorkflow,
+    reading: MeterReading,
+) {
+    val assessment = assessMeterReading(rule = rule, reading = reading)
+    val statusColor = when (assessment.status) {
+        MeterAssessmentStatus.LISTENING -> Muted
+        MeterAssessmentStatus.BELOW_LISTED_LIMIT -> Success
+        MeterAssessmentStatus.AT_OR_ABOVE_LISTED_LIMIT -> Danger
+        MeterAssessmentStatus.CONDITIONS_REQUIRED -> Cobalt
+    }
+    val statusLabel = when (assessment.status) {
+        MeterAssessmentStatus.LISTENING -> "CHECKING CITY RULE"
+        MeterAssessmentStatus.BELOW_LISTED_LIMIT -> "BELOW LISTED dB LIMIT"
+        MeterAssessmentStatus.AT_OR_ABOVE_LISTED_LIMIT -> "AT OR ABOVE LISTED dB LIMIT"
+        MeterAssessmentStatus.CONDITIONS_REQUIRED -> "CITY RULE NEEDS MORE THAN dB"
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = Paper,
+        border = androidx.compose.foundation.BorderStroke(2.dp, statusColor),
+    ) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(9.dp),
+        ) {
+            Text(
+                text = "$statusLabel · ${rule.jurisdiction.substringBefore(",").uppercase(Locale.US)}",
+                color = statusColor,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.9.sp,
+            )
+            Text(
+                text = assessment.headline,
+                color = Ink,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = assessment.detail,
+                color = Muted,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            HorizontalDivider(color = Line)
+            Text(
+                text = rule.title,
+                color = Ink,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = rule.summary,
+                color = Ink,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "Phone estimate only. City enforcement uses the required equipment, position, duration, and other rule conditions.",
+                color = Muted,
+                fontSize = 12.sp,
+            )
+        }
+    }
+}
+
+@Composable
 private fun ReviewScreen(
     state: NoiseFileUiState,
     rule: RuleWorkflow,
@@ -1217,6 +1270,10 @@ private fun ReviewScreen(
             }
 
             item {
+                RuleAssessmentCard(rule = rule, reading = state.meterReading)
+            }
+
+            item {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
@@ -1233,12 +1290,6 @@ private fun ReviewScreen(
                             fontSize = 11.sp,
                             letterSpacing = 1.sp,
                             fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "Phone readings are estimates. The city rule can also depend on time, duration, location, and noise source.",
-                            color = Ink,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
                         )
                         Text(
                             text = rule.nextAction,

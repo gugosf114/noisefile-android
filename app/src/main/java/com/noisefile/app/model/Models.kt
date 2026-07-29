@@ -30,7 +30,35 @@ data class RuleWorkflow(
     val officialSourceLabel: String,
     val officialSourceUrl: String,
     val verifiedDate: String,
+    val meterLimit: MeterLimit? = null,
 )
+
+data class MeterLimit(
+    val fixedMaximumDb: Double? = null,
+    val daytimeMaximumDb: Double? = null,
+    val nighttimeMaximumDb: Double? = null,
+    val daytimeStartsHour: Int? = null,
+    val nighttimeStartsHour: Int? = null,
+    val comparisonContext: String,
+) {
+    init {
+        val hasFixedLimit = fixedMaximumDb != null
+        val hasScheduledLimits = daytimeMaximumDb != null || nighttimeMaximumDb != null
+
+        require(hasFixedLimit.xor(hasScheduledLimits)) {
+            "A meter limit must define either one fixed maximum or day/night maximums."
+        }
+        require(fixedMaximumDb == null || fixedMaximumDb > 0.0)
+        if (hasScheduledLimits) {
+            require(daytimeMaximumDb != null && daytimeMaximumDb > 0.0)
+            require(nighttimeMaximumDb != null && nighttimeMaximumDb > 0.0)
+            require(daytimeStartsHour != null && daytimeStartsHour in 0..23)
+            require(nighttimeStartsHour != null && nighttimeStartsHour in 0..23)
+            require(daytimeStartsHour != nighttimeStartsHour)
+        }
+        require(comparisonContext.isNotBlank())
+    }
+}
 
 data class MeterReading(
     val currentDb: Double = 0.0,

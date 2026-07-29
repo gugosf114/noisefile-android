@@ -24,9 +24,17 @@ guess from model memory, or silently substitute a general rule.
 - official source links and verification dates;
 - measurement instructions, filing requirements, responsible agency, and next
   action.
+- optional structured meter limits with the required time and measurement
+  context.
 
 The Android build validates unique IDs, jurisdiction references, supported
 schema versions, and the presence of rules for every enabled city.
+
+During capture and review, every workflow shows its verified requirement. A
+structured fixed or day/night dB limit receives a live comparison against the
+highest phone estimate. Rules based on zoning, duration, distance, ambient
+sound, permitted hours, documentation, or reasonable-person disturbance show
+those conditions instead of an invented pass/fail cutoff.
 
 ## Update pipeline
 

@@ -1,6 +1,7 @@
 package com.noisefile.app.ui
 
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
@@ -13,6 +14,8 @@ class NoiseFileCopyTest {
         assertFalse(source.contains("Clear violation in most zones"))
         assertFalse(source.contains("avg >= 55"))
         assertFalse(source.contains("legally admissible", ignoreCase = true))
+        assertTrue(source.contains("CITY RULE NEEDS MORE THAN dB"))
+        assertTrue(source.contains("City enforcement uses the required equipment"))
     }
 
     private fun sourceFile(): File {

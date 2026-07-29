@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-07-29.2",
+  "catalogVersion": "2026-07-29.3",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -267,15 +267,15 @@
       "jurisdictionId": "san-mateo",
       "jurisdiction": "San Mateo, California",
       "noiseType": "PARTY_MUSIC",
-      "title": "Observe nighttime quiet hours",
-      "summary": "San Mateo prohibits loud radios, musical instruments, televisions, and amplification devices between 11:00 p.m. and 7:00 a.m. when they disturb a reasonable person nearby.",
-      "captureInstruction": "Record the date, time, duration, address, and where the sound affected you.",
+      "title": "Check noise zone, time, and duration",
+      "summary": "At another property, San Mateo's base limits are 50\u201360 dB from 10:00 p.m. to 7:00 a.m. and 60\u201365 dB from 7:00 a.m. to 10:00 p.m., depending on that property's noise zone; industrial Zone 4 is 70 dB at any time. Higher levels are allowed only for shorter cumulative durations, and a higher measured ambient level can replace the base. Loud music from 11:00 p.m. to 7:00 a.m. can also be a nuisance when it disturbs a reasonable person.",
+      "captureInstruction": "Measure from the affected property. Record its property type or noise zone, the time, the total duration, the loudest estimate, and where the sound affected you.",
       "requiredIncidentCount": null,
       "nextAction": "For an active nuisance noise complaint, call San Mateo Police non-emergency.",
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:6505227700",
-      "officialSourceLabel": "San Mateo Municipal Code \u00a77.30.100(2)",
-      "officialSourceUrl": "https://law.cityofsanmateo.org/us/ca/cities/san-mateo/code/7.30.100",
+      "officialSourceLabel": "San Mateo Municipal Code \u00a7\u00a77.30.040, 7.30.090, and 7.30.100",
+      "officialSourceUrl": "https://law.cityofsanmateo.org/us/ca/cities/san-mateo/code/7.30.040",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -285,14 +285,18 @@
       "noiseType": "CONSTRUCTION",
       "title": "Check permitted construction hours",
       "summary": "Permitted construction is allowed weekdays from 7:00 a.m. to 7:00 p.m., Saturdays from 9:00 a.m. to 5:00 p.m., and Sundays and holidays from noon to 4:00 p.m., unless the permit changes those hours. Equipment and property-line noise may not exceed 90 dB.",
-      "captureInstruction": "Record the work address, equipment, start and end times, and any posted permit or exception.",
+      "captureInstruction": "When safe, measure about 25 feet from the equipment or just outside the project property line. Record that position, the work address, equipment, start and end times, and any posted permit or exception.",
       "requiredIncidentCount": null,
       "nextAction": "For active construction noise outside the permitted hours, call San Mateo Police non-emergency.",
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:6505227700",
       "officialSourceLabel": "San Mateo Municipal Code \u00a77.30.060(e)",
       "officialSourceUrl": "https://law.cityofsanmateo.org/us/ca/cities/san-mateo/code/7.30.060",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "meterLimit": {
+        "fixedMaximumDb": 90,
+        "comparisonContext": "The 90 dB construction maximum applies about 25 feet from one piece of equipment or outside the project property line during permitted work. Work outside permitted hours can still be reportable below 90 dB."
+      }
     },
     {
       "id": "hayward-barking_dog",
@@ -317,7 +321,7 @@
       "noiseType": "PARTY_MUSIC",
       "title": "Report an active disturbance",
       "summary": "Residential noise limits are 70 dBA from 7:00 a.m. to 9:00 p.m. and 60 dBA from 9:00 p.m. to 7:00 a.m. Additionally, unreasonable noise that disturbs the peace and quiet of any neighborhood is prohibited based on various criteria, regardless of decibel level.",
-      "captureInstruction": "Document the date, time, and nature of the noise.",
+      "captureInstruction": "Measure at the affected residential property and record the date, time, duration, position, and nature of the noise.",
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department / Code Enforcement to report the issue.",
       "actionLabel": "Call Dispatch",
@@ -325,6 +329,13 @@
       "officialSourceLabel": "Hayward Municipal Code Article 1 \u2014 Noise Regulations",
       "officialSourceUrl": "https://library.municode.com/ca/hayward/codes/municipal_code?nodeId=HAYWARD_MUNICIPAL_CODE_CH4PUWEMOCO_ART1PUNU_NORE",
       "verifiedDate": "2026-07-29",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 60,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 21,
+        "comparisonContext": "This comparison uses Hayward's listed residential receiving-property limit for the current time. Unreasonable disturbance rules can also apply regardless of the dB estimate."
+      },
       "secondaryActionUri": "https://user.govoutreach.com/hayward/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
@@ -551,7 +562,7 @@
       "noiseType": "PARTY_MUSIC",
       "title": "Report an active disturbance",
       "summary": "Residential noise limits are 50 dBA during nighttime and 60 dBA during daytime. Noise before 7 a.m. or after 10 p.m. is considered a Noise Disturbance and should be reported to Public Safety.",
-      "captureInstruction": "Document the date, time, and nature of the noise.",
+      "captureInstruction": "Measure at the affected residential property and record the date, time, duration, position, and nature of the noise.",
       "requiredIncidentCount": null,
       "nextAction": "Contact Public Safety to report the issue.",
       "actionLabel": "Call Dispatch",
@@ -559,6 +570,13 @@
       "officialSourceLabel": "Sunnyvale Municipal Code \u00a719.42.030",
       "officialSourceUrl": "https://ecode360.com/42730931",
       "verifiedDate": "2026-07-29",
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "This comparison uses Sunnyvale's listed residential limit for the current time. Noise before 7:00 a.m. or after 10:00 p.m. also has a time-based reporting rule."
+      },
       "secondaryActionUri": "https://www.sunnyvale.ca.gov/your-government/city-services/mysunnyvale-service-requests",
       "secondaryActionLabel": "File Written Complaint Online"
     },
@@ -719,14 +737,18 @@
       "noiseType": "CONSTRUCTION",
       "title": "Check construction restrictions",
       "summary": "Construction noise is limited to 80 dBA at 100 feet. Nighttime construction (8:00 p.m. to 7:00 a.m.) cannot exceed ambient noise level by 5 dBA at the nearest property plane without a special permit.",
-      "captureInstruction": "Document the date, time, and nature of the noise.",
+      "captureInstruction": "For the 80 dBA test, measure about 100 feet from the equipment and record that position. At night, also record a quiet-background reading from the nearest property plane.",
       "requiredIncidentCount": null,
       "nextAction": "Contact Department of Building Inspection or Department of Public Works to report the issue.",
       "actionLabel": "File Written Complaint Online",
       "actionUri": "https://sf311.org/",
       "officialSourceLabel": "San Francisco Police Code Article 29",
       "officialSourceUrl": "https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_police/0-0-0-6461",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "meterLimit": {
+        "fixedMaximumDb": 80,
+        "comparisonContext": "The 80 dBA construction limit is measured 100 feet from the equipment. Nighttime work also uses an ambient-noise comparison and can require a special permit."
+      }
     },
     {
       "id": "daly-city-barking-dog",
@@ -801,7 +823,7 @@
       "noiseType": "PARTY_MUSIC",
       "title": "Report an active disturbance",
       "summary": "Residential noise limits commence at 7:00 AM and end at 10:00 PM (55 dBA), and from 10:00 PM to 7:00 AM (50 dBA). Any maliciously and willfully disturbing loud and unreasonable noise can be enforced by a citation or arrest.",
-      "captureInstruction": "Document the date, time, and nature of the noise.",
+      "captureInstruction": "Measure at the affected residential property and record the date, time, duration, position, and nature of the noise.",
       "requiredIncidentCount": null,
       "nextAction": "Contact Santa Clara Police Department (SCPD) to report the issue.",
       "actionLabel": "Call Dispatch",
@@ -809,6 +831,13 @@
       "officialSourceLabel": "Santa Clara City Code Chapter 9.10, Article I",
       "officialSourceUrl": "https://ecode360.com/47548749",
       "verifiedDate": "2026-07-29",
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "This comparison uses Santa Clara's listed residential limit for the current time. Loud and unreasonable disturbance can also be enforced based on conduct."
+      },
       "secondaryActionUri": "https://www.santaclaraca.gov/our-city/departments-a-f/communications-center/my-santa-clara-app",
       "secondaryActionLabel": "File Written Complaint Online"
     },
