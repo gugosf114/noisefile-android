@@ -153,9 +153,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Services to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Antioch Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -169,9 +169,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Antioch Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -185,9 +185,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Antioch Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -201,9 +201,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Oakland Animal Services to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Oakland Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -217,9 +217,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Oakland Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Oakland Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -233,9 +233,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Planning & Building Department Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Oakland Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -249,9 +249,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact local authorities.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -265,9 +265,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact local authorities.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -281,9 +281,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact local authorities.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Mateo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -297,9 +297,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Control to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Hayward Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -313,9 +313,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department / Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Hayward Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -329,9 +329,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Hayward Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -393,9 +393,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Control Officer or EHD to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -409,9 +409,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact NCO or EHD to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -425,9 +425,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact NCO or EHD to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -441,9 +441,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Control to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Vallejo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -457,9 +457,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Vallejo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -473,9 +473,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Vallejo Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -489,9 +489,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Services to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -505,9 +505,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -521,9 +521,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -537,9 +537,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Public Safety to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Sunnyvale Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -553,9 +553,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Public Safety to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Sunnyvale Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -569,9 +569,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Public Safety to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Sunnyvale Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -585,9 +585,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Sonoma County Animal Services to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -601,9 +601,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -617,9 +617,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department / Code Enforcement to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Rosa Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -681,9 +681,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Care and Control (ACC) and SFPD to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Francisco Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -697,9 +697,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Chief of Police or Entertainment Commission to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Francisco Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -713,9 +713,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Department of Building Inspection or Department of Public Works to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "San Francisco Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -777,9 +777,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Silicon Valley Animal Control Authority (SVACA) to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -793,9 +793,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Santa Clara Police Department (SCPD) to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -809,9 +809,9 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Santa Clara Police Department (SCPD) to report the issue.",
       "actionLabel": "Report issue",
-      "actionUri": "",
+      "actionUri": "tel:311",
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
-      "officialSourceUrl": "",
+      "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
     }
   ]
