@@ -990,7 +990,7 @@ private fun MeterScreen(
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
-                    text = rule.captureInstruction,
+                    text = "• Close all windows and doors.\n• Hold phone steady in the center of the room.\n• Remain completely silent while capturing.\n\n${rule.captureInstruction}",
                     color = White,
                     style = MaterialTheme.typography.bodyLarge,
                 )
