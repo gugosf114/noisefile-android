@@ -289,8 +289,8 @@ private fun HomeScreen(
                                 Text(
                                     text = when (workflow.noiseType) {
                                         NoiseType.BARKING_DOG -> "Animal"
-                                        NoiseType.PARTY_MUSIC -> "General"
-                                        NoiseType.CONSTRUCTION -> "Machine"
+                                        NoiseType.PARTY_MUSIC -> "Noise"
+                                        NoiseType.CONSTRUCTION -> "Construction"
                                     },
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
