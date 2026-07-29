@@ -405,7 +405,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Control Officer or EHD to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://berkeleyca.gov/safety-health/animal-services",
+      "actionUri": "https://berkeleyca.gov/community-recreation/animal-care-services",
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -425,7 +425,7 @@
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://berkeleyca.gov/your-government/customer-service-311",
+      "secondaryActionUri": "https://berkeleyca.gov/city-services/report-pay",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -439,7 +439,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact NCO or EHD to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://berkeleyca.gov/your-government/customer-service-311",
+      "actionUri": "https://berkeleyca.gov/city-services/report-pay",
       "officialSourceLabel": "Berkeley Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
