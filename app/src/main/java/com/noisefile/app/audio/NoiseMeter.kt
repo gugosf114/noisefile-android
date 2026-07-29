@@ -77,12 +77,14 @@ class NoiseMeter(private val context: Context) {
             var windows = 0
 
             try {
+                val filter = AWeightingFilter()
                 record.startRecording()
                 while (isActive && record.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
                     val count = record.read(samples, 0, samples.size, AudioRecord.READ_BLOCKING)
                     if (count <= 0) continue
 
-                    val current = NoiseMath.rmsToEstimatedDb(samples, count)
+                    val filteredSamples = filter.process(samples, count)
+                    val current = NoiseMath.rmsToEstimatedDbA(filteredSamples, count)
                     minimum = min(minimum, current)
                     maximum = max(maximum, current)
                     energyTotal += 10.0.pow(current / 10.0)
