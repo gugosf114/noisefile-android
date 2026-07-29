@@ -105,7 +105,7 @@
       "requiredIncidentCount": 5,
       "nextAction": "Contact Animal Care first for a case number. After five incidents, submit the signed petition and original log.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.sanjoseca.gov/your-government/departments-offices/animal-care-services/services/barking-dogs",
+      "actionUri": "https://www.sanjoseca.gov/",
       "officialSourceLabel": "San Jose Animal Nuisance Petition",
       "officialSourceUrl": "https://www.sanjoseca.gov/home/showpublisheddocument/10831/636664003494630000",
       "verifiedDate": "2026-07-25"
@@ -175,8 +175,8 @@
       "officialSourceLabel": "Antioch Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "mailto:CodeComplaints@antiochca.gov",
-      "secondaryActionLabel": "Draft Written Complaint Email"
+      "secondaryActionUri": "https://www.antiochca.gov/",
+      "secondaryActionLabel": "File Written Complaint Online"
     },
     {
       "id": "antioch-construction",
@@ -188,8 +188,8 @@
       "captureInstruction": "Document the date, time, and nature of the noise.",
       "requiredIncidentCount": null,
       "nextAction": "Contact Code Enforcement to report the issue.",
-      "actionLabel": "Draft Written Complaint Email",
-      "actionUri": "mailto:CodeComplaints@antiochca.gov",
+      "actionLabel": "File Written Complaint Online",
+      "actionUri": "https://www.antiochca.gov/",
       "officialSourceLabel": "Antioch Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -225,7 +225,7 @@
       "officialSourceLabel": "Oakland Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://seeclickfix.com/oakland",
+      "secondaryActionUri": "https://www.oaklandca.gov/services/oak311",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -239,7 +239,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Planning & Building Department Code Enforcement to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://seeclickfix.com/oakland",
+      "actionUri": "https://www.oaklandca.gov/services/oak311",
       "officialSourceLabel": "Oakland Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -321,7 +321,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department / Code Enforcement to report the issue.",
       "actionLabel": "Call Dispatch",
-      "actionUri": "tel:5102937272",
+      "actionUri": "tel:5102937000",
       "officialSourceLabel": "Hayward Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
@@ -355,7 +355,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact the Animal Services Department during normal business hours or non-business hours.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://cityofconcord.org/440/Concord-Connect",
+      "actionUri": "https://www.cityofconcord.org/",
       "officialSourceLabel": "Concord Police Department Excessive Noise Resource Guide",
       "officialSourceUrl": "https://www.cityofconcord.org/DocumentCenter/View/212/How-to-Deal-with-Excessive-Noise-PDF",
       "verifiedDate": "2026-07-29"
@@ -375,7 +375,7 @@
       "officialSourceLabel": "Concord Police Department Excessive Noise Resource Guide",
       "officialSourceUrl": "https://www.cityofconcord.org/DocumentCenter/View/212/How-to-Deal-with-Excessive-Noise-PDF",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://cityofconcord.org/440/Concord-Connect",
+      "secondaryActionUri": "https://www.cityofconcord.org/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -389,7 +389,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact the Concord Permit Center during business hours or the Police Department during non-business hours for violations.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://cityofconcord.org/440/Concord-Connect",
+      "actionUri": "https://www.cityofconcord.org/",
       "officialSourceLabel": "Concord Police Department Excessive Noise Resource Guide",
       "officialSourceUrl": "https://www.cityofconcord.org/DocumentCenter/View/212/How-to-Deal-with-Excessive-Noise-PDF",
       "verifiedDate": "2026-07-29"
@@ -505,7 +505,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Animal Services to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.ci.richmond.ca.us/4130/iMS",
+      "actionUri": "https://www.ci.richmond.ca.us/",
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -525,7 +525,7 @@
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.ci.richmond.ca.us/4130/iMS",
+      "secondaryActionUri": "https://www.ci.richmond.ca.us/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -539,7 +539,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Police Department to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.ci.richmond.ca.us/4130/iMS",
+      "actionUri": "https://www.ci.richmond.ca.us/",
       "officialSourceLabel": "Richmond Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -655,7 +655,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Request a Barking Log and Petition online or call 510-790-6635. Submit the completed forms within seven days after the two-week tracking period ends.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://fremont.gov/government/departments/animal-services/animal-field-services",
+      "actionUri": "https://fremont.gov/",
       "officialSourceLabel": "Report a Barking Dog - City of Fremont",
       "officialSourceUrl": "https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/report/barking",
       "verifiedDate": "2026-07-25"
@@ -805,7 +805,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Silicon Valley Animal Control Authority (SVACA) to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.santaclaraca.gov/our-city/departments-a-f/communications-center/my-santa-clara-app",
+      "actionUri": "https://www.santaclaraca.gov/",
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
@@ -825,7 +825,7 @@
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.santaclaraca.gov/our-city/departments-a-f/communications-center/my-santa-clara-app",
+      "secondaryActionUri": "https://www.santaclaraca.gov/",
       "secondaryActionLabel": "File Written Complaint Online"
     },
     {
@@ -839,7 +839,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Contact Santa Clara Police Department (SCPD) to report the issue.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.santaclaraca.gov/our-city/departments-a-f/communications-center/my-santa-clara-app",
+      "actionUri": "https://www.santaclaraca.gov/",
       "officialSourceLabel": "Santa Clara Municipal Code / Guidelines",
       "officialSourceUrl": "https://local-government-website.gov",
       "verifiedDate": "2026-07-29"
