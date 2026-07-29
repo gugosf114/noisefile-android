@@ -920,10 +920,15 @@ private fun MeterScreen(
             .background(Ink)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .padding(horizontal = 22.dp, vertical = 14.dp)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(horizontal = 22.dp, vertical = 14.dp),
     ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -1037,28 +1042,36 @@ private fun MeterScreen(
             }
         }
 
-        Spacer(Modifier.weight(1f))
-        Text(
-            text = "Estimated sound level · Keep the microphone uncovered",
-            color = White.copy(alpha = 0.58f),
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(12.dp))
-        Button(
+        }
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp),
-            onClick = onStop,
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = White,
-                contentColor = Ink,
-            ),
+                .padding(top = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(Icons.Default.Stop, contentDescription = null)
-            Spacer(Modifier.width(9.dp))
-            Text("Stop and review", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Estimated sound level · Keep the microphone uncovered",
+                color = White.copy(alpha = 0.58f),
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(12.dp))
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+                onClick = onStop,
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = White,
+                    contentColor = Ink,
+                ),
+            ) {
+                Icon(Icons.Default.Stop, contentDescription = null)
+                Spacer(Modifier.width(9.dp))
+                Text("Stop and review", style = MaterialTheme.typography.titleMedium)
+            }
         }
     }
 }
