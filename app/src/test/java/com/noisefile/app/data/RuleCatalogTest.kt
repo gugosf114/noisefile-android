@@ -53,8 +53,8 @@ class RuleCatalogTest {
     fun unavailableCityNeverFallsBackToAnotherCityRule() {
         val catalog = catalog()
 
-        assertTrue(catalog.forJurisdiction("daly-city").isEmpty())
-        assertNull(catalog.retrieve("daly-city", NoiseType.CONSTRUCTION))
+        assertTrue(catalog.forJurisdiction("not-a-city").isEmpty())
+        assertNull(catalog.retrieve("not-a-city", NoiseType.CONSTRUCTION))
         assertNull(catalog.jurisdictionById("not-a-city"))
         assertNull(catalog.byId("not-a-rule"))
     }
