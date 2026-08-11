@@ -81,7 +81,14 @@ class NoiseMeter(private val context: Context) {
                 record.startRecording()
                 while (isActive && record.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
                     val count = record.read(samples, 0, samples.size, AudioRecord.READ_BLOCKING)
-                    if (count <= 0) continue
+                    when (classifyAudioReadResult(count)) {
+                        AudioReadAction.PROCESS -> Unit
+                        AudioReadAction.RETRY -> continue
+                        AudioReadAction.FAIL -> {
+                            onError("Measurement stopped because the microphone became unavailable.")
+                            break
+                        }
+                    }
 
                     val filteredSamples = filter.process(samples, count)
                     val current = NoiseMath.rmsToEstimatedDbA(filteredSamples, count)
@@ -130,4 +137,16 @@ class NoiseMeter(private val context: Context) {
             MediaRecorder.AudioSource.VOICE_RECOGNITION
         }
     }
+}
+
+internal enum class AudioReadAction {
+    PROCESS,
+    RETRY,
+    FAIL,
+}
+
+internal fun classifyAudioReadResult(sampleCount: Int): AudioReadAction = when {
+    sampleCount > 0 -> AudioReadAction.PROCESS
+    sampleCount == 0 -> AudioReadAction.RETRY
+    else -> AudioReadAction.FAIL
 }
