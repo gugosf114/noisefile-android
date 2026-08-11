@@ -96,3 +96,117 @@ The offline rule retrieval design is documented in
 - **UX Finalization (Labels & Hierarchy):** Renamed the abstract `FilterChip` labels to literal categories ("Animal", "Noise", "Construction") based on user feedback. Moved the "Start Recording" button to sit immediately underneath the category chips for a faster, more intuitive tap-to-record flow.
 - **Post-Recording Review:** The `ReviewScreen` presents the phone's estimated reading alongside the verified city-specific next step. It does not use a universal decibel cutoff to decide whether a violation occurred.
 - **Strict Municipal Routing Hierarchy:** Audited all 15 covered cities to strictly enforce a routing hierarchy for complaints: Web Portal > Email > Phone. Active "Party/Music" incidents uniquely render a primary "Call Dispatch" button (for immediate police response) alongside a secondary "File Written Complaint Online" button for establishing a long-term paper trail.
+
+## Project audit and Play Console handoff — August 10, 2026
+
+### Audit completed
+
+A full staged release-readiness audit was completed against the current GitHub
+source and the live Play Console state. The audit covered:
+
+- the app structure and the path from city and noise-type selection through
+  recording, review, saving, history, complaint drafting, and official routing;
+- every product claim against the code that performs it;
+- microphone permission handling, estimated sound-level measurement, error
+  handling, local incident storage, privacy, sharing, and complaint actions;
+- the complete offline ordinance catalog: 15 cities, 45 city-and-noise-type
+  workflows, and 52 archived official sources whose stored hashes matched;
+- unit tests, Android lint, debug compilation, signed Play bundle creation,
+  bundle contents, package identity, version data, permissions, and signing;
+- the rendered app screens, large labels, current store screenshots, and the
+  live Play Console release state.
+
+The audit found that NoiseFile does what its main claims say. It looks up rules
+offline, shows an estimated phone reading, keeps incident history on the phone,
+builds complaint text, and opens the verified official route. It has no account,
+ads, analytics, raw-audio storage, raw-audio upload, or Internet permission. The
+app calls readings estimates and does not present them as legal decisions.
+
+The release verdict was: NoiseFile belongs in the Play closed-testing pipeline.
+It is not ready for a public production release until the remaining Play Console
+and real-phone checks below are complete.
+
+### Repairs and additions now on main
+
+- A negative Android microphone read now stops the recording loop and shows an
+  error instead of allowing an endless failed loop.
+- One damaged saved incident is now skipped while the remaining valid history is
+  preserved. One bad entry no longer hides the whole history.
+- The invalid downloadable Google font provider and certificate setup was
+  removed. The app now uses an offline system sans-serif font.
+- The app version was raised to versionName 0.7.3 and versionCode 10.
+- Regression tests were added for microphone read-result handling and damaged
+  history parsing.
+- The home-screen category chips were repaired after rendered screens exposed a
+  cut-off Construction label. Animal, Noise, and Construction now fit in full.
+- Continuous integration passed 58 unit tests, Android lint, the debug build,
+  signed Play bundle creation, and signature verification.
+
+The independently inspected version 10 bundle used package
+com.wimlabs.noisefile. It declared RECORD_AUDIO, the Android-generated
+DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, and no Internet permission. Its upload
+certificate SHA-256 fingerprint was
+7D:FB:83:36:1D:A3:D7:92:E5:3F:79:6D:52:BE:DF:7F:6E:FA:A2:05:A9:82:8B:77:22:27:17:86:4B:4A:EF:15.
+The inspected bundle file SHA-256 was
+675b299fd286e963390b8f030a2cd4b1465f90a975478b53afe60c4d6398bcae.
+The later label-only change also passed main-branch testing, but its exact signed
+bundle still needs to be downloaded and independently rechecked before upload.
+
+One complete real-phone path passed: San Jose, Animal, a seven-second recording,
+67 dB estimated maximum, 59 dB estimated average, and correct one-of-five local
+incident guidance.
+
+### Work completed but not yet released
+
+Four truthful replacement Play screenshots were made and checked on the laptop
+emulator. They show the current home screen with full labels, the current
+construction rule, a maximum-first recording review, and a city-specific next
+step with location and impact details. Their GitHub change is open and its tests
+are green, but it is not merged into main. The screenshots are not uploaded to
+Play Console.
+
+### Exact Play Console stop point
+
+Work stopped at:
+
+Play Console → NoiseFile → Data Safety → Overview → Step 1 of 5
+
+The page was read only. Next was not pressed. No answer was saved, and no Play
+Console setting was changed during that check.
+
+The live Play state at the stop point was:
+
+- application ID 4976326051284814715;
+- app status Draft;
+- setup progress 12 of 13;
+- Data Safety not started;
+- Advertising ID declaration unfinished;
+- Play still holding version 9, with an internal release draft;
+- no release on the closed-testing track;
+- version 10 not uploaded to Play;
+- old screenshots still present in the store listing;
+- zero testers opted in, so the required 14-day testing clock has not started.
+
+### Next-session handoff
+
+Whoever continues should resume in this order:
+
+1. Merge the already-green replacement-screenshot change into main.
+2. Wait for final main testing, then download and inspect the exact signed
+   version 10 bundle that will be uploaded.
+3. Complete Data Safety truthfully: the app sends no user data off the device,
+   so no data is collected and no data is shared.
+4. Complete the Advertising ID declaration with No.
+5. Replace the stale Play listing screenshots with the new truthful set.
+6. Upload the checked version 10 signed bundle to closed testing and roll out
+   that closed-test release.
+7. Add the tester list and opt-in route, get at least 12 testers opted in, and
+   then begin the 14-day testing period.
+8. Before a public release, finish the real-phone matrix: microphone permission
+   denial, save and reopen, complaint copy and share, official route opening,
+   process death, light and dark mode, large text, and representative city-rule
+   shapes.
+
+Keep the current product boundary. This release does not need a backend,
+accounts, analytics, ads, subscriptions, Play Integrity, or a legal decibel
+verdict.
