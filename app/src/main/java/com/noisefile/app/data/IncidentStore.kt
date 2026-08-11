@@ -13,14 +13,7 @@ class IncidentStore(context: Context) {
     @Synchronized
     fun load(): List<Incident> {
         val raw = preferences.getString(KEY_INCIDENTS, null) ?: return emptyList()
-        return runCatching {
-            val array = JSONArray(raw)
-            buildList {
-                for (index in 0 until array.length()) {
-                    add(array.getJSONObject(index).toIncident())
-                }
-            }.sortedByDescending { it.startedAtEpochMillis }
-        }.getOrDefault(emptyList())
+        return parseIncidents(raw)
     }
 
     @Synchronized
@@ -71,23 +64,34 @@ class IncidentStore(context: Context) {
         .put("impact", impact)
         .put("notes", notes)
 
-    private fun JSONObject.toIncident(): Incident = Incident(
-        id = getLong("id"),
-        ruleId = getString("ruleId"),
-        noiseType = NoiseType.valueOf(getString("noiseType")),
-        startedAtEpochMillis = getLong("startedAtEpochMillis"),
-        durationSeconds = getLong("durationSeconds"),
-        minimumDb = getDouble("minimumDb"),
-        averageDb = getDouble("averageDb"),
-        maximumDb = getDouble("maximumDb"),
-        location = optString("location"),
-        impact = getString("impact"),
-        notes = optString("notes"),
-    )
-
     private companion object {
         const val PREFERENCES_NAME = "noisefile_incidents"
         const val KEY_INCIDENTS = "incidents"
         const val MAX_INCIDENTS = 500
     }
 }
+
+internal fun parseIncidents(raw: String): List<Incident> {
+    val array = runCatching { JSONArray(raw) }.getOrNull() ?: return emptyList()
+    return buildList {
+        for (index in 0 until array.length()) {
+            runCatching {
+                array.getJSONObject(index).toIncident()
+            }.getOrNull()?.let(::add)
+        }
+    }.sortedByDescending { it.startedAtEpochMillis }
+}
+
+private fun JSONObject.toIncident(): Incident = Incident(
+    id = getLong("id"),
+    ruleId = getString("ruleId"),
+    noiseType = NoiseType.valueOf(getString("noiseType")),
+    startedAtEpochMillis = getLong("startedAtEpochMillis"),
+    durationSeconds = getLong("durationSeconds"),
+    minimumDb = getDouble("minimumDb"),
+    averageDb = getDouble("averageDb"),
+    maximumDb = getDouble("maximumDb"),
+    location = optString("location"),
+    impact = getString("impact"),
+    notes = optString("notes"),
+)
