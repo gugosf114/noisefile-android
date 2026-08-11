@@ -48,7 +48,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.History
@@ -56,10 +55,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.OpenInNew
-import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Share
@@ -318,25 +315,17 @@ private fun HomeScreen(
                                         NoiseType.PARTY_MUSIC -> "Noise"
                                         NoiseType.CONSTRUCTION -> "Construction"
                                     },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.Center,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                )
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = when (workflow.noiseType) {
-                                        NoiseType.BARKING_DOG -> Icons.Default.Pets
-                                        NoiseType.PARTY_MUSIC -> Icons.Default.VolumeUp
-                                        NoiseType.CONSTRUCTION -> Icons.Default.Construction
-                                    },
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
                                 )
                             },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = Ink,
                                 selectedLabelColor = White,
-                                selectedLeadingIconColor = Signal,
                             ),
                         )
                     }
