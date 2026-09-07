@@ -249,3 +249,22 @@ now.
 versionCode 11, versionName 0.8.0, catalog 2026-09-06.1. Tests:
 `HoursRuleTest` covers the three 2026-07-25 scenarios; the 2026-07-29
 expectations are untouched.
+
+
+## 2026-09-06, later — the level on the unprocessed path is set by the platform, not by us
+
+`NoiseMath` added one fixed 90 dB to dBFS on every capture path. Android's
+compatibility definition (CDD 5.11 [C-1-5]) says a phone that declares the
+UNPROCESSED source MUST deliver 94 dB SPL at 1 kHz as -36 dBFS, with no AGC
+or filtering in the path. On such a phone the right offset is 130, and the
+app was reading 40 dB low. Fixed: the UNPROCESSED path now uses the CDD
+offset and the reading carries `LevelCalibration.PLATFORM_SPEC`; the meter
+screen says so. Every other path keeps the old estimate offset and label,
+untouched, because there is no meter in the room to justify moving it.
+
+The meter also logs one line per measurement (`adb logcat -s NoiseMeter`):
+capture path, offset, phone model, and `MicrophoneInfo` sensitivity (dBFS at
+94 dB SPL, which CDD 5.4.1 [C-1-4] says devices must fill in). That is the
+next calibration source to read from real phones.
+
+versionCode 12, versionName 0.8.1.

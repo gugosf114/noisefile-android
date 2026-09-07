@@ -118,6 +118,7 @@ import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
+import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
@@ -1005,6 +1006,18 @@ private fun MeterScreen(
             MeterStat("AVERAGE", reading.averageDb, Modifier.weight(1f))
             MeterStat("MAX", reading.maximumDb, Modifier.weight(1f))
         }
+
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = when (reading.calibration) {
+                LevelCalibration.PLATFORM_SPEC ->
+                    "Level set by the Android compatibility spec for this phone's unprocessed microphone path (94 dB SPL = -36 dBFS). Still not a certified meter."
+                LevelCalibration.ESTIMATE ->
+                    "Phone estimate. This phone's microphone path carries its own gain, so the number can sit several dB off a real meter."
+            },
+            color = Muted,
+            fontSize = 12.sp,
+        )
 
         Spacer(Modifier.height(16.dp))
         
