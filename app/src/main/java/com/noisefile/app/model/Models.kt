@@ -61,6 +61,15 @@ data class MeterLimit(
     }
 }
 
+/** Where the absolute level came from. The phone's clock is exact; its microphone is not, unless the platform says so. */
+enum class LevelCalibration {
+    /** A processed capture path with the app's uncalibrated default offset. */
+    ESTIMATE,
+
+    /** The UNPROCESSED path, whose level Android's compatibility spec pins (94 dB SPL = -36 dBFS). */
+    PLATFORM_SPEC,
+}
+
 data class MeterReading(
     val currentDb: Double = 0.0,
     val minimumDb: Double = 0.0,
@@ -68,6 +77,7 @@ data class MeterReading(
     val maximumDb: Double = 0.0,
     val elapsedMillis: Long = 0L,
     val sampleWindows: Int = 0,
+    val calibration: LevelCalibration = LevelCalibration.ESTIMATE,
 )
 
 data class Incident(
