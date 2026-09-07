@@ -289,3 +289,21 @@ complaint text all carry the baseline and the differences.
 The 2026-07-29 boundary holds: the line is information, the headline does
 not move, no rule carries a `meterLimit`. versionCode 13, versionName 0.9.0,
 catalog 2026-09-06.2.
+
+
+## 2026-09-06, last — receipts for every number, a real signing key, and the build publishes itself
+
+Seven catalog sentences had numbers with no source file behind them. Six now
+have one: Vallejo Ch. 16.502, Oakland 17.120.050 with its table header,
+Sunnyvale Ch. 19.12, and the Daly City General Plan Noise Element were pulled
+live through the laptop's headless browser and added to the corpus (manifest
+64–67). The seventh was wrong: Richmond's residential levels read 55/55 in the
+captured code, not 60/65; corrected. Both routing questions closed from the
+corpus itself (Antioch's number is the city shelter's; Sunnyvale is not an
+SVACA city). Details in `legal-corpus/VERIFICATION-2026-09-06.md`.
+
+The giveaway APK is now the release build signed with the upload key, built
+and committed by CI on every push to main with the README link dated that
+day. Before this, each debug APK carried a throwaway key and could not
+install over the last one. versionCode 14, versionName 0.9.1, catalog
+2026-09-06.3.

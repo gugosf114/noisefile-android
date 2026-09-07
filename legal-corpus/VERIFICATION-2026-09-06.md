@@ -24,7 +24,9 @@ are under `legal-corpus/raw/`. Session: hours-in-the-fields (versionCode 11).
 | Daly City | weekdays 8:00–20:30; Sat/Sun 9:00–20:30 (daylight-saving hours) | "limited to weekdays from 8:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time), and Saturdays and Sundays from 9:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time); construction work during Federal Holidays shall be prohibited unless exemptions are granted" (Ch. 15.09 handout, acquired 2026-09-06) | San-Mateo-County/Daly-City/construction/…Construction-Hours-Handout… |
 | San Mateo | weekdays 7:00–19:00; Sat 9:00–17:00; Sun 12:00–16:00 | "shall be allowed on weekdays between the hours of seven a.m. and seven p.m., on Saturdays between the hours of nine a.m. and five p.m., and on Sundays and holidays between the hours of noon and four p.m., or at such other hours as may be authorized or restricted by the permit" (7.30, Construction) | San-Mateo-County/San-Mateo/core-noise-ordinance/…Ch-7.30… |
 
-Not scheduled: **Vallejo** (its construction claims cite §16.502, which is not in the corpus) and **Santa Rosa** (the acquisition report found no construction-hours section; the only timed rule in Ch. 17-16 is for leaf blowers).
+| Vallejo (added later the same night) | every day 7:00–19:00 | "Construction, demolition, and related loading/unloading activities that may generate noise exceeding levels in Table 16.502.E shall be limited to hours between 7:00 a.m. and 7:00 p.m. in residential zoning districts and in any mixed-use district." (16.502.09) | Solano-County/Vallejo/core-noise-ordinance/…Ch-16.502… |
+
+Not scheduled: **Santa Rosa** (the acquisition report found no construction-hours section; the only timed rule in Ch. 17-16 is for leaf blowers).
 
 ### Quiet hours (kind QUIET)
 
@@ -57,19 +59,19 @@ should that boundary move. Phone readings are uncalibrated estimates.
 
 Construction caps measurable at the resident's property: Hayward 86 dBA at the property plane (83 per device at 25 ft); San Mateo 90 dB at the property plane or per device at 25 ft; Berkeley Table 13.40-3/4 (R-1/R-2: 75 dBA weekdays mobile, 60 weekends; stationary 60/50); Richmond 9.52.110 (same shape: 75/60 weekdays, 60/55 weekends); Oakland Table 17.120.04 (80 dBA short-term, 65 long-term at residential receivers, daytime); San Francisco 80 dBA at 100 ft / 75 dBA at 50 ft from equipment (distance-specific).
 
-## C. Catalog claims with no receipt in the corpus
+## C. Catalog claims that had no receipt — resolved the same night
 
-These sit in rule prose today. Each needs a source pulled into the corpus, or the sentence removed.
+Sources were pulled live through the laptop's headless browser and added to the corpus (manifest entries 64–67). Result:
 
-1. **Vallejo general noise** — "60/50 dBA", "+10 dBA", and 10pm–7am hours cite §16.502.09; only Ch. 7.84 is in the corpus and it holds no decibel figure or general quiet hour.
-2. **Vallejo construction** — the 75/80/85 and 60/65/70 dBA tables and the 8am–5pm / 7am–7pm / 7am–6pm hours cite §16.502.03/.09; not in the corpus.
-3. **Daly City construction** — "95 dBA … 105 dBA": the Ch. 15.09 handout (now in the corpus) states hours only and refers to the General Plan Noise Element for levels.
-4. **Richmond general noise** — "60 dBA / 50 dBA": the captured 9.52.100 table reads 55 for residential with a 10 dBA night reduction.
-5. **Sunnyvale general noise** — "Daytime is 7:00 a.m.–10:00 p.m.; nighttime is 10:00 p.m.–7:00 a.m.": not defined in the captured Ch. 19.42 (the definitions live in Ch. 19.12).
-6. **Oakland general noise** — the 7am–10pm / 10pm–7am pairing for Table 17.120.01: the column headers did not survive the capture.
-7. **San Francisco general noise** — "45 dBA … 55 dBA" describes 2909(d), the fixed-source interior limit (mechanical equipment), not a party or music rule; 2909(a) is ambient + 5 dBA.
+1. **Vallejo general noise** — RECEIPTED. Ch. 16.502 captured: Table 16.502-C reads single-unit residential 60 / multiple-unit 65 (30 min per hour), "50 or ambient noise level" at a residential boundary 10 PM–7 AM for nonresidential sources, and residential sources "reduced by ten dBA between 10:00 p.m. and 7:00 a.m." Prose stands.
+2. **Vallejo construction** — RECEIPTED. 16.502.03: grading and pile driving 8 AM–5 PM weekdays within ¼ mile of residences; construction 7 AM–7 PM; Table 16.502-E mobile 75/80/85 weekdays 7–6, Saturdays 60/65/70, stationary 60/65/70, Sundays and holidays "None". Prose stands. (A construction `hoursRule` for Vallejo can now be added: weekdays 7:00–19:00 per 16.502.09, with the 8–5 grading window in context.)
+3. **Daly City construction** — RECEIPTED. General Plan Noise Element, Temporary Noise Sources: "Earthmoving equipment … range from 70 to 95 dBA at 50 feet from the source. … The noise range for this type of equipment [impact] is 80 to 105 dBA at 50 feet from the source." Prose stands.
+4. **Richmond general noise** — CORRECTED. The captured 9.52.100 table reads 55 for single-family and 55 for multifamily (the 60/65 came from Vallejo's identical table). Prose now says 55/55; the 10 dBA night reduction and "50 dBA or ambient" were already right.
+5. **Sunnyvale general noise** — RECEIPTED. Ch. 19.12: "Daytime" means seven a.m. to ten p.m.; "Nighttime" means ten p.m. to seven a.m. Prose stands.
+6. **Oakland general noise** — RECEIPTED. Municode rendering of 17.120.050 carries the header: "Daytime 7 a.m. to 10 p.m. / Nighttime 10 p.m. to 7 a.m." Prose stands.
+7. **San Francisco 45/55 dBA** — NOT A DEFECT. Re-read: the prose already scopes it to "a fixed source inside a residential sleeping or living room." Withdrawn.
 
-## D. Routing items to check (not asserted as bugs)
+## D. Routing items — checked, both closed
 
-- **Antioch barking** → the catalog calls 925-779-6989 "Antioch Animal Services"; the 7/25 acquisition report calls the same number Contra Costa County's. The number is the city shelter's; the report is likely wrong.
-- **Santa Clara / Sunnyvale barking** → routed to police desks; SVACA runs a barking-dog process for its member cities. Confirm who serves each city today.
+- **Antioch barking** → catalog is right. The city's own Animal Services page: "300 L Street … Phone: 925-779-6989 … City of Antioch residents only – all others contact Contra Costa County." The 7/25 acquisition report misattributed the number to the county.
+- **Santa Clara / Sunnyvale barking** → catalog is right. SVACA's captured page: "SVACA serves Campbell, Los Gatos, Monte Sereno, Mountain View and Santa Clara" — Sunnyvale is not a member, so its Public Safety desk is correct. For Santa Clara the captured SVACA page lists no barking-dog process, so the City Code route through police dispatch stands until a source says otherwise.

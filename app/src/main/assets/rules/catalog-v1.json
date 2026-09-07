@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-06.2",
+  "catalogVersion": "2026-09-06.3",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -661,9 +661,20 @@
       "actionUri": "https://seeclickfix.com/web_portal/JpEserNDQBZYN8hx4LxrEnVp/report/category/3616",
       "officialSourceLabel": "Vallejo Municipal Code §§16.502.03, 16.502.09, and 7.84.020",
       "officialSourceUrl": "https://library.municode.com/ca/vallejo/codes/municipal_code?nodeId=TIT16ZO_PTVSIDEST_CH16.504LA",
-      "verifiedDate": "2026-07-29",
+      "verifiedDate": "2026-09-06",
       "secondaryActionLabel": "Call Code Enforcement",
-      "secondaryActionUri": "tel:7076484469"
+      "secondaryActionUri": "tel:7076484469",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "07:00",
+            "end": "19:00"
+          }
+        ],
+        "context": "Zoning Code 16.502.09 for construction, demolition and loading that may exceed the temporary-construction table, in residential and mixed-use districts. Grading and pile driving within a quarter mile of homes run weekdays 8:00 AM-5:00 PM only (16.502.03); Table 16.502-E gives no Sunday or legal-holiday allowance for construction equipment. A permit or condition of approval can set stricter hours."
+      }
     },
     {
       "id": "richmond-barking_dog",
@@ -689,7 +700,7 @@
       "jurisdiction": "Richmond, California",
       "noiseType": "PARTY_MUSIC",
       "title": "Check disturbance, duration, warning, officer-selected test, zone, and measurement",
-      "summary": "Richmond prohibits loud, raucous, unnecessary, and unusual noise that disturbs neighborhood peace or annoys a reasonable person, and specifically prohibits operating radios, stereos, drums, musical instruments, or similar devices so as to create a noise disturbance. Annoying noise includes repetitive, shrill, or static-like sound. Excessive noise means unnecessary noise lasting at least 10 minutes; an officer need not witness that period if occupants of two or more separate housing or commercial units certify it with particular details. The City also considers volume, background, proximity, zone, density, time, duration, recurrence, commercial character, audibility more than 25 feet beyond an adjoining residential property boundary, intrusiveness, mobility, and people affected. After an official determines that a fixed-location violation exists, an official warning is required; a violation occurs if the disturbance persists for more than five minutes afterward or recurs within 90 days. An enforcing officer may instead choose the §9.52.100 dBA test as the sole test for that incident. Its 30-minute-per-hour source-boundary levels are 60 dBA single-family residential, 65 multifamily, 70 commercial and light-industrial/office-flex, 75 heavy/marine industrial, and 65 public/community/open/recreation. At residential-zone boundaries, commercial and light-industrial/office-flex sources use 60, heavy/marine industrial 65, and public/community/open/recreation 60. From 10:00 p.m.–7:00 a.m., those nonresidential sources at a residential boundary use 50 dBA or ambient for the five-minute row; residential-zone source limits fall 10 dBA. Pure tones, impulses, music, or speech reduce the levels by 5 dBA. Separately, the current Zoning Code applies receiving-zone, duration, interior, and ambient limits to regularly occurring noise; incidental or unexpected noise and unamplified voices remain under Chapter 9.52, and the more restrictive applicable rule controls.",
+      "summary": "Richmond prohibits loud, raucous, unnecessary, and unusual noise that disturbs neighborhood peace or annoys a reasonable person, and specifically prohibits operating radios, stereos, drums, musical instruments, or similar devices so as to create a noise disturbance. Annoying noise includes repetitive, shrill, or static-like sound. Excessive noise means unnecessary noise lasting at least 10 minutes; an officer need not witness that period if occupants of two or more separate housing or commercial units certify it with particular details. The City also considers volume, background, proximity, zone, density, time, duration, recurrence, commercial character, audibility more than 25 feet beyond an adjoining residential property boundary, intrusiveness, mobility, and people affected. After an official determines that a fixed-location violation exists, an official warning is required; a violation occurs if the disturbance persists for more than five minutes afterward or recurs within 90 days. An enforcing officer may instead choose the §9.52.100 dBA test as the sole test for that incident. Its 30-minute-per-hour source-boundary levels are 55 dBA single-family residential, 55 multifamily, 70 commercial and light-industrial/office-flex, 75 heavy/marine industrial, and 65 public/community/open/recreation. At residential-zone boundaries, commercial and light-industrial/office-flex sources use 60, heavy/marine industrial 65, and public/community/open/recreation 60. From 10:00 p.m.–7:00 a.m., those nonresidential sources at a residential boundary use 50 dBA or ambient for the five-minute row; residential-zone source limits fall 10 dBA. Pure tones, impulses, music, or speech reduce the levels by 5 dBA. Separately, the current Zoning Code applies receiving-zone, duration, interior, and ambient limits to regularly occurring noise; incidental or unexpected noise and unamplified voices remain under Chapter 9.52, and the more restrictive applicable rule controls.",
       "captureInstruction": "Record the source and affected addresses, source and receiving zones, exact start and stop times, cumulative minutes per hour, audibility distance, character, recurrence, background, people affected, and reasonable-person impact. Ask a second affected household or business to keep a separate detailed log when applicable. Record the official warning and any persistence beyond five minutes or recurrence within 90 days. If an officer chooses the dBA test, a defense reading must match the exact time, location, weather, and other conditions and come from a currently calibrated meter with proof of the operator's training or expertise. Zoning measurements use an ANSI sound meter, A-weighting, a calibration check, exterior lot-line measurement, or the center of an affected habitable room five feet above the floor for interior measurement. A phone estimate cannot pass or fail these requirements by itself.",
       "requiredIncidentCount": null,
       "nextAction": "For an active loud-noise or music complaint, call Richmond Police non-emergency at 510-233-1214; the City's current Communications Center specifically lists loud noise and music. For a recurring property-based code complaint, use the City's current iMS complaint system or call Code Enforcement at 510-621-1279. Include the address, legal route, logs, zone, measurement method, warning time, and recurrence.",
@@ -697,7 +708,7 @@
       "actionUri": "tel:5102331214",
       "officialSourceLabel": "Richmond Municipal Code Chapter 9.52 and Article 15.04.605",
       "officialSourceUrl": "https://library.municode.com/ca/richmond/codes/code_of_ordinances?nodeId=ARTIXHE_CH9.52CONOOR",
-      "verifiedDate": "2026-07-29",
+      "verifiedDate": "2026-09-06",
       "secondaryActionUri": "https://ims.ci.richmond.ca.us/ims/Account/Login",
       "secondaryActionLabel": "File Ongoing Code Complaint"
     },
