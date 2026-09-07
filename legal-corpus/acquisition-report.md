@@ -48,6 +48,7 @@ Total manifest entries: 62 (see `manifest.json`)
 - **Vallejo** — the city's own Animal Control page came from an ~15-month-old Wayback capture (live site hung/timed out); a specific codified general-construction-hours provision was not confidently located separately from the noise-disturbance chapter already captured.
 - **San Francisco** — SF311's noise-complaints page and SFDPH's Noise Enforcement Program page both returned live HTTP 504 errors from this environment; Wayback captures (2023-09-27 and 2024-10-08 respectively) were used instead and should be re-verified against the live pages before being relied on.
 - **Richmond** — the Contra Costa County Noisy Animal Ordinance page does not itself list which incorporated cities it serves; a Richmond-specific search surfaced a county phone number, but explicit city-side confirmation of the county delegation was not found in this pass.
+- **Daly City (update 2026-09-06)** — the Planning Division's Construction Hours handout (Chapter 15.09) was acquired live from dalycity.org and added under `construction/`; it carries the hours and the holiday list, and refers to the General Plan Noise Element for decibel levels rather than stating any.
 - **Daly City** — decibel figures (60/50 dBA) cited by secondary sources were not found verbatim inside the 3-section Ch. 9.22 that was captured; a separate zoning/performance-standards chapter likely carries the numeric limits and was not located in this pass.
 
 ## County involvement discovered
