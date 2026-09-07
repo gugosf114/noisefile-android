@@ -307,3 +307,21 @@ and committed by CI on every push to main with the README link dated that
 day. Before this, each debug APK carried a throwaway key and could not
 install over the last one. versionCode 14, versionName 0.9.1, catalog
 2026-09-06.3.
+
+
+## 2026-09-07 — a real microphone, and a real meter, on any Android phone
+
+Two things the best Android meters had and we did not. A plugged-in USB-C
+measurement microphone is now picked up automatically and named on the meter
+screen ("USB microphone · UMIK-1"); the built-in mic stays the fallback. And
+any microphone, built-in or USB, can be calibrated once against a reference
+meter: hold the meter next to the phone in a steady sound, type what it
+reads, and the app saves that microphone's offset on the phone. The home
+screen shows which mic the meter will use and how it is calibrated; the
+meter screen labels every reading with it; the saved incident and the
+complaint text say where the numbers came from ("calibrated against a
+reference meter on Sep 7, 2026, +4 dB"). The Android-spec level on
+unprocessed phones stays as the default when no user calibration exists.
+
+The boundary holds: none of this turns a reading into a verdict.
+versionCode 15, versionName 0.10.0.

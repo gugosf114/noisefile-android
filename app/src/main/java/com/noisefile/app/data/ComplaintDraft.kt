@@ -56,6 +56,8 @@ fun buildComplaintDraft(
         .ofPattern("EEEE, MMMM d, yyyy 'at' h:mm a", Locale.US)
         .format(Instant.ofEpochMilli(incident.startedAtEpochMillis).atZone(zoneId))
     val description = incident.notes.ifBlank { "No additional description entered." }
+    val levelSentence = incident.levelNote
+        ?: "The sound levels above are estimates from my phone and are included as incident context."
     val baselineDb = incident.ambientDb
     val baselineSeconds = incident.ambientSeconds
     val baseline = if (baselineDb != null && baselineSeconds != null) {
@@ -80,7 +82,7 @@ fun buildComplaintDraft(
         Description: $description
         Phone-estimated sound levels: ${incident.minimumDb.toInt()} dB minimum, ${incident.averageDb.toInt()} dB average, ${incident.maximumDb.toInt()} dB maximum
 
-        The sound levels above are estimates from my phone and are included as incident context.$baseline
+        $levelSentence$baseline
 
         City guidance: ${rule.title}
         ${rule.summary}

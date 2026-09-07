@@ -39,6 +39,7 @@ fun buildIncidentHistoryReport(
             )
         }
         appendLine("Impact: ${incident.impact}")
+        incident.levelNote?.let { appendLine("Levels source: $it") }
         appendLine("Notes: ${incident.notes.ifBlank { "None added" }}")
         appendLine()
     }

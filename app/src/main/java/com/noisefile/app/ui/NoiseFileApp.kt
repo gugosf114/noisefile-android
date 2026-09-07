@@ -119,6 +119,8 @@ import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
+import com.noisefile.app.audio.MicStatus
+import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
@@ -153,19 +155,22 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     var showCityPicker by remember { mutableStateOf(false) }
-    var pendingAmbient by remember { mutableStateOf(false) }
+    var pendingStage by remember { mutableStateOf(CaptureStage.NOISE) }
+    val startStage = { stage: CaptureStage ->
+        when (stage) {
+            CaptureStage.AMBIENT -> viewModel.startAmbientMeasurement()
+            CaptureStage.CALIBRATE -> viewModel.startCalibration()
+            CaptureStage.NOISE -> viewModel.startMeasurement()
+        }
+    }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        if (granted) {
-            if (pendingAmbient) viewModel.startAmbientMeasurement() else viewModel.startMeasurement()
-        } else {
-            viewModel.microphonePermissionDenied()
-        }
-        pendingAmbient = false
+        if (granted) startStage(pendingStage) else viewModel.microphonePermissionDenied()
+        pendingStage = CaptureStage.NOISE
     }
 
-    val beginStage = { ambient: Boolean ->
+    val beginStage = { stage: CaptureStage ->
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         if (
             ContextCompat.checkSelfPermission(
@@ -173,14 +178,15 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 Manifest.permission.RECORD_AUDIO,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            if (ambient) viewModel.startAmbientMeasurement() else viewModel.startMeasurement()
+            startStage(stage)
         } else {
-            pendingAmbient = ambient
+            pendingStage = stage
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
-    val beginCapture = { beginStage(false) }
-    val beginAmbient = { beginStage(true) }
+    val beginCapture = { beginStage(CaptureStage.NOISE) }
+    val beginAmbient = { beginStage(CaptureStage.AMBIENT) }
+    val beginCalibration = { beginStage(CaptureStage.CALIBRATE) }
 
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
@@ -194,6 +200,9 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onBeginCapture = beginCapture,
             onBeginAmbient = beginAmbient,
             ambientTargetSeconds = viewModel.ambientTargetSecondsFor(viewModel.selectedRule()),
+            micStatus = viewModel.micStatus(),
+            onBeginCalibration = beginCalibration,
+            onClearCalibration = viewModel::clearCalibration,
             onShareNeighbor = {
                 shareNeighborInvite(context, viewModel.selectedRule())
             },
@@ -209,7 +218,11 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             stage = state.captureStage,
             ambient = state.ambient,
             ambientTargetSeconds = state.ambientTargetSeconds,
+            calibrationReferenceText = state.calibrationReferenceText,
+            error = state.error,
+            onCalibrationReferenceChange = viewModel::setCalibrationReference,
             onStop = viewModel::stopMeasurement,
+            onCancel = viewModel::showHome,
         )
 
         AppScreen.REVIEW -> {
@@ -269,6 +282,9 @@ private fun HomeScreen(
     onBeginCapture: () -> Unit,
     onBeginAmbient: () -> Unit,
     ambientTargetSeconds: Int,
+    micStatus: MicStatus,
+    onBeginCalibration: () -> Unit,
+    onClearCalibration: () -> Unit,
     onShareNeighbor: () -> Unit,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
@@ -376,6 +392,14 @@ private fun HomeScreen(
                     ambient = state.ambient,
                     targetSeconds = ambientTargetSeconds,
                     onBeginAmbient = onBeginAmbient,
+                )
+            }
+
+            item {
+                MicrophoneCard(
+                    status = micStatus,
+                    onBeginCalibration = onBeginCalibration,
+                    onClearCalibration = onClearCalibration,
                 )
             }
 
@@ -951,9 +975,14 @@ private fun MeterScreen(
     stage: CaptureStage,
     ambient: AmbientReading?,
     ambientTargetSeconds: Int,
+    calibrationReferenceText: String,
+    error: String?,
+    onCalibrationReferenceChange: (String) -> Unit,
     onStop: () -> Unit,
+    onCancel: () -> Unit,
 ) {
     val isAmbient = stage == CaptureStage.AMBIENT
+    val isCalibrating = stage == CaptureStage.CALIBRATE
     val view = LocalView.current
     DisposableEffect(Unit) {
         view.keepScreenOn = true
@@ -988,17 +1017,21 @@ private fun MeterScreen(
                     .padding(end = 12.dp),
             ) {
                 Text(
-                    text = if (isAmbient) "MEASURING THE QUIET FIRST" else "MEASURING NOW",
+                    text = when {
+                        isCalibrating -> "CALIBRATING THIS MICROPHONE"
+                        isAmbient -> "MEASURING THE QUIET FIRST"
+                        else -> "MEASURING NOW"
+                    },
                     color = Signal,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.2.sp,
                 )
                 Text(
-                    text = if (isAmbient) {
-                        "Quiet baseline · ${rule.jurisdiction.substringBefore(",")}"
-                    } else {
-                        "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}"
+                    text = when {
+                        isCalibrating -> reading.micLabel
+                        isAmbient -> "Quiet baseline · ${rule.jurisdiction.substringBefore(",")}"
+                        else -> "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}"
                     },
                     color = White,
                     style = MaterialTheme.typography.titleLarge,
@@ -1049,10 +1082,12 @@ private fun MeterScreen(
         Spacer(Modifier.height(8.dp))
         Text(
             text = when (reading.calibration) {
+                LevelCalibration.USER_CALIBRATED ->
+                    "${reading.micLabel}, calibrated by you against a reference meter (${CalibrationMath.signed(reading.userOffsetDb)}). Still not a certified meter."
                 LevelCalibration.PLATFORM_SPEC ->
                     "Level set by the Android compatibility spec for this phone's unprocessed microphone path (94 dB SPL = -36 dBFS). Still not a certified meter."
                 LevelCalibration.ESTIMATE ->
-                    "Phone estimate. This phone's microphone path carries its own gain, so the number can sit several dB off a real meter."
+                    "${reading.micLabel}, phone estimate. The microphone path carries its own gain, so the number can sit several dB off a real meter."
             },
             color = Muted,
             fontSize = 12.sp,
@@ -1060,7 +1095,52 @@ private fun MeterScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        if (isAmbient) {
+        if (isCalibrating) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = Paper,
+                border = androidx.compose.foundation.BorderStroke(2.dp, Cobalt),
+            ) {
+                Column(
+                    modifier = Modifier.padding(18.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Text(
+                        text = "AGAINST A REFERENCE METER",
+                        color = Cobalt,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.9.sp,
+                    )
+                    Text(
+                        text = "Hold a real sound level meter next to this phone's microphone in a steady sound, " +
+                            "a fan or radio hiss. Wait until both numbers settle, then type what the meter reads.",
+                        color = Ink,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = "Phone average so far: ${reading.averageDb.roundToInt()} dB",
+                        color = Ink,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = calibrationReferenceText,
+                        onValueChange = onCalibrationReferenceChange,
+                        label = { Text("Reference meter reading, dB") },
+                        placeholder = { Text("Example: 62") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    if (error != null) {
+                        Text(text = error, color = Danger, style = MaterialTheme.typography.bodyMedium)
+                    }
+                    TextButton(onClick = onCancel) { Text("Cancel") }
+                }
+            }
+        } else if (isAmbient) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -1122,7 +1202,11 @@ private fun MeterScreen(
                 Spacer(Modifier.height(7.dp))
                 
                 Text(
-                    text = if (isAmbient) {
+                    text = if (isCalibrating) {
+                        "• A steady sound works best: a fan, a shower, radio static.\n" +
+                            "• Meter and phone microphone side by side, same height, same direction.\n" +
+                            "• The saved offset applies to this microphone only."
+                    } else if (isAmbient) {
                         "• Ask for the noise to stop, or wait for a pause.\n" +
                             "• Stand exactly where you will measure the noise.\n" +
                             "• Keep still and quiet for the whole ${ambientTargetSeconds / 60} minutes; the capture ends on its own."
@@ -1145,10 +1229,10 @@ private fun MeterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = if (isAmbient) {
-                    "Quiet baseline · The phone's offset cancels out of the difference"
-                } else {
-                    "Estimated sound level · Keep the microphone uncovered"
+                text = when {
+                    isCalibrating -> "Calibration · Saved for ${reading.micLabel}"
+                    isAmbient -> "Quiet baseline · The phone's offset cancels out of the difference"
+                    else -> "Estimated sound level · Keep the microphone uncovered"
                 },
                 color = White.copy(alpha = 0.58f),
                 fontSize = 12.sp,
@@ -1169,7 +1253,11 @@ private fun MeterScreen(
                 Icon(Icons.Default.Stop, contentDescription = null)
                 Spacer(Modifier.width(9.dp))
                 Text(
-                    if (isAmbient) "Finish early, keep this baseline" else "Stop and review",
+                    when {
+                        isCalibrating -> "Save calibration"
+                        isAmbient -> "Finish early, keep this baseline"
+                        else -> "Stop and review"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                 )
             }
@@ -1599,6 +1687,67 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambien
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+            }
+        }
+    }
+}
+
+/** Which microphone the meter will use and how it is calibrated; the way in to calibrate it. */
+@Composable
+private fun MicrophoneCard(
+    status: MicStatus,
+    onBeginCalibration: () -> Unit,
+    onClearCalibration: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = "MICROPHONE",
+                color = Muted,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+            )
+            Text(
+                text = status.micLabel,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = when (status.calibration) {
+                    LevelCalibration.USER_CALIBRATED ->
+                        "Calibrated by you against a reference meter (${CalibrationMath.signed(status.profile?.offsetDb ?: 0.0)})."
+                    LevelCalibration.PLATFORM_SPEC ->
+                        "Level set by the Android compatibility spec for this phone's unprocessed microphone path. A reference meter can still tighten it."
+                    LevelCalibration.ESTIMATE ->
+                        "Estimate. This phone gives no calibration of its own. Hold a real meter next to it once and the app remembers the offset. " +
+                            "Plug in a USB-C measurement microphone and it is picked up automatically."
+                },
+                color = Muted,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onBeginCalibration,
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Icon(Icons.Default.Mic, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Calibrate against a meter", fontWeight = FontWeight.SemiBold)
+                }
+                if (status.profile != null) {
+                    TextButton(onClick = onClearCalibration) { Text("Clear") }
+                }
             }
         }
     }
