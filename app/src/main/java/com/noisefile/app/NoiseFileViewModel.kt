@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.noisefile.app.audio.NoiseMeter
 import com.noisefile.app.data.IncidentStore
 import com.noisefile.app.data.RuleCatalog
+import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterReading
@@ -14,12 +15,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 enum class AppScreen {
     HOME,
     METER,
     REVIEW,
     HISTORY,
+}
+
+/** What the microphone is measuring right now: the quiet baseline, or the noise. */
+enum class CaptureStage {
+    AMBIENT,
+    NOISE,
 }
 
 data class NoiseFileUiState(
@@ -29,6 +37,9 @@ data class NoiseFileUiState(
     val meterReading: MeterReading = MeterReading(),
     val incidents: List<Incident> = emptyList(),
     val measurementStartedAt: Long? = null,
+    val captureStage: CaptureStage = CaptureStage.NOISE,
+    val ambient: AmbientReading? = null,
+    val ambientTargetSeconds: Int = 0,
     val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
     val draftNotes: String = "",
@@ -59,6 +70,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             "Selected jurisdiction is not present in the verified catalog."
         }
 
+    /** The city's own ambient minutes when its code states them, else NoiseFile's default. */
+    fun ambientTargetSecondsFor(rule: RuleWorkflow): Int =
+        (rule.ambientRecipe?.minutes ?: DEFAULT_AMBIENT_MINUTES) * 60
+
     fun selectJurisdiction(jurisdictionId: String) {
         val jurisdiction = ruleCatalog.jurisdictionById(jurisdictionId) ?: return
         if (!jurisdiction.isAvailable) return
@@ -73,6 +88,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             it.copy(
                 selectedJurisdictionId = jurisdiction.id,
                 selectedRuleId = selectedRule.id,
+                // A baseline belongs to a spot; a new city is a new spot.
+                ambient = null,
                 message = null,
                 error = null,
             )
@@ -105,6 +122,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update {
             it.copy(
                 screen = AppScreen.HOME,
+                captureStage = CaptureStage.NOISE,
                 meterReading = MeterReading(),
                 measurementStartedAt = null,
                 error = null,
@@ -117,6 +135,82 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update {
             it.copy(
                 screen = AppScreen.HISTORY,
+                captureStage = CaptureStage.NOISE,
+                error = null,
+            )
+        }
+    }
+
+    /**
+     * The quiet baseline: the same spot, the source silent, for the city's own
+     * minutes. Ends on its own when the minutes are up, or early on the button.
+     */
+    fun startAmbientMeasurement() {
+        val rule = selectedRule()
+        val targetSeconds = ambientTargetSecondsFor(rule)
+        val startedAt = System.currentTimeMillis()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.METER,
+                captureStage = CaptureStage.AMBIENT,
+                meterReading = MeterReading(),
+                measurementStartedAt = startedAt,
+                ambientTargetSeconds = targetSeconds,
+                message = null,
+                error = null,
+            )
+        }
+
+        noiseMeter.start(
+            onReading = { reading ->
+                _uiState.update { state -> state.copy(meterReading = reading) }
+                if (reading.elapsedMillis >= targetSeconds * 1_000L) finishAmbient()
+            },
+            onError = { error ->
+                _uiState.update { state ->
+                    state.copy(
+                        screen = AppScreen.HOME,
+                        captureStage = CaptureStage.NOISE,
+                        error = error,
+                        measurementStartedAt = null,
+                    )
+                }
+            },
+        )
+    }
+
+    fun finishAmbient() {
+        val state = _uiState.value
+        if (state.captureStage != CaptureStage.AMBIENT) return
+        noiseMeter.stop()
+        val reading = state.meterReading
+        if (reading.sampleWindows == 0) {
+            _uiState.update {
+                it.copy(
+                    screen = AppScreen.HOME,
+                    captureStage = CaptureStage.NOISE,
+                    error = "No sound samples were captured for the quiet baseline. Try again and keep the app open.",
+                    measurementStartedAt = null,
+                )
+            }
+            return
+        }
+        val ambient = AmbientReading(
+            db = reading.averageDb,
+            seconds = max(1L, reading.elapsedMillis / 1_000L),
+            sampleWindows = reading.sampleWindows,
+            calibration = reading.calibration,
+        )
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.HOME,
+                captureStage = CaptureStage.NOISE,
+                ambient = ambient,
+                meterReading = MeterReading(),
+                measurementStartedAt = null,
+                message = "Quiet baseline saved: ${ambient.db.roundToInt()} dB over " +
+                    "${ambient.seconds / 60}:${"%02d".format(ambient.seconds % 60)}. " +
+                    "Now record the noise from the same spot.",
                 error = null,
             )
         }
@@ -127,6 +221,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update {
             it.copy(
                 screen = AppScreen.METER,
+                captureStage = CaptureStage.NOISE,
                 meterReading = MeterReading(),
                 measurementStartedAt = startedAt,
                 message = null,
@@ -142,6 +237,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 _uiState.update { state ->
                     state.copy(
                         screen = AppScreen.HOME,
+                        captureStage = CaptureStage.NOISE,
                         error = error,
                         measurementStartedAt = null,
                     )
@@ -160,6 +256,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun stopMeasurement() {
+        if (_uiState.value.captureStage == CaptureStage.AMBIENT) {
+            finishAmbient()
+            return
+        }
         noiseMeter.stop()
         if (_uiState.value.meterReading.sampleWindows == 0) {
             _uiState.update {
@@ -230,6 +330,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             location = location,
             impact = state.draftImpact,
             notes = state.draftNotes.trim(),
+            ambientDb = state.ambient?.db,
+            ambientSeconds = state.ambient?.seconds,
         )
         val incidents = incidentStore.add(incident)
         _uiState.update {
@@ -238,6 +340,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 incidents = incidents,
                 meterReading = MeterReading(),
                 measurementStartedAt = null,
+                ambient = null,
                 draftNotes = "",
                 message = "Incident saved to your private history.",
                 error = null,
@@ -269,5 +372,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     override fun onCleared() {
         noiseMeter.stop()
         super.onCleared()
+    }
+
+    private companion object {
+        /** Used when the city's code states no ambient recipe. */
+        const val DEFAULT_AMBIENT_MINUTES = 5
     }
 }

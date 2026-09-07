@@ -1,6 +1,7 @@
 package com.noisefile.app.data
 
 import android.content.Context
+import com.noisefile.app.model.AmbientRecipe
 import com.noisefile.app.model.DayGroup
 import com.noisefile.app.model.HoursKind
 import com.noisefile.app.model.HoursRule
@@ -238,6 +239,12 @@ class RuleCatalog private constructor(
                                     )
                                 },
                                 context = hours.getString("context"),
+                            )
+                        },
+                        ambientRecipe = item.optJSONObject("ambientRecipe")?.let { recipe ->
+                            AmbientRecipe(
+                                minutes = recipe.getInt("minutes"),
+                                note = recipe.getString("note"),
                             )
                         },
                     )

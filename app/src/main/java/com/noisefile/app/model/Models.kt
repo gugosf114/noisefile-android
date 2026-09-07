@@ -32,6 +32,7 @@ data class RuleWorkflow(
     val verifiedDate: String,
     val meterLimit: MeterLimit? = null,
     val hoursRule: HoursRule? = null,
+    val ambientRecipe: AmbientRecipe? = null,
 )
 
 data class MeterLimit(
@@ -92,6 +93,8 @@ data class Incident(
     val location: String,
     val impact: String,
     val notes: String,
+    val ambientDb: Double? = null,
+    val ambientSeconds: Long? = null,
 )
 
 /** How a published schedule reads: the windows are when noise is allowed, or when it is restricted. */
@@ -146,3 +149,30 @@ data class HoursRule(
         require(context.isNotBlank()) { "An hours rule needs its context sentence." }
     }
 }
+
+/**
+ * How the city's code measures "ambient": how many minutes, and the rest of the
+ * recipe in the code's own words. The app runs the minutes; the note travels
+ * with every comparison so nobody mistakes a phone capture for the officer's.
+ */
+data class AmbientRecipe(
+    val minutes: Int,
+    val note: String,
+) {
+    init {
+        require(minutes in 1..60) { "An ambient recipe runs between one and sixty minutes." }
+        require(note.isNotBlank()) { "An ambient recipe needs its note." }
+    }
+}
+
+/**
+ * The quiet baseline: the same phone, the same spot, the source silent. Its
+ * absolute number carries the phone's unknown offset; the difference between it
+ * and the noise does not, because the offset is the same on both.
+ */
+data class AmbientReading(
+    val db: Double,
+    val seconds: Long,
+    val sampleWindows: Int,
+    val calibration: LevelCalibration = LevelCalibration.ESTIMATE,
+)

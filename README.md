@@ -268,3 +268,24 @@ capture path, offset, phone model, and `MicrophoneInfo` sensitivity (dBFS at
 next calibration source to read from real phones.
 
 versionCode 12, versionName 0.8.1.
+
+
+## 2026-09-06, late — the jump: measure the quiet first, report the difference
+
+A phone's absolute dB carries an unknown offset. The difference between two
+captures from the same phone in the same spot does not; the offset cancels.
+And several codes write the standard as a difference: San Francisco's
+Article 29 (ambient = LAeq over at least ten minutes, +5 dBA at the property
+plane) and San Mateo's 7.30 (ambient = six-minute average, slow, A-weighted,
+then +5/10/15/20 dB by minutes per hour). So the app now has a quiet-baseline
+capture: a "Measure the quiet first" button under Start Recording runs the
+city's own minutes (three rules carry an `ambientRecipe`; the rest use five
+minutes and say so), ends on its own, and the next recording's assessment
+gains a "Sound:" line — "61 dB highest estimate is 14 dB above your 6-minute
+quiet baseline of 47 dB; the 55 dB average is 8 dB above it" — quoting the
+city's recipe. The review, the saved incident, the history export and the
+complaint text all carry the baseline and the differences.
+
+The 2026-07-29 boundary holds: the line is information, the headline does
+not move, no rule carries a `meterLimit`. versionCode 13, versionName 0.9.0,
+catalog 2026-09-06.2.

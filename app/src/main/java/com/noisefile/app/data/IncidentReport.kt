@@ -29,6 +29,15 @@ fun buildIncidentHistoryReport(
             "Levels: ${incident.averageDb.toInt()} dB avg / " +
                 "${incident.maximumDb.toInt()} dB max",
         )
+        val baselineDb = incident.ambientDb
+        val baselineSeconds = incident.ambientSeconds
+        if (baselineDb != null && baselineSeconds != null) {
+            appendLine(
+                "Quiet baseline: ${baselineDb.toInt()} dB over $baselineSeconds sec at the same spot; " +
+                    "disturbance ${(incident.averageDb - baselineDb).toInt()} dB above it on average, " +
+                    "${(incident.maximumDb - baselineDb).toInt()} dB above at peak",
+            )
+        }
         appendLine("Impact: ${incident.impact}")
         appendLine("Notes: ${incident.notes.ifBlank { "None added" }}")
         appendLine()

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-06.1",
+  "catalogVersion": "2026-09-06.2",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -357,6 +357,10 @@
           }
         ],
         "context": "Municipal Code Chapter 7.30: loud and unreasonable noise, and parties with a band or amplification, in these hours are violations regardless of the dB reading when they disturb persons of ordinary sensitivity; continuing after a peace officer's notice is prima facie willful."
+      },
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "San Mateo Municipal Code 7.30 measures ambient as the average over six minutes with a precision meter, slow response, A-weighted, source silent, same spot. The standard is the table level, or the ambient when it is higher, plus 5, 10, 15 or 20 dB depending on how many minutes per hour the noise lasts."
       }
     },
     {
@@ -963,7 +967,11 @@
       "officialSourceUrl": "https://codelibrary.amlegal.com/codes/san_francisco/latest/sf_police/0-0-0-6461",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://sanfrancisco.form.us.empro.verintcloudservices.com/form/auto/cs_noise",
-      "secondaryActionLabel": "File Specific Noise Report"
+      "secondaryActionLabel": "File Specific Noise Report",
+      "ambientRecipe": {
+        "minutes": 10,
+        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot, and never below 35 dBA indoors or 45 dBA elsewhere. The residential limit is 5 dBA above that ambient at the property plane."
+      }
     },
     {
       "id": "san-francisco-construction",
@@ -992,6 +1000,10 @@
           }
         ],
         "context": "Police Code Article 29: construction between 8:00 PM and 7:00 AM is unlawful when it exceeds the ambient by 5 dBA at the nearest property plane, unless the Director of Public Works issued a special permit. Daytime work is limited by equipment noise levels, not by the clock."
+      },
+      "ambientRecipe": {
+        "minutes": 10,
+        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot. Between 8:00 PM and 7:00 AM construction may not exceed that ambient by 5 dBA at the nearest property plane without a special permit."
       }
     },
     {

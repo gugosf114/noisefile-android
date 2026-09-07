@@ -56,6 +56,17 @@ fun buildComplaintDraft(
         .ofPattern("EEEE, MMMM d, yyyy 'at' h:mm a", Locale.US)
         .format(Instant.ofEpochMilli(incident.startedAtEpochMillis).atZone(zoneId))
     val description = incident.notes.ifBlank { "No additional description entered." }
+    val baselineDb = incident.ambientDb
+    val baselineSeconds = incident.ambientSeconds
+    val baseline = if (baselineDb != null && baselineSeconds != null) {
+        "\n        Quiet baseline at the same spot with the source silent: ${baselineDb.toInt()} dB over " +
+            "${baselineSeconds / 60}:${"%02d".format(Locale.US, baselineSeconds % 60)}. " +
+            "The disturbance averaged ${(incident.averageDb - baselineDb).toInt()} dB above that baseline " +
+            "and peaked ${(incident.maximumDb - baselineDb).toInt()} dB above it. " +
+            "Both readings are from the same phone, so its offset cancels out of the difference."
+    } else {
+        ""
+    }
 
     return """
         Subject: Noise complaint — ${rule.noiseType.displayName} — ${rule.jurisdiction}
@@ -69,7 +80,7 @@ fun buildComplaintDraft(
         Description: $description
         Phone-estimated sound levels: ${incident.minimumDb.toInt()} dB minimum, ${incident.averageDb.toInt()} dB average, ${incident.maximumDb.toInt()} dB maximum
 
-        The sound levels above are estimates from my phone and are included as incident context.
+        The sound levels above are estimates from my phone and are included as incident context.$baseline
 
         City guidance: ${rule.title}
         ${rule.summary}

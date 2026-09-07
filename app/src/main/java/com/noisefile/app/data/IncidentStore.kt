@@ -63,6 +63,8 @@ class IncidentStore(context: Context) {
         .put("location", location)
         .put("impact", impact)
         .put("notes", notes)
+        .put("ambientDb", ambientDb ?: JSONObject.NULL)
+        .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
 
     private companion object {
         const val PREFERENCES_NAME = "noisefile_incidents"
@@ -94,4 +96,6 @@ private fun JSONObject.toIncident(): Incident = Incident(
     location = optString("location"),
     impact = getString("impact"),
     notes = optString("notes"),
+    ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
+    ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
 )
