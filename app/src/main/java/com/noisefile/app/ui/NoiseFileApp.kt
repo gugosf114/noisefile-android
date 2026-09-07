@@ -99,6 +99,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -752,6 +753,8 @@ private fun RuleCard(
             }
 
             Text(text = rule.summary, style = MaterialTheme.typography.bodyLarge)
+            rule.hoursRule?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
+            rule.ambientRecipe?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
 
             rule.requiredIncidentCount?.let { required ->
                 val progress = (incidentCount.toFloat() / required).coerceIn(0f, 1f)
@@ -1415,6 +1418,9 @@ private fun RuleAssessmentCard(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
+                if (condition.sourceQuote != null && condition.sourceCitation != null) {
+                    CodeQuote(quote = condition.sourceQuote, citation = condition.sourceCitation)
+                }
             }
             HorizontalDivider(color = Line)
             if (assessment.status == MeterAssessmentStatus.NEEDS_INFORMATION) {
@@ -1689,6 +1695,31 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambien
                 )
             }
         }
+    }
+}
+
+/** The ordinance's own sentence, shown under the line it justifies. Not our words. */
+@Composable
+private fun CodeQuote(quote: String, citation: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 14.dp, top = 2.dp, bottom = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(
+            text = "THE CODE SAYS · $citation",
+            color = Muted,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.8.sp,
+        )
+        Text(
+            text = "“$quote”",
+            color = Muted,
+            style = MaterialTheme.typography.bodySmall,
+            fontStyle = FontStyle.Italic,
+        )
     }
 }
 

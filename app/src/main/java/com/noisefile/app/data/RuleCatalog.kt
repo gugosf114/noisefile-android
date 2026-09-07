@@ -239,12 +239,16 @@ class RuleCatalog private constructor(
                                     )
                                 },
                                 context = hours.getString("context"),
+                                sourceQuote = hours.getString("sourceQuote"),
+                                sourceCitation = hours.getString("sourceCitation"),
                             )
                         },
                         ambientRecipe = item.optJSONObject("ambientRecipe")?.let { recipe ->
                             AmbientRecipe(
                                 minutes = recipe.getInt("minutes"),
                                 note = recipe.getString("note"),
+                                sourceQuote = recipe.getString("sourceQuote"),
+                                sourceCitation = recipe.getString("sourceCitation"),
                             )
                         },
                     )

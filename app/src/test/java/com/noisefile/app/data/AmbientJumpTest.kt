@@ -54,6 +54,9 @@ class AmbientJumpTest {
         assertTrue(line, line.contains("cancels out of the difference"))
         assertTrue(line, line.contains("six minutes"))
         assertEquals(6, rule.ambientRecipe?.minutes)
+        val soundLine = assessment.conditions.first { it.text.startsWith("Sound:") }
+        assertTrue(soundLine.sourceQuote!!, soundLine.sourceQuote!!.startsWith("\"Ambient\" means the average sound level during a six-minute period"))
+        assertEquals("Municipal Code Chapter 7.30, Definitions", soundLine.sourceCitation)
         // information, not a verdict
         assertEquals(MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
         assertEquals(
