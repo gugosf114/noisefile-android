@@ -131,18 +131,19 @@ class HoursRuleTest {
     }
 
     @Test
-    fun thirteenConstructionSchedulesAndFourQuietHourRulesShipWithReceipts() {
+    fun fourteenConstructionSchedulesAndFourQuietHourRulesShipWithReceipts() {
         val scheduled = catalog.rules.filter { it.hoursRule != null }
-        assertEquals(13, scheduled.count { it.hoursRule!!.kind == HoursKind.ALLOWED })
+        assertEquals(14, scheduled.count { it.hoursRule!!.kind == HoursKind.ALLOWED })
         assertEquals(4, scheduled.count { it.hoursRule!!.kind == HoursKind.QUIET })
         assertTrue(scheduled.filter { it.hoursRule!!.kind == HoursKind.ALLOWED }.all { it.noiseType == NoiseType.CONSTRUCTION })
         assertTrue(scheduled.filter { it.hoursRule!!.kind == HoursKind.QUIET }.all { it.noiseType == NoiseType.PARTY_MUSIC })
         scheduled.forEach { rule ->
             assertTrue("${rule.id} context names its code section", rule.hoursRule!!.context.contains("Code"))
         }
-        // Vallejo and Santa Rosa construction have no schedule: the corpus holds no section for them.
-        assertNull(rule("vallejo", NoiseType.CONSTRUCTION).hoursRule)
+        // Santa Rosa construction has no schedule: the corpus holds no section for it.
+        // Vallejo gained one on 2026-09-06 once Ch. 16.502 was captured.
         assertNull(rule("santa-rosa", NoiseType.CONSTRUCTION).hoursRule)
+        assertEquals(HoursKind.ALLOWED, rule("vallejo", NoiseType.CONSTRUCTION).hoursRule?.kind)
     }
 
     @Test

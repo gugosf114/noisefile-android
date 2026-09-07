@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   android:
@@ -47,3 +47,45 @@ jobs:
         with:
           name: noisefile-play-aab
           path: app/build/outputs/bundle/release/app-release.aab
+
+      # The giveaway APK. Signed with the same upload key as the Play bundle, so
+      # one build installs over the last one. Before 2026-09-06 the README served
+      # the debug APK, which CI signed with a fresh throwaway key every run —
+      # every new download needed an uninstall first.
+      - name: Build the signed giveaway APK
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_NOISEFILE_KEYSTORE_FILE: ${{ runner.temp }}/noisefile-upload.jks
+          ORG_GRADLE_PROJECT_NOISEFILE_STORE_PASSWORD: ${{ secrets.NOISEFILE_STORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_NOISEFILE_KEY_ALIAS: noisefile-upload
+          ORG_GRADLE_PROJECT_NOISEFILE_KEY_PASSWORD: ${{ secrets.NOISEFILE_KEY_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease --no-daemon
+          test -f app/build/outputs/apk/release/app-release.apk
+
+      # The README's first line is the dated download link, and the file it
+      # points at is this build. Written by the build itself, every time.
+      - name: Publish the giveaway APK and date the README link
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          version=$(grep -oE 'versionName = "[^"]+"' app/build.gradle.kts | grep -oE '[0-9][^"]*')
+          day=$(TZ=America/Los_Angeles date +%F)
+          cp app/build/outputs/apk/release/app-release.apk 00-NOISEFILE-DOWNLOAD.apk
+          python3 - "$day" "$version" <<'PY'
+          import re, sys, io
+          day, version = sys.argv[1:]
+          s = io.open("README.md", encoding="utf-8").read()
+          new = f"### ▶ [Download NoiseFile — {day} (v{version})](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)"
+          s2, n = re.subn(r"^### ▶ \[Download NoiseFile — [^\]]*\]\([^)]*\)$", new, s, count=1, flags=re.M)
+          if n != 1:
+              raise SystemExit("README download line not found")
+          io.open("README.md", "w", encoding="utf-8", newline="\n").write(s2)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add 00-NOISEFILE-DOWNLOAD.apk README.md
+          if git diff --cached --quiet; then echo "nothing new to publish"; exit 0; fi
+          git commit -q -m "chore: giveaway APK v${version} (${day}), README link dated [skip ci]"
+          git push origin HEAD:main
+          echo "published v${version} (${day})"
