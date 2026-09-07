@@ -49,7 +49,9 @@ built offline in two stages, and only the second stage ships in the app:
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
    one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
-   45 structured workflows across all 15 acquired cities, including Richmond
+   45 structured workflows across all 15 acquired cities (17 of them carry a
+   published schedule the phone's clock is checked against, see
+   [`legal-corpus/VERIFICATION-2026-09-06.md`](legal-corpus/VERIFICATION-2026-09-06.md)), including Richmond
    barking-dog routing through Contra Costa County Animal Services. See
    [`docs/ORDINANCE_LIBRARY.md`](docs/ORDINANCE_LIBRARY.md) for the full
    retrieval contract and update pipeline from stage 1 to stage 2.
@@ -210,3 +212,40 @@ Whoever continues should resume in this order:
 Keep the current product boundary. This release does not need a backend,
 accounts, analytics, ads, subscriptions, Play Integrity, or a legal decibel
 verdict.
+
+
+## 2026-09-06 — the clock gets its numbers; the meter keeps its boundary
+
+**What changed.** Every rule already carried its hours and decibel limits as
+prose. The app could read none of it. Today 17 rules gained a structured
+`hoursRule`: 13 construction schedules and 4 quiet-hour rules, each one a
+window set by weekday/Saturday/Sunday plus a context sentence naming the code
+section and what can move the hours. `assessMeterReading()` now prints a
+"Time:" line from the phone's clock — "2:00 AM Tuesday is outside Oakland's
+published construction hours (weekdays 7:00 AM-7:00 PM; Saturdays 9:00
+AM-8:00 PM; Sundays 9:00 AM-8:00 PM)" — before the ordinance prose. The
+review screen judges the recording by the minute it started, not the minute
+of review.
+
+**What deliberately did not change.** The 2026-07-29 tests say, in their
+names, that a clock-only check or a phone reading must not become a legal
+verdict (`sanJoseConstructionNeedsTheActualPermitInsteadOfAClockOnlyVerdict`,
+`fremontMeterDoesNotTurnPartialTimeChecksIntoLegalVerdicts`, and
+`assertNull(rule.meterLimit)` on every rule). That boundary stands: the
+"Time:" line is reported as information, the headline is unchanged, and no
+rule carries a `meterLimit`. The decibel numbers found in the corpus are laid
+out in `legal-corpus/VERIFICATION-2026-09-06.md` with their quoted source
+lines, ready if the operator decides to cross that line.
+
+**Receipts.** Every schedule is quoted from the raw corpus in the
+verification sheet. The Daly City construction handout (Chapter 15.09) was
+acquired live and added to the corpus. Six catalog claims turned out to have
+no receipt in the corpus (Vallejo's decibel limits and construction tables,
+Daly City's 95/105 dBA construction figures, Richmond's 60/50 dBA, Sunnyvale's
+and Oakland's day/night hour definitions, and San Francisco's 45/55 dBA
+applied to parties); they are listed in the sheet and left in the prose for
+now.
+
+versionCode 11, versionName 0.8.0, catalog 2026-09-06.1. Tests:
+`HoursRuleTest` covers the three 2026-07-25 scenarios; the 2026-07-29
+expectations are untouched.

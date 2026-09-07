@@ -131,6 +131,7 @@ import com.noisefile.app.ui.theme.Signal
 import com.noisefile.app.ui.theme.Success
 import com.noisefile.app.ui.theme.White
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -1155,11 +1156,13 @@ private fun RuleAssessmentCard(
     rule: RuleWorkflow,
     reading: MeterReading,
     incidentCount: Int,
+    localDateTime: LocalDateTime = LocalDateTime.now(),
 ) {
     val assessment = assessMeterReading(
         rule = rule,
         reading = reading,
         incidentCount = incidentCount,
+        localDateTime = localDateTime,
     )
     val statusColor = when (assessment.status) {
         MeterAssessmentStatus.LISTENING -> Muted
@@ -1294,10 +1297,15 @@ private fun ReviewScreen(
             }
 
             item {
+                // The review judges the recording that just ended, so its clock
+                // is the moment the recording started, not the moment of review.
                 RuleAssessmentCard(
                     rule = rule,
                     reading = state.meterReading,
                     incidentCount = incidentCount,
+                    localDateTime = state.measurementStartedAt
+                        ?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDateTime() }
+                        ?: LocalDateTime.now(),
                 )
             }
 

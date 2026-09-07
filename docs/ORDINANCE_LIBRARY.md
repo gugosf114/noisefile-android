@@ -26,6 +26,12 @@ guess from model memory, or silently substitute a general rule.
   action.
 - optional structured meter limits with the required time and measurement
   context.
+- optional published schedules (`hoursRule`): construction hours or quiet
+  hours by weekday, Saturday and Sunday, each with the context sentence that
+  names the code section and what can change the hours. The app compares the
+  phone's clock to the schedule and reports the result as information, never
+  as a verdict; permits, conditions of approval and the ordinance's own
+  wording decide.
 
 The Android build validates unique IDs, jurisdiction references, supported
 schema versions, and the presence of rules for every enabled city.

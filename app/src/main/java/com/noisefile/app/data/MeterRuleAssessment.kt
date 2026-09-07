@@ -1,9 +1,15 @@
 package com.noisefile.app.data
 
+import com.noisefile.app.model.DayGroup
+import com.noisefile.app.model.HoursKind
+import com.noisefile.app.model.HoursRule
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.RuleWorkflow
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -74,6 +80,10 @@ fun assessMeterReading(
                     },
                 ),
             )
+        }
+
+        rule.hoursRule?.let { hours ->
+            add(hoursCondition(hours, rule, localDateTime))
         }
 
         add(
@@ -168,3 +178,65 @@ private fun isWithinDaytime(
     val nighttimeStart = LocalTime.of(nighttimeStartsHour, 0)
     return !localTime.isBefore(daytimeStart) && localTime.isBefore(nighttimeStart)
 }
+
+/**
+ * The published schedule against the phone's clock. The clock is exact, so the line
+ * says plainly whether the incident falls inside or outside the schedule. It is
+ * reported as information, never as a verdict: permits and conditions of approval
+ * can move construction hours, and quiet-hour rules still require the noise to
+ * disturb someone. So this line never flips the headline on its own.
+ */
+private fun hoursCondition(
+    hours: HoursRule,
+    rule: RuleWorkflow,
+    localDateTime: LocalDateTime,
+): RuleConditionResult {
+    val minuteOfDay = localDateTime.hour * 60 + localDateTime.minute
+    val group = when (localDateTime.dayOfWeek) {
+        DayOfWeek.SATURDAY -> DayGroup.SATURDAY
+        DayOfWeek.SUNDAY -> DayGroup.SUNDAY
+        else -> DayGroup.WEEKDAY
+    }
+    val inside = hours.windows
+        .filter { it.days == group || it.days == DayGroup.ALL }
+        .any { it.contains(minuteOfDay) }
+    val city = rule.jurisdiction.substringBefore(",")
+    val stamp = localDateTime.format(DateTimeFormatter.ofPattern("h:mm a EEEE", Locale.US))
+    val schedule = describeSchedule(hours)
+    val position = if (inside) "inside" else "outside"
+    val name = when (hours.kind) {
+        HoursKind.ALLOWED -> "published construction hours"
+        HoursKind.QUIET -> "published quiet hours"
+    }
+    return RuleConditionResult(
+        outcome = RuleConditionOutcome.NEEDS_INFORMATION,
+        text = "Time: $stamp is $position $city's $name ($schedule). ${hours.context}",
+    )
+}
+
+private fun describeSchedule(hours: HoursRule): String {
+    val labels = mapOf(
+        DayGroup.WEEKDAY to "weekdays",
+        DayGroup.SATURDAY to "Saturdays",
+        DayGroup.SUNDAY to "Sundays",
+        DayGroup.ALL to "every day",
+    )
+    val parts = mutableListOf<String>()
+    for (group in listOf(DayGroup.WEEKDAY, DayGroup.SATURDAY, DayGroup.SUNDAY, DayGroup.ALL)) {
+        val windows = hours.windows.filter { it.days == group }
+        if (windows.isEmpty()) continue
+        val spans = windows.joinToString(", ") { window ->
+            "${clockLabel(window.startMinuteOfDay)}-${clockLabel(window.endMinuteOfDay)}"
+        }
+        parts.add("${labels.getValue(group)} $spans")
+    }
+    if (hours.kind == HoursKind.ALLOWED && hours.windows.none { it.days == DayGroup.ALL }) {
+        if (hours.windows.none { it.days == DayGroup.SATURDAY }) parts.add("no Saturdays")
+        if (hours.windows.none { it.days == DayGroup.SUNDAY }) parts.add("no Sundays")
+    }
+    return parts.joinToString("; ")
+}
+
+private fun clockLabel(minuteOfDay: Int): String =
+    LocalTime.of(minuteOfDay / 60, minuteOfDay % 60)
+        .format(DateTimeFormatter.ofPattern("h:mm a", Locale.US))

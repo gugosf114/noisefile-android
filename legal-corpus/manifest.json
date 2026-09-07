@@ -2,7 +2,7 @@
   "corpus": "NoiseFile raw official-source ordinance library",
   "generated": "2026-07-25",
   "cities_covered": 15,
-  "entry_count": 62,
+  "entry_count": 63,
   "entries": [
     {
       "city": "San Jose",
@@ -567,7 +567,7 @@
       "file_format": "pdf",
       "sha256": "67f88f0e008df54cb4ec34297c6fd141d857b0943da65b5394f0de679edbdd58",
       "access_date": "2026-07-25",
-      "effective_or_amended_date": "Ord. 12-4 (DC 2012 \u00a7 122-306, per source citation)",
+      "effective_or_amended_date": "Ord. 12-4 (DC 2012 § 122-306, per source citation)",
       "geographic_scope": "Incorporated City of Concord",
       "authority_level": "city",
       "original_or_rendered": "html-to-pdf archival rendering (verbatim text extracted from the official Code Publishing Company page, retrieved directly via HTTP; cover sheet added)",
@@ -1180,6 +1180,25 @@
       "authority_level": "city",
       "original_or_rendered": "original (faithful saved copy, direct HTTP fetch)",
       "acquisition_note": "Secondary sources state barking-dog complaints in San Mateo route to city police non-emergency (650-522-7700), NOT to Peninsula Humane Society & SPCA (the county-area animal-control contractor), which explicitly declines noise-only complaints - flagged so the app does not wrongly point users to PHS for noise specifically.",
+      "download_status": "downloaded"
+    },
+    {
+      "city": "Daly City",
+      "county": "San Mateo County",
+      "topic": "construction",
+      "official_title": "Daly City Economic and Community Development, Planning Division - Construction Hours handout (Chapter 15.09)",
+      "issuing_authority": "City of Daly City",
+      "chapter_or_section": "Chapter 15.09, Sections 15.09.010-15.09.050",
+      "canonical_url": "https://www.dalycity.org/DocumentCenter/View/13099/Construction-Hours-Handout",
+      "local_file_path": "legal-corpus/raw/San-Mateo-County/Daly-City/construction/Daly-City_CA_Planning_Construction-Hours-Handout_Ch-15.09_2026-09-06.pdf",
+      "file_format": "pdf",
+      "sha256": "a602173494f5a92895107d08fe58bc745032ae1bba356ba397f72e46f1228dcd",
+      "access_date": "2026-09-06",
+      "effective_or_amended_date": null,
+      "geographic_scope": "Incorporated City of Daly City",
+      "authority_level": "city",
+      "original_or_rendered": "original PDF as served by the city's DocumentCenter",
+      "acquisition_note": "Acquired 2026-09-06 while structuring construction hours. The handout gives the hours (standard time and daylight saving time) and the 2026 holiday list. It does NOT give decibel limits; it refers to the General Plan Noise Element for temporary-source levels, so the catalog's earlier 95/105 dBA figures for Daly City construction have no receipt in this corpus.",
       "download_status": "downloaded"
     }
   ]

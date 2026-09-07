@@ -1,6 +1,10 @@
 package com.noisefile.app.data
 
 import android.content.Context
+import com.noisefile.app.model.DayGroup
+import com.noisefile.app.model.HoursKind
+import com.noisefile.app.model.HoursRule
+import com.noisefile.app.model.HoursWindow
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.MeterLimit
 import com.noisefile.app.model.NoiseType
@@ -130,6 +134,15 @@ class RuleCatalog private constructor(
         }
         require(
             rules.all { rule ->
+                rule.hoursRule == null ||
+                    rule.hoursRule.kind == HoursKind.QUIET ||
+                    rule.noiseType == NoiseType.CONSTRUCTION
+            },
+        ) {
+            "Allowed-hours schedules belong to construction rules; other categories use quiet hours."
+        }
+        require(
+            rules.all { rule ->
                 runCatching { LocalDate.parse(rule.verifiedDate) }.isSuccess
             },
         ) {
@@ -214,6 +227,19 @@ class RuleCatalog private constructor(
                                 comparisonContext = limit.getString("comparisonContext"),
                             )
                         },
+                        hoursRule = item.optJSONObject("hoursRule")?.let { hours ->
+                            HoursRule(
+                                kind = HoursKind.valueOf(hours.getString("kind")),
+                                windows = hours.getJSONArray("windows").mapObjects { window ->
+                                    HoursWindow(
+                                        days = DayGroup.valueOf(window.getString("days")),
+                                        startMinuteOfDay = window.getString("start").toMinuteOfDay(),
+                                        endMinuteOfDay = window.getString("end").toMinuteOfDay(),
+                                    )
+                                },
+                                context = hours.getString("context"),
+                            )
+                        },
                     )
                 },
             )
@@ -224,6 +250,16 @@ class RuleCatalog private constructor(
 
         private fun JSONObject.optionalInt(name: String): Int? =
             if (has(name) && !isNull(name)) getInt(name) else null
+
+        /** "07:30" -> 450. Catalog clock times are 24-hour HH:MM. */
+        private fun String.toMinuteOfDay(): Int {
+            val parts = split(":")
+            require(parts.size == 2) { "Clock times must look like HH:MM, not '$this'." }
+            val hour = parts[0].toInt()
+            val minute = parts[1].toInt()
+            require(hour in 0..23 && minute in 0..59) { "Clock time '$this' is not within one day." }
+            return hour * 60 + minute
+        }
 
         private fun String.hasSupportedActionScheme(): Boolean =
             startsWith("https://") || startsWith("tel:") || startsWith("mailto:")
