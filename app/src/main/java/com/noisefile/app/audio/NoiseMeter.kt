@@ -10,6 +10,7 @@ import android.media.MicrophoneInfo
 import android.os.Build
 import android.os.SystemClock
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.min
@@ -161,23 +163,33 @@ class NoiseMeter(private val context: Context) {
         offsetDb: Double,
     ) {
         val sourceName = if (audioSource == MediaRecorder.AudioSource.UNPROCESSED) "UNPROCESSED" else "VOICE_RECOGNITION"
-        val microphones = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            runCatching { record.activeMicrophones }.getOrDefault(emptyList())
+        val micFacts = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            microphoneFacts(record)
         } else {
-            emptyList<MicrophoneInfo>()
-        }
-        val micFacts = microphones.joinToString(" | ") { info ->
-            val sensitivity = if (info.sensitivity == MicrophoneInfo.SENSITIVITY_UNKNOWN) "unknown" else "%.1f dBFS@94".format(info.sensitivity)
-            val maxSpl = if (info.maxSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else "%.0f".format(info.maxSpl)
-            val minSpl = if (info.minSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else "%.0f".format(info.minSpl)
-            "mic ${info.id} sensitivity=$sensitivity maxSpl=$maxSpl minSpl=$minSpl"
+            "microphones=api<28"
         }
         Log.i(
             TAG,
             "source=$sourceName calibration=$calibration offset=$offsetDb " +
                 "model=${Build.MANUFACTURER} ${Build.MODEL} sdk=${Build.VERSION.SDK_INT} " +
-                (if (micFacts.isEmpty()) "microphones=none reported" else micFacts),
+                micFacts,
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun microphoneFacts(record: AudioRecord): String {
+        val microphones = runCatching { record.activeMicrophones }.getOrDefault(emptyList())
+        if (microphones.isEmpty()) return "microphones=none reported"
+        return microphones.joinToString(" | ") { info ->
+            val sensitivity = if (info.sensitivity == MicrophoneInfo.SENSITIVITY_UNKNOWN) {
+                "unknown"
+            } else {
+                String.format(Locale.US, "%.1f dBFS@94", info.sensitivity)
+            }
+            val maxSpl = if (info.maxSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else String.format(Locale.US, "%.0f", info.maxSpl)
+            val minSpl = if (info.minSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else String.format(Locale.US, "%.0f", info.minSpl)
+            "mic ${info.id} sensitivity=$sensitivity maxSpl=$maxSpl minSpl=$minSpl"
+        }
     }
 
     private fun preferredAudioSource(): Int {
