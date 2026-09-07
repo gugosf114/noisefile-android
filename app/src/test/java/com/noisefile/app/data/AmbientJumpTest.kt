@@ -95,7 +95,7 @@ class AmbientJumpTest {
     fun threeRulesCarryTheCitysOwnAmbientRecipe() {
         val withRecipe = catalog.rules.filter { it.ambientRecipe != null }.map { it.id }.sorted()
         assertEquals(
-            listOf("san-francisco-construction", "san-francisco-party-music", "san-mateo-party-music"),
+            listOf("san-francisco-construction", "san-francisco-party_music", "san-mateo-party_music"),
             withRecipe,
         )
     }
