@@ -154,10 +154,15 @@ data class HoursRule(
     val kind: HoursKind,
     val windows: List<HoursWindow>,
     val context: String,
+    /** The ordinance's own sentence the schedule was read from, verbatim. */
+    val sourceQuote: String = "",
+    /** Where that sentence lives, e.g. "Planning Code 17.120.050(G)(2)". */
+    val sourceCitation: String = "",
 ) {
     init {
         require(windows.isNotEmpty()) { "An hours rule needs at least one window." }
         require(context.isNotBlank()) { "An hours rule needs its context sentence." }
+        require(sourceQuote.isNotBlank() && sourceCitation.isNotBlank()) { "A schedule must quote the code it came from." }
     }
 }
 
@@ -169,10 +174,14 @@ data class HoursRule(
 data class AmbientRecipe(
     val minutes: Int,
     val note: String,
+    /** The code's own definition of ambient, verbatim. */
+    val sourceQuote: String = "",
+    val sourceCitation: String = "",
 ) {
     init {
         require(minutes in 1..60) { "An ambient recipe runs between one and sixty minutes." }
         require(note.isNotBlank()) { "An ambient recipe needs its note." }
+        require(sourceQuote.isNotBlank() && sourceCitation.isNotBlank()) { "An ambient recipe must quote the code it came from." }
     }
 }
 

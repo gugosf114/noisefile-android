@@ -325,3 +325,13 @@ unprocessed phones stays as the default when no user calibration exists.
 
 The boundary holds: none of this turns a reading into a verdict.
 versionCode 15, versionName 0.10.0.
+
+
+## 2026-09-07 — the law's own words on screen
+
+Under every "Time:" and "Sound:" line, and under the rule card, the app now
+shows the ordinance's own sentence, verbatim, with its section: "THE CODE
+SAYS · Planning Code 17.120.050(G)(2)". Eighteen schedules and three ambient
+recipes carry `sourceQuote` and `sourceCitation`; the catalog refuses a
+schedule without one. Our words explain; the city's words are the claim.
+versionCode 16, versionName 0.10.1, catalog 2026-09-07.1.

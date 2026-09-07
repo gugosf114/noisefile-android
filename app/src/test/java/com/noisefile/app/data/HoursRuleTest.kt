@@ -67,10 +67,11 @@ class HoursRuleTest {
 
         val assessment = assessMeterReading(rule = rule, reading = reading(), localDateTime = at)
         assertEquals(MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
-        assertEquals(
-            RuleConditionOutcome.NEEDS_INFORMATION,
-            assessment.conditions.first { it.text.startsWith("Time:") }.outcome,
-        )
+        val timeLine = assessment.conditions.first { it.text.startsWith("Time:") }
+        assertEquals(RuleConditionOutcome.NEEDS_INFORMATION, timeLine.outcome)
+        // the ordinance's own words ride with the line
+        assertEquals("Planning Code 17.120.050(G)(2)", timeLine.sourceCitation)
+        assertTrue(timeLine.sourceQuote!!, timeLine.sourceQuote!!.contains("between weekday hours of seven (7) p.m. and seven (7) a.m."))
     }
 
     @Test
@@ -139,6 +140,12 @@ class HoursRuleTest {
         assertTrue(scheduled.filter { it.hoursRule!!.kind == HoursKind.QUIET }.all { it.noiseType == NoiseType.PARTY_MUSIC })
         scheduled.forEach { rule ->
             assertTrue("${rule.id} context names its code section", rule.hoursRule!!.context.contains("Code"))
+            assertTrue("${rule.id} quotes the code", rule.hoursRule!!.sourceQuote.length > 60)
+            assertTrue("${rule.id} cites the section", rule.hoursRule!!.sourceCitation.isNotBlank())
+        }
+        catalog.rules.mapNotNull { it.ambientRecipe }.forEach { recipe ->
+            assertTrue(recipe.sourceQuote.contains("Ambient"))
+            assertTrue(recipe.sourceCitation.isNotBlank())
         }
         // Santa Rosa construction has no schedule: the corpus holds no section for it.
         // Vallejo gained one on 2026-09-06 once Ch. 16.502 was captured.

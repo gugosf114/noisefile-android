@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-06.3",
+  "catalogVersion": "2026-09-07.1",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -154,7 +154,9 @@
             "end": "19:00"
           }
         ],
-        "context": "Municipal Code 20.100.450 for work within 500 feet of a residential unit, unless a development permit or planning approval expressly allows other hours, so check the posted permit. The section names no holidays; the app cannot tell a holiday from a workday."
+        "context": "Municipal Code 20.100.450 for work within 500 feet of a residential unit, unless a development permit or planning approval expressly allows other hours, so check the posted permit. The section names no holidays; the app cannot tell a holiday from a workday.",
+        "sourceCitation": "Municipal Code 20.100.450(A)",
+        "sourceQuote": "Unless otherwise expressly allowed in a development permit or other planning approval, no applicant or agent of an applicant shall suffer or allow any construction activity on a site located within 500 feet of a residential unit before 7:00 a.m. or after 7:00 p.m., Monday through Friday, or at any time on weekends."
       }
     },
     {
@@ -227,7 +229,9 @@
             "end": "17:00"
           }
         ],
-        "context": "Code 5-17.04 for heavy construction equipment within 300 feet of occupied dwellings; farther away, weekdays run 7:00 AM-6:00 PM. Holidays use the weekend hours."
+        "context": "Code 5-17.04 for heavy construction equipment within 300 feet of occupied dwellings; farther away, weekdays run 7:00 AM-6:00 PM. Holidays use the weekend hours.",
+        "sourceCitation": "Code 5-17.04(B)",
+        "sourceQuote": "It shall be unlawful for any person to operate heavy construction equipment during the hours specified below: (1) On weekdays prior to 7:00 a.m. and after 6:00 p.m. (2) On weekdays within 300 feet of occupied dwelling space, prior to 8:00 a.m. and after 5:00 p.m. (3) On weekends and holidays, prior to 9:00 a.m. and after 5:00 p.m. …"
       }
     },
     {
@@ -272,7 +276,9 @@
             "end": "07:00"
           }
         ],
-        "context": "Municipal Code 8.18.020: persistent raucous or nerve-racking noise in these hours is a nuisance. The noise still has to disturb peace, comfort or health, so the clock alone is not the violation."
+        "context": "Municipal Code 8.18.020: persistent raucous or nerve-racking noise in these hours is a nuisance. The noise still has to disturb peace, comfort or health, so the clock alone is not the violation.",
+        "sourceCitation": "Municipal Code 8.18.020",
+        "sourceQuote": "The persistent maintenance or emission of any noise or sound produced by human, animal or mechanical means, between the hours of nine p.m. and seven a.m. next ensuing, which, by reason of its raucous or nerve-racking nature, shall disturb the peace or comfort, or be injurious to the health of any person shall constitute a nuisance."
       }
     },
     {
@@ -311,7 +317,9 @@
             "end": "20:00"
           }
         ],
-        "context": "Planning Code 17.120.050(G)(2): weekday work 7:00 PM-7:00 AM and weekend or federal-holiday work 8:00 PM-9:00 AM is nighttime work held to the stricter nighttime noise levels, not banned outright. A permit or condition of approval can set other hours. On a holiday use the Sunday hours."
+        "context": "Planning Code 17.120.050(G)(2): weekday work 7:00 PM-7:00 AM and weekend or federal-holiday work 8:00 PM-9:00 AM is nighttime work held to the stricter nighttime noise levels, not banned outright. A permit or condition of approval can set other hours. On a holiday use the Sunday hours.",
+        "sourceCitation": "Planning Code 17.120.050(G)(2)",
+        "sourceQuote": "The nighttime noise level received by any land use and produced by any construction or demolition activity between weekday hours of seven (7) p.m. and seven (7) a.m. or between eight (8) p.m. and nine (9) a.m. on weekends and federal holidays shall not exceed the applicable nighttime noise level standards outlined in this Section."
       }
     },
     {
@@ -356,11 +364,15 @@
             "end": "07:00"
           }
         ],
-        "context": "Municipal Code Chapter 7.30: loud and unreasonable noise, and parties with a band or amplification, in these hours are violations regardless of the dB reading when they disturb persons of ordinary sensitivity; continuing after a peace officer's notice is prima facie willful."
+        "context": "Municipal Code Chapter 7.30: loud and unreasonable noise, and parties with a band or amplification, in these hours are violations regardless of the dB reading when they disturb persons of ordinary sensitivity; continuing after a peace officer's notice is prima facie willful.",
+        "sourceCitation": "Municipal Code Chapter 7.30 (b)",
+        "sourceQuote": "… to maliciously and willfully generate loud and unreasonable noise, between the hours of eleven p.m. and seven a.m. Noise is \"loud and unreasonable\" for the purposes of this section, if it disturbs the peace, quiet, or repose of persons of ordinary and normal sensitivity in the neighborhood, regardless of the dB reading."
       },
       "ambientRecipe": {
         "minutes": 6,
-        "note": "San Mateo Municipal Code 7.30 measures ambient as the average over six minutes with a precision meter, slow response, A-weighted, source silent, same spot. The standard is the table level, or the ambient when it is higher, plus 5, 10, 15 or 20 dB depending on how many minutes per hour the noise lasts."
+        "note": "San Mateo Municipal Code 7.30 measures ambient as the average over six minutes with a precision meter, slow response, A-weighted, source silent, same spot. The standard is the table level, or the ambient when it is higher, plus 5, 10, 15 or 20 dB depending on how many minutes per hour the noise lasts.",
+        "sourceCitation": "Municipal Code Chapter 7.30, Definitions",
+        "sourceQuote": "\"Ambient\" means the average sound level during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The sound level shall be determined with the noise source at issue silent and in the same location as the measurement of the noise level of the source or sources at issue."
       }
     },
     {
@@ -397,7 +409,9 @@
             "end": "16:00"
           }
         ],
-        "context": "Municipal Code Chapter 7.30 for construction under a city permit, and only while equipment stays under 90 dB at 25 feet or 90 dB at the property plane; the permit can set other hours. Holidays use the Sunday hours."
+        "context": "Municipal Code Chapter 7.30 for construction under a city permit, and only while equipment stays under 90 dB at 25 feet or 90 dB at the property plane; the permit can set other hours. Holidays use the Sunday hours.",
+        "sourceCitation": "Municipal Code Chapter 7.30, Construction",
+        "sourceQuote": "Construction, alteration, repair or land development activities which are authorized by a valid city permit shall be allowed on weekdays between the hours of seven a.m. and seven p.m., on Saturdays between the hours of nine a.m. and five p.m., and on Sundays and holidays between the hours of noon and four p.m., or at such other hours as may be authorized or restricted by the permit, if they meet at least one of the following noise limitations: (1) No individual piece of equipment shall produce a noise level exceeding 90 dB at a distance of 25 feet."
       }
     },
     {
@@ -472,7 +486,9 @@
             "end": "18:00"
           }
         ],
-        "context": "Municipal Code 4-1.03.4: inside these hours construction is held to 83 dBA per device at 25 feet and 86 dBA at the property plane; outside them the general residential limits of 4-1.03.1 apply instead of a ban. Holidays use the Sunday hours; a permit or condition of approval can set other hours."
+        "context": "Municipal Code 4-1.03.4: inside these hours construction is held to 83 dBA per device at 25 feet and 86 dBA at the property plane; outside them the general residential limits of 4-1.03.1 apply instead of a ban. Holidays use the Sunday hours; a permit or condition of approval can set other hours.",
+        "sourceCitation": "Municipal Code 4-1.03.4",
+        "sourceQuote": "Unless otherwise provided pursuant to a duly-issued permit or a condition of approval of a land use entitlement, the construction, alteration, or repair of structures and any landscaping activities, occurring between the hours of 10:00 a.m. and 6:00 p.m. on Sundays and holidays, and 7:00 a.m. and 7:00 p.m. on other days, shall be subject to the following: (a) No individual device or piece of equipment shall produce a noise level exceeding eighty-three (83) dBA at a distance of twenty-five (25) feet from the source. (b) The noise level at any point outside of the property plane shall not exceed eighty-six (86) dBA. (c) During all other times, the decibel levels set forth in Section 4-1.03.1 shall control."
       }
     },
     {
@@ -535,7 +551,9 @@
             "end": "18:00"
           }
         ],
-        "context": "Development Code 18.150.130 for site preparation and construction, except on holidays, or as approved in a planning permit. The Police Department's noise flyer also lists weekends 8:00 AM-5:00 PM, which the code text does not; the permit decides."
+        "context": "Development Code 18.150.130 for site preparation and construction, except on holidays, or as approved in a planning permit. The Police Department's noise flyer also lists weekends 8:00 AM-5:00 PM, which the code text does not; the permit decides.",
+        "sourceCitation": "Development Code 18.150.130(O)(6)",
+        "sourceQuote": "Site preparation and construction activities between the hours of 7:30 a.m. to 6:00 p.m. weekdays (except on holidays) or as approved by the city as part of a planning permit."
       }
     },
     {
@@ -608,7 +626,9 @@
             "end": "20:00"
           }
         ],
-        "context": "Municipal Code 13.40.070: outside these hours construction tools may not create a noise disturbance across a residential or commercial property line; emergency utility work and Environmental Health variances are excepted. Legal holidays use the weekend hours."
+        "context": "Municipal Code 13.40.070: outside these hours construction tools may not create a noise disturbance across a residential or commercial property line; emergency utility work and Environmental Health variances are excepted. Legal holidays use the weekend hours.",
+        "sourceCitation": "Municipal Code 13.40.070",
+        "sourceQuote": "Operating or causing the operation of any tools or equipment used in construction, drilling, repair, alteration, or demolition work before 7:00 a.m. on a weekday (or before 9:00 a.m. on a weekend or holiday) or after 7:00 p.m. on a weekday (or after 8:00 p.m. on a weekend or holiday) such that the sound therefrom across a residential or commercial real property line violates Section 13.40.050 or 13.40.060, except for emergency work of public service utilities or by variance issued by the EHD."
       }
     },
     {
@@ -673,7 +693,9 @@
             "end": "19:00"
           }
         ],
-        "context": "Zoning Code 16.502.09 for construction, demolition and loading that may exceed the temporary-construction table, in residential and mixed-use districts. Grading and pile driving within a quarter mile of homes run weekdays 8:00 AM-5:00 PM only (16.502.03); Table 16.502-E gives no Sunday or legal-holiday allowance for construction equipment. A permit or condition of approval can set stricter hours."
+        "context": "Zoning Code 16.502.09 for construction, demolition and loading that may exceed the temporary-construction table, in residential and mixed-use districts. Grading and pile driving within a quarter mile of homes run weekdays 8:00 AM-5:00 PM only (16.502.03); Table 16.502-E gives no Sunday or legal-holiday allowance for construction equipment. A permit or condition of approval can set stricter hours.",
+        "sourceCitation": "Zoning Code 16.502.09(D)(1)",
+        "sourceQuote": "Construction, demolition, and related loading/unloading activities that may generate noise exceeding levels in Table 16.502.E shall be limited to hours between 7:00 a.m. and 7:00 p.m. in residential zoning districts and in any mixed-use district."
       }
     },
     {
@@ -748,7 +770,9 @@
             "end": "20:00"
           }
         ],
-        "context": "Municipal Code 9.52.110 publishes its temporary-construction noise table for these periods only (weekends include legal holidays); pile drivers, impulsive sources and jackhammers are barred on Sundays and holidays unless the Building Official approves. Ask the Building Official about work outside the table's periods."
+        "context": "Municipal Code 9.52.110 publishes its temporary-construction noise table for these periods only (weekends include legal holidays); pile drivers, impulsive sources and jackhammers are barred on Sundays and holidays unless the Building Official approves. Ask the Building Official about work outside the table's periods.",
+        "sourceCitation": "Municipal Code 9.52.110",
+        "sourceQuote": "Table: \"Weekdays, 7:00 a.m. to 7:00 p.m.\" and \"Weekends, including legal holidays 9:00 a.m. to 8:00 p.m.\" Use of pile drivers, sources of impulsive sound and jack hammers shall be prohibited on Sundays and holidays, except for emergencies or as approved in advance by the Building Official."
       }
     },
     {
@@ -814,7 +838,9 @@
             "end": "17:00"
           }
         ],
-        "context": "Municipal Code 16.08.030: no construction on Sundays or federal holidays when city offices are closed. An owner working on their own detached single-family home may work weekdays 7:00 AM-7:00 PM, Saturdays 8:00 AM-7:00 PM and Sundays or holidays 9:00 AM-6:00 PM."
+        "context": "Municipal Code 16.08.030: no construction on Sundays or federal holidays when city offices are closed. An owner working on their own detached single-family home may work weekdays 7:00 AM-7:00 PM, Saturdays 8:00 AM-7:00 PM and Sundays or holidays 9:00 AM-6:00 PM.",
+        "sourceCitation": "Municipal Code 16.08.030",
+        "sourceQuote": "Construction activity shall be permitted between the hours of seven a.m. and six p.m. daily Monday through Friday. Saturday hours of operation shall be between eight a.m. and five p.m. There shall be no construction activity on Sunday or federal holidays when city offices are closed."
       }
     },
     {
@@ -911,7 +937,9 @@
             "end": "07:00"
           }
         ],
-        "context": "Municipal Code Chapter 9.25: amplified music, instruments, public-address systems and sustained engines in these hours are restricted, and audio plainly audible 50 feet from the building is prima facie evidence. At other hours the disturbing-the-peace standard applies."
+        "context": "Municipal Code Chapter 9.25: amplified music, instruments, public-address systems and sustained engines in these hours are restricted, and audio plainly audible 50 feet from the building is prima facie evidence. At other hours the disturbing-the-peace standard applies.",
+        "sourceCitation": "Municipal Code Chapter 9.25 (e)(1)",
+        "sourceQuote": "The operation of any such instrument, audio equipment, television set, machine or similar device between the hours of 10:00 p.m. and 7:00 a.m. in such manner as to be plainly audible at a distance of 50 feet from the building, structure or vehicle in which it is located shall be prima facie evidence of a violation of this subsection."
       }
     },
     {
@@ -943,7 +971,9 @@
             "end": "18:00"
           }
         ],
-        "context": "Municipal Code 18.160.010(a) for development projects within 500 feet of a residence; holidays use the Saturday hours. A homeowner working on their own detached house may work weekdays 7:00 AM-8:00 PM and weekends 8:00 AM-8:00 PM; projects farther than 500 feet from homes and city-approved exceptions have other hours."
+        "context": "Municipal Code 18.160.010(a) for development projects within 500 feet of a residence; holidays use the Saturday hours. A homeowner working on their own detached house may work weekdays 7:00 AM-8:00 PM and weekends 8:00 AM-8:00 PM; projects farther than 500 feet from homes and city-approved exceptions have other hours.",
+        "sourceCitation": "Municipal Code 18.160.010(a)",
+        "sourceQuote": "Except as modified herein, construction activity for development projects in any zoning district on any property within 500 feet of one or more residences, lodging facilities, nursing homes or inpatient hospitals shall be limited to the weekday hours of 7:00 a.m. to 7:00 p.m. and the Saturday or holiday hours of 9:00 a.m. to 6:00 p.m., while Sunday construction is not allowed."
       }
     },
     {
@@ -981,7 +1011,9 @@
       "secondaryActionLabel": "File Specific Noise Report",
       "ambientRecipe": {
         "minutes": 10,
-        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot, and never below 35 dBA indoors or 45 dBA elsewhere. The residential limit is 5 dBA above that ambient at the property plane."
+        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot, and never below 35 dBA indoors or 45 dBA elsewhere. The residential limit is 5 dBA above that ambient at the property plane.",
+        "sourceCitation": "Police Code Article 29, Sections 2901(a) and 2909(a)",
+        "sourceQuote": "\"Ambient\" means LAeq and LCeq values produced during a minimum ten-minute period as measured with a type 1, precision level sound meter, using \"A\" and \"C\" frequency weighting. The minimum sound level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this Article 29, in no case shall the ambient be considered or determined to be less than: (1) 35 dBA for interior residential noise, and (2) 45 dBA in all other locations. … No person shall produce or allow to be produced by any machine, or device, music or entertainment or any combination of same, on residential property over which the person has ownership or control, a noise level more than five dBA above the ambient at any point outside of the property plane."
       }
     },
     {
@@ -1010,11 +1042,15 @@
             "end": "20:00"
           }
         ],
-        "context": "Police Code Article 29: construction between 8:00 PM and 7:00 AM is unlawful when it exceeds the ambient by 5 dBA at the nearest property plane, unless the Director of Public Works issued a special permit. Daytime work is limited by equipment noise levels, not by the clock."
+        "context": "Police Code Article 29: construction between 8:00 PM and 7:00 AM is unlawful when it exceeds the ambient by 5 dBA at the nearest property plane, unless the Director of Public Works issued a special permit. Daytime work is limited by equipment noise levels, not by the clock.",
+        "sourceCitation": "Police Code Article 29, Section 2908",
+        "sourceQuote": "It shall be unlawful for any person, between the hours of 8:00 p.m. of any day and 7:00 a.m. of the following day to erect, construct, demolish, excavate for, alter or repair any building or structure if the noise level created thereby is in excess of the ambient noise level by 5 dBA at the nearest property plane, unless a special permit therefor has been applied for and granted by the Director of Public Works or the Director of Building Inspection."
       },
       "ambientRecipe": {
         "minutes": 10,
-        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot. Between 8:00 PM and 7:00 AM construction may not exceed that ambient by 5 dBA at the nearest property plane without a special permit."
+        "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot. Between 8:00 PM and 7:00 AM construction may not exceed that ambient by 5 dBA at the nearest property plane without a special permit.",
+        "sourceCitation": "Police Code Article 29, Section 2901(a)",
+        "sourceQuote": "\"Ambient\" means LAeq and LCeq values produced during a minimum ten-minute period as measured with a type 1, precision level sound meter, using \"A\" and \"C\" frequency weighting. The minimum sound level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue."
       }
     },
     {
@@ -1059,7 +1095,9 @@
             "end": "06:00"
           }
         ],
-        "context": "Municipal Code 9.22.030: in these hours no noise, music or sound may be heard beyond the property line or disturb another person. Outside them the general disturbing-the-peace rule still applies."
+        "context": "Municipal Code 9.22.030: in these hours no noise, music or sound may be heard beyond the property line or disturb another person. Outside them the general disturbing-the-peace rule still applies.",
+        "sourceCitation": "Municipal Code 9.22.030",
+        "sourceQuote": "Between the hours of ten p.m. and six a.m. of the following day, no person shall cause, create or permit any noise, music, sound or other disturbance upon his property which may be heard by, or which noise disturbs or harasses, any other person beyond the confines of the property, quarters or apartment from which the noise, music, sound or disturbance emanates."
       }
     },
     {
@@ -1098,7 +1136,9 @@
             "end": "20:30"
           }
         ],
-        "context": "Municipal Code Chapter 15.09 handout, daylight-saving-time hours; in standard time (early November to mid-March) work must stop at 6:30 PM. Applies to outdoor work on private property under a building permit; no work on federal holidays unless the Building Official grants an exemption."
+        "context": "Municipal Code Chapter 15.09 handout, daylight-saving-time hours; in standard time (early November to mid-March) work must stop at 6:30 PM. Applies to outdoor work on private property under a building permit; no work on federal holidays unless the Building Official grants an exemption.",
+        "sourceCitation": "Municipal Code Chapter 15.09, Construction Hours handout",
+        "sourceQuote": "General construction hours for work performed outdoors on private property for project requiring a building permit are limited to weekdays from 8:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time), and Saturdays and Sundays from 9:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time); construction work during Federal Holidays shall be prohibited unless exemptions are granted in accordance with this section by the Building Official or their designee, at his or her sole discretion."
       }
     },
     {
@@ -1164,7 +1204,9 @@
             "end": "18:00"
           }
         ],
-        "context": "City Code Chapter 9.10 for construction within 300 feet of residentially zoned property; no work on Sundays or on the listed state holidays; a permit can set other hours."
+        "context": "City Code Chapter 9.10 for construction within 300 feet of residentially zoned property; no work on Sundays or on the listed state holidays; a permit can set other hours.",
+        "sourceCitation": "City Code Chapter 9.10",
+        "sourceQuote": "… on or to a construction site within three hundred (300) feet of any residentially zoned property except within the hours of 7:00 A.M. to 6:00 P.M. following on weekdays other than holidays, Monday through Friday, inclusive; and within the hours of 9:00 A.M. to 6:00 P.M. following, inclusive, on any Saturday which is not a holiday."
       }
     }
   ]

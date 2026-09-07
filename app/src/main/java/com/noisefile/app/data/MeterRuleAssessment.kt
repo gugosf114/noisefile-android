@@ -30,6 +30,9 @@ enum class RuleConditionOutcome {
 data class RuleConditionResult(
     val outcome: RuleConditionOutcome,
     val text: String,
+    /** The ordinance's own words behind this line, when the catalog carries them. */
+    val sourceQuote: String? = null,
+    val sourceCitation: String? = null,
 )
 
 data class MeterRuleAssessment(
@@ -217,6 +220,8 @@ private fun hoursCondition(
     return RuleConditionResult(
         outcome = RuleConditionOutcome.NEEDS_INFORMATION,
         text = "Time: $stamp is $position $city's $name ($schedule). ${hours.context}",
+        sourceQuote = hours.sourceQuote,
+        sourceCitation = hours.sourceCitation,
     )
 }
 
@@ -265,6 +270,8 @@ private fun ambientCondition(
         ?: "$city's code sets no ambient recipe, so this difference is context, not a listed condition."
     return RuleConditionResult(
         outcome = RuleConditionOutcome.NEEDS_INFORMATION,
+        sourceQuote = rule.ambientRecipe?.sourceQuote,
+        sourceCitation = rule.ambientRecipe?.sourceCitation,
         text = "Sound: ${reading.maximumDb.roundToInt()} dB highest estimate is " +
             "${describeDifference(peakDifference)} your ${baselineLabel(baseline.seconds)} quiet baseline of " +
             "${baseline.db.roundToInt()} dB; the ${reading.averageDb.roundToInt()} dB average is " +
