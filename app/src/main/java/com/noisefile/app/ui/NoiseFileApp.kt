@@ -108,6 +108,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
+import com.noisefile.app.CaptureStage
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
 import com.noisefile.app.data.MeterAssessmentStatus
@@ -118,6 +119,7 @@ import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
+import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.NoiseType
@@ -151,13 +153,19 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     var showCityPicker by remember { mutableStateOf(false) }
+    var pendingAmbient by remember { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        if (granted) viewModel.startMeasurement() else viewModel.microphonePermissionDenied()
+        if (granted) {
+            if (pendingAmbient) viewModel.startAmbientMeasurement() else viewModel.startMeasurement()
+        } else {
+            viewModel.microphonePermissionDenied()
+        }
+        pendingAmbient = false
     }
 
-    val beginCapture = {
+    val beginStage = { ambient: Boolean ->
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         if (
             ContextCompat.checkSelfPermission(
@@ -165,11 +173,14 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 Manifest.permission.RECORD_AUDIO,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            viewModel.startMeasurement()
+            if (ambient) viewModel.startAmbientMeasurement() else viewModel.startMeasurement()
         } else {
+            pendingAmbient = ambient
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
     }
+    val beginCapture = { beginStage(false) }
+    val beginAmbient = { beginStage(true) }
 
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
@@ -181,6 +192,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onSelectRule = viewModel::selectRule,
             onShowCityPicker = { showCityPicker = true },
             onBeginCapture = beginCapture,
+            onBeginAmbient = beginAmbient,
+            ambientTargetSeconds = viewModel.ambientTargetSecondsFor(viewModel.selectedRule()),
             onShareNeighbor = {
                 shareNeighborInvite(context, viewModel.selectedRule())
             },
@@ -193,6 +206,9 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             rule = viewModel.selectedRule(),
             reading = state.meterReading,
             incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
+            stage = state.captureStage,
+            ambient = state.ambient,
+            ambientTargetSeconds = state.ambientTargetSeconds,
             onStop = viewModel::stopMeasurement,
         )
 
@@ -251,6 +267,8 @@ private fun HomeScreen(
     onSelectRule: (String) -> Unit,
     onShowCityPicker: () -> Unit,
     onBeginCapture: () -> Unit,
+    onBeginAmbient: () -> Unit,
+    ambientTargetSeconds: Int,
     onShareNeighbor: () -> Unit,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
@@ -350,6 +368,15 @@ private fun HomeScreen(
                     Spacer(Modifier.width(10.dp))
                     Text("Start Recording", style = MaterialTheme.typography.titleMedium)
                 }
+            }
+
+            item {
+                AmbientBaselineCard(
+                    rule = selectedRule,
+                    ambient = state.ambient,
+                    targetSeconds = ambientTargetSeconds,
+                    onBeginAmbient = onBeginAmbient,
+                )
             }
 
             item {
@@ -921,8 +948,12 @@ private fun MeterScreen(
     rule: RuleWorkflow,
     reading: MeterReading,
     incidentCount: Int,
+    stage: CaptureStage,
+    ambient: AmbientReading?,
+    ambientTargetSeconds: Int,
     onStop: () -> Unit,
 ) {
+    val isAmbient = stage == CaptureStage.AMBIENT
     val view = LocalView.current
     DisposableEffect(Unit) {
         view.keepScreenOn = true
@@ -957,14 +988,18 @@ private fun MeterScreen(
                     .padding(end = 12.dp),
             ) {
                 Text(
-                    text = "MEASURING NOW",
+                    text = if (isAmbient) "MEASURING THE QUIET FIRST" else "MEASURING NOW",
                     color = Signal,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.2.sp,
                 )
                 Text(
-                    text = "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}",
+                    text = if (isAmbient) {
+                        "Quiet baseline · ${rule.jurisdiction.substringBefore(",")}"
+                    } else {
+                        "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}"
+                    },
                     color = White,
                     style = MaterialTheme.typography.titleLarge,
                     maxLines = 2,
@@ -986,7 +1021,11 @@ private fun MeterScreen(
                     )
                     Spacer(Modifier.width(7.dp))
                     Text(
-                        formatElapsed(reading.elapsedMillis),
+                        if (isAmbient) {
+                            "${formatElapsed(reading.elapsedMillis)} / ${formatElapsed(ambientTargetSeconds * 1_000L)}"
+                        } else {
+                            formatElapsed(reading.elapsedMillis)
+                        },
                         color = White,
                         fontWeight = FontWeight.Bold,
                     )
@@ -1020,12 +1059,50 @@ private fun MeterScreen(
         )
 
         Spacer(Modifier.height(16.dp))
-        
-        RuleAssessmentCard(
-            rule = rule,
-            reading = reading,
-            incidentCount = incidentCount,
-        )
+
+        if (isAmbient) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = Paper,
+                border = androidx.compose.foundation.BorderStroke(2.dp, Cobalt),
+            ) {
+                Column(
+                    modifier = Modifier.padding(18.dp),
+                    verticalArrangement = Arrangement.spacedBy(9.dp),
+                ) {
+                    Text(
+                        text = "QUIET BASELINE · ${rule.jurisdiction.substringBefore(",").uppercase(Locale.US)}",
+                        color = Cobalt,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.9.sp,
+                    )
+                    Text(
+                        text = "Running average so far: ${reading.averageDb.roundToInt()} dB",
+                        color = Ink,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "The noise you will record next is compared to this number. The phone's own " +
+                            "offset is the same on both, so it cancels out of the difference. " +
+                            (rule.ambientRecipe?.note
+                                ?: "${rule.jurisdiction.substringBefore(",")}'s code sets no ambient recipe; " +
+                                    "NoiseFile records ${ambientTargetSeconds / 60} minutes."),
+                        color = Muted,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+        } else {
+            RuleAssessmentCard(
+                rule = rule,
+                reading = reading,
+                incidentCount = incidentCount,
+                ambient = ambient,
+            )
+        }
 
         Spacer(Modifier.height(22.dp))
         Surface(
@@ -1045,8 +1122,14 @@ private fun MeterScreen(
                 Spacer(Modifier.height(7.dp))
                 
                 Text(
-                    text = "• Hold the phone steady with its microphone uncovered.\n" +
-                        "• Stay quiet while measuring.\n\n${rule.captureInstruction}",
+                    text = if (isAmbient) {
+                        "• Ask for the noise to stop, or wait for a pause.\n" +
+                            "• Stand exactly where you will measure the noise.\n" +
+                            "• Keep still and quiet for the whole ${ambientTargetSeconds / 60} minutes; the capture ends on its own."
+                    } else {
+                        "• Hold the phone steady with its microphone uncovered.\n" +
+                            "• Stay quiet while measuring.\n\n${rule.captureInstruction}"
+                    },
                     color = White,
                     style = MaterialTheme.typography.bodyLarge,
                 )
@@ -1062,7 +1145,11 @@ private fun MeterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Estimated sound level · Keep the microphone uncovered",
+                text = if (isAmbient) {
+                    "Quiet baseline · The phone's offset cancels out of the difference"
+                } else {
+                    "Estimated sound level · Keep the microphone uncovered"
+                },
                 color = White.copy(alpha = 0.58f),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
@@ -1081,7 +1168,10 @@ private fun MeterScreen(
             ) {
                 Icon(Icons.Default.Stop, contentDescription = null)
                 Spacer(Modifier.width(9.dp))
-                Text("Stop and review", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    if (isAmbient) "Finish early, keep this baseline" else "Stop and review",
+                    style = MaterialTheme.typography.titleMedium,
+                )
             }
         }
     }
@@ -1170,12 +1260,14 @@ private fun RuleAssessmentCard(
     reading: MeterReading,
     incidentCount: Int,
     localDateTime: LocalDateTime = LocalDateTime.now(),
+    ambient: AmbientReading? = null,
 ) {
     val assessment = assessMeterReading(
         rule = rule,
         reading = reading,
         incidentCount = incidentCount,
         localDateTime = localDateTime,
+        ambient = ambient,
     )
     val statusColor = when (assessment.status) {
         MeterAssessmentStatus.LISTENING -> Muted
@@ -1306,7 +1398,7 @@ private fun ReviewScreen(
             }
 
             item {
-                MeasurementSummary(state.meterReading, rule)
+                MeasurementSummary(state.meterReading, rule, state.ambient)
             }
 
             item {
@@ -1319,6 +1411,7 @@ private fun ReviewScreen(
                     localDateTime = state.measurementStartedAt
                         ?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDateTime() }
                         ?: LocalDateTime.now(),
+                    ambient = state.ambient,
                 )
             }
 
@@ -1456,7 +1549,7 @@ private fun ReviewScreen(
 }
 
 @Composable
-private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow) {
+private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambient: AmbientReading? = null) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Ink),
@@ -1496,6 +1589,73 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow) {
                         fontWeight = FontWeight.Bold,
                     )
                 }
+            }
+            if (ambient != null) {
+                Text(
+                    text = "Quiet baseline ${ambient.db.roundToInt()} dB over ${formatElapsed(ambient.seconds * 1_000L)} · " +
+                        "this recording ${(reading.averageDb - ambient.db).roundToInt()} dB above it on average, " +
+                        "${(reading.maximumDb - ambient.db).roundToInt()} dB above at peak",
+                    color = Signal,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * The jump's first half: measure the quiet room before the noise. Shown under
+ * Start Recording; once a baseline exists it says so and offers a remeasure.
+ */
+@Composable
+private fun AmbientBaselineCard(
+    rule: RuleWorkflow,
+    ambient: AmbientReading?,
+    targetSeconds: Int,
+    onBeginAmbient: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = Cobalt.copy(alpha = 0.08f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.25f)),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = "MEASURE THE QUIET FIRST",
+                color = Cobalt,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+            )
+            Text(
+                text = if (ambient != null) {
+                    "Quiet baseline ready: ${ambient.db.roundToInt()} dB over ${formatElapsed(ambient.seconds * 1_000L)}. " +
+                        "Record the noise from the same spot and the app shows how far above the quiet it is."
+                } else {
+                    "A phone's dB number can sit several dB off. The difference between the quiet room and the noise does not, " +
+                        "because both come from the same phone in the same spot. " +
+                        (rule.ambientRecipe?.let { "${rule.jurisdiction.substringBefore(",")}'s code measures ambient over ${it.minutes} minutes." }
+                            ?: "${rule.jurisdiction.substringBefore(",")}'s code sets no ambient recipe; NoiseFile records ${targetSeconds / 60} minutes.")
+                },
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onBeginAmbient,
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Icon(Icons.Default.GraphicEq, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    if (ambient != null) "Remeasure the quiet · ${targetSeconds / 60} min" else "Measure the quiet first · ${targetSeconds / 60} min",
+                    fontWeight = FontWeight.SemiBold,
+                )
             }
         }
     }

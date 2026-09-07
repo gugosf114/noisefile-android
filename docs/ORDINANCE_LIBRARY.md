@@ -32,6 +32,11 @@ guess from model memory, or silently substitute a general rule.
   phone's clock to the schedule and reports the result as information, never
   as a verdict; permits, conditions of approval and the ordinance's own
   wording decide.
+- optional ambient recipes (`ambientRecipe`): the minutes the city's code uses
+  to measure ambient, plus the rest of the recipe in the code's words. The app
+  runs a quiet baseline for those minutes and reports the noise as a
+  difference above it — the phone's unknown offset is the same on both
+  captures, so it cancels. Reported as information, never as a verdict.
 
 The Android build validates unique IDs, jurisdiction references, supported
 schema versions, and the presence of rules for every enabled city.

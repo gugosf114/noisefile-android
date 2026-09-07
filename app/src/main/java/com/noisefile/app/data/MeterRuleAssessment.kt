@@ -1,5 +1,6 @@
 package com.noisefile.app.data
 
+import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.DayGroup
 import com.noisefile.app.model.HoursKind
 import com.noisefile.app.model.HoursRule
@@ -43,6 +44,7 @@ fun assessMeterReading(
     reading: MeterReading,
     incidentCount: Int = 0,
     localDateTime: LocalDateTime = LocalDateTime.now(),
+    ambient: AmbientReading? = null,
 ): MeterRuleAssessment {
     if (reading.sampleWindows == 0) {
         return MeterRuleAssessment(
@@ -84,6 +86,10 @@ fun assessMeterReading(
 
         rule.hoursRule?.let { hours ->
             add(hoursCondition(hours, rule, localDateTime))
+        }
+
+        ambient?.let { baseline ->
+            add(ambientCondition(baseline, rule, reading))
         }
 
         add(
@@ -240,3 +246,43 @@ private fun describeSchedule(hours: HoursRule): String {
 private fun clockLabel(minuteOfDay: Int): String =
     LocalTime.of(minuteOfDay / 60, minuteOfDay % 60)
         .format(DateTimeFormatter.ofPattern("h:mm a", Locale.US))
+
+/**
+ * The jump: the noise against the quiet baseline the same phone took in the same
+ * spot. The phone's unknown offset is the same on both, so it cancels out of the
+ * difference. Reported as information, never as a verdict: the city measures its
+ * ambient with its own meter and its own recipe, quoted from the rule.
+ */
+private fun ambientCondition(
+    baseline: AmbientReading,
+    rule: RuleWorkflow,
+    reading: MeterReading,
+): RuleConditionResult {
+    val city = rule.jurisdiction.substringBefore(",")
+    val peakDifference = (reading.maximumDb - baseline.db).roundToInt()
+    val averageDifference = (reading.averageDb - baseline.db).roundToInt()
+    val recipe = rule.ambientRecipe?.note
+        ?: "$city's code sets no ambient recipe, so this difference is context, not a listed condition."
+    return RuleConditionResult(
+        outcome = RuleConditionOutcome.NEEDS_INFORMATION,
+        text = "Sound: ${reading.maximumDb.roundToInt()} dB highest estimate is " +
+            "${describeDifference(peakDifference)} your ${baselineLabel(baseline.seconds)} quiet baseline of " +
+            "${baseline.db.roundToInt()} dB; the ${reading.averageDb.roundToInt()} dB average is " +
+            "${describeDifference(averageDifference)} it. Both numbers come from this phone in this spot, " +
+            "so the phone's own offset cancels out of the difference. $recipe",
+    )
+}
+
+private fun describeDifference(differenceDb: Int): String = when {
+    differenceDb > 0 -> "$differenceDb dB above"
+    differenceDb < 0 -> "${abs(differenceDb)} dB below"
+    else -> "level with"
+}
+
+/** "6-minute" when the capture ran whole minutes, otherwise "4:30". */
+internal fun baselineLabel(seconds: Long): String =
+    if (seconds >= 60 && seconds % 60 == 0L) {
+        "${seconds / 60}-minute"
+    } else {
+        "%d:%02d".format(Locale.US, seconds / 60, seconds % 60)
+    }
