@@ -69,6 +69,9 @@ enum class LevelCalibration {
 
     /** The UNPROCESSED path, whose level Android's compatibility spec pins (94 dB SPL = -36 dBFS). */
     PLATFORM_SPEC,
+
+    /** The user held a reference meter next to this microphone and saved the offset. */
+    USER_CALIBRATED,
 }
 
 data class MeterReading(
@@ -79,6 +82,12 @@ data class MeterReading(
     val elapsedMillis: Long = 0L,
     val sampleWindows: Int = 0,
     val calibration: LevelCalibration = LevelCalibration.ESTIMATE,
+    /** Which microphone made this reading, in words: "Built-in microphone" or "USB microphone · UMIK-1". */
+    val micLabel: String = "Built-in microphone",
+    /** Stable key for that microphone's saved calibration. */
+    val micKey: String = "",
+    /** The user's saved offset already included in the dB numbers above. */
+    val userOffsetDb: Double = 0.0,
 )
 
 data class Incident(
@@ -95,6 +104,8 @@ data class Incident(
     val notes: String,
     val ambientDb: Double? = null,
     val ambientSeconds: Long? = null,
+    /** Where the dB numbers came from, for the complaint: mic and calibration, in words. */
+    val levelNote: String? = null,
 )
 
 /** How a published schedule reads: the windows are when noise is allowed, or when it is restricted. */

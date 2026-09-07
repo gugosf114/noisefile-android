@@ -2,18 +2,26 @@ package com.noisefile.app
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.noisefile.app.audio.CalibrationMath
+import com.noisefile.app.audio.MicProfile
+import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
 import com.noisefile.app.data.IncidentStore
 import com.noisefile.app.data.RuleCatalog
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
+import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.RuleWorkflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -28,6 +36,7 @@ enum class AppScreen {
 enum class CaptureStage {
     AMBIENT,
     NOISE,
+    CALIBRATE,
 }
 
 data class NoiseFileUiState(
@@ -40,6 +49,7 @@ data class NoiseFileUiState(
     val captureStage: CaptureStage = CaptureStage.NOISE,
     val ambient: AmbientReading? = null,
     val ambientTargetSeconds: Int = 0,
+    val calibrationReferenceText: String = "",
     val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
     val draftNotes: String = "",
@@ -69,6 +79,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         checkNotNull(ruleCatalog.jurisdictionById(_uiState.value.selectedJurisdictionId)) {
             "Selected jurisdiction is not present in the verified catalog."
         }
+
+    /** Which microphone the next measurement would use, and how it is calibrated. */
+    fun micStatus(): MicStatus = noiseMeter.inputStatus()
 
     /** The city's own ambient minutes when its code states them, else NoiseFile's default. */
     fun ambientTargetSecondsFor(rule: RuleWorkflow): Int =
@@ -216,6 +229,97 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /**
+     * Calibrate this microphone against a reference meter: the meter runs, the
+     * user reads the reference and types it, the difference is saved per mic.
+     */
+    fun startCalibration() {
+        val startedAt = System.currentTimeMillis()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.METER,
+                captureStage = CaptureStage.CALIBRATE,
+                meterReading = MeterReading(),
+                measurementStartedAt = startedAt,
+                calibrationReferenceText = "",
+                message = null,
+                error = null,
+            )
+        }
+        noiseMeter.start(
+            onReading = { reading ->
+                _uiState.update { state -> state.copy(meterReading = reading) }
+            },
+            onError = { error ->
+                _uiState.update { state ->
+                    state.copy(
+                        screen = AppScreen.HOME,
+                        captureStage = CaptureStage.NOISE,
+                        error = error,
+                        measurementStartedAt = null,
+                    )
+                }
+            },
+        )
+    }
+
+    fun setCalibrationReference(text: String) {
+        _uiState.update { it.copy(calibrationReferenceText = text, error = null) }
+    }
+
+    fun finishCalibration() {
+        val state = _uiState.value
+        if (state.captureStage != CaptureStage.CALIBRATE) return
+        val reference = state.calibrationReferenceText.trim().toDoubleOrNull()
+        if (reference == null || !CalibrationMath.isPlausibleReference(reference)) {
+            _uiState.update {
+                it.copy(error = "Type the reference meter's reading in dB, between 30 and 120.")
+            }
+            return
+        }
+        val reading = state.meterReading
+        if (reading.sampleWindows < 20) {
+            _uiState.update {
+                it.copy(error = "Let the meter run a few seconds in a steady sound before saving.")
+            }
+            return
+        }
+        noiseMeter.stop()
+        val offset = CalibrationMath.newUserOffset(
+            existingUserOffsetDb = reading.userOffsetDb,
+            phoneAverageDb = reading.averageDb,
+            referenceDb = reference,
+        )
+        noiseMeter.saveCalibration(
+            MicProfile(
+                micKey = reading.micKey,
+                offsetDb = offset,
+                referenceLabel = "reference meter",
+                calibratedAtEpochMillis = System.currentTimeMillis(),
+            ),
+        )
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.HOME,
+                captureStage = CaptureStage.NOISE,
+                meterReading = MeterReading(),
+                measurementStartedAt = null,
+                calibrationReferenceText = "",
+                message = "Calibrated ${reading.micLabel}: this phone averaged ${reading.averageDb.roundToInt()} dB, " +
+                    "the meter said ${reference.roundToInt()} dB, so ${CalibrationMath.signed(offset)} is saved for it.",
+                error = null,
+            )
+        }
+    }
+
+    fun clearCalibration() {
+        val status = noiseMeter.inputStatus()
+        noiseMeter.clearCalibration(status.micKey)
+        _uiState.update {
+            it.copy(message = "Calibration cleared for ${status.micLabel}.", error = null)
+        }
+    }
+
     fun startMeasurement() {
         val startedAt = System.currentTimeMillis()
         _uiState.update {
@@ -258,6 +362,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     fun stopMeasurement() {
         if (_uiState.value.captureStage == CaptureStage.AMBIENT) {
             finishAmbient()
+            return
+        }
+        if (_uiState.value.captureStage == CaptureStage.CALIBRATE) {
+            finishCalibration()
             return
         }
         noiseMeter.stop()
@@ -332,6 +440,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             notes = state.draftNotes.trim(),
             ambientDb = state.ambient?.db,
             ambientSeconds = state.ambient?.seconds,
+            levelNote = levelNoteFor(reading),
         )
         val incidents = incidentStore.add(incident)
         _uiState.update {
@@ -347,6 +456,24 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             )
         }
         return incident
+    }
+
+    /** For the complaint: which microphone made the numbers and how it was calibrated. */
+    private fun levelNoteFor(reading: MeterReading): String? = when (reading.calibration) {
+        LevelCalibration.USER_CALIBRATED -> {
+            val profile = noiseMeter.inputStatus().profile
+            val day = profile?.let {
+                DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
+                    .format(Instant.ofEpochMilli(it.calibratedAtEpochMillis).atZone(ZoneId.systemDefault()))
+            }
+            "The sound levels above come from my phone's ${reading.micLabel.lowercase(Locale.US)}, " +
+                "calibrated against a reference meter" + (day?.let { " on $it" } ?: "") +
+                " (${CalibrationMath.signed(reading.userOffsetDb)}), and are included as incident context."
+        }
+        LevelCalibration.PLATFORM_SPEC ->
+            "The sound levels above come from my phone's built-in microphone on its unprocessed path, whose level " +
+                "Android's compatibility specification pins (94 dB SPL reads -36 dBFS); they are included as incident context."
+        LevelCalibration.ESTIMATE -> null
     }
 
     fun updateIncidentDetails(

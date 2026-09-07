@@ -2,6 +2,7 @@ package com.noisefile.app.audio
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
@@ -25,14 +26,68 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
+/** What the meter would use right now, before anything is recorded. */
+data class MicStatus(
+    val micKey: String,
+    val micLabel: String,
+    val isUsb: Boolean,
+    val supportsUnprocessed: Boolean,
+    val profile: MicProfile?,
+) {
+    val calibration: LevelCalibration
+        get() = when {
+            profile != null -> LevelCalibration.USER_CALIBRATED
+            !isUsb && supportsUnprocessed -> LevelCalibration.PLATFORM_SPEC
+            else -> LevelCalibration.ESTIMATE
+        }
+}
+
 class NoiseMeter(private val context: Context) {
     private companion object {
         const val TAG = "NoiseMeter"
+        const val BUILT_IN_LABEL = "Built-in microphone"
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val profiles = MicProfileStore(context)
     private var recordingJob: Job? = null
     private var audioRecord: AudioRecord? = null
+
+    /**
+     * A plugged-in USB microphone wins over the built-in one. Measurement mics
+     * (UMIK-style) show up as USB devices; a USB-C headset counts too.
+     */
+    private fun usbInput(audioManager: AudioManager): AudioDeviceInfo? =
+        audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS).firstOrNull {
+            it.type == AudioDeviceInfo.TYPE_USB_DEVICE || it.type == AudioDeviceInfo.TYPE_USB_HEADSET
+        }
+
+    private fun micKeyFor(usb: AudioDeviceInfo?): String =
+        if (usb != null) "usb:${usb.productName}" else "builtin:${Build.MANUFACTURER} ${Build.MODEL}"
+
+    private fun micLabelFor(usb: AudioDeviceInfo?): String =
+        if (usb != null) "USB microphone · ${usb.productName}" else BUILT_IN_LABEL
+
+    private fun supportsUnprocessed(audioManager: AudioManager): Boolean =
+        audioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED)
+            ?.toBooleanStrictOrNull() == true
+
+    fun inputStatus(): MicStatus {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val usb = usbInput(audioManager)
+        val key = micKeyFor(usb)
+        return MicStatus(
+            micKey = key,
+            micLabel = micLabelFor(usb),
+            isUsb = usb != null,
+            supportsUnprocessed = supportsUnprocessed(audioManager),
+            profile = profiles.load(key),
+        )
+    }
+
+    fun saveCalibration(profile: MicProfile) = profiles.save(profile)
+
+    fun clearCalibration(micKey: String) = profiles.clear(micKey)
 
     @SuppressLint("MissingPermission")
     fun start(
@@ -53,19 +108,34 @@ class NoiseMeter(private val context: Context) {
         }
 
         val bufferSize = max(minimumBuffer * 2, 4096)
-        val audioSource = preferredAudioSource()
-        // The UNPROCESSED path is level-calibrated by the Android CDD (5.11 C-1-5);
-        // every other path carries the phone's own gain and stays an estimate.
-        val calibration = if (audioSource == MediaRecorder.AudioSource.UNPROCESSED) {
-            LevelCalibration.PLATFORM_SPEC
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val usb = usbInput(audioManager)
+        val unprocessed = supportsUnprocessed(audioManager)
+        val audioSource = if (unprocessed) {
+            MediaRecorder.AudioSource.UNPROCESSED
         } else {
-            LevelCalibration.ESTIMATE
+            MediaRecorder.AudioSource.VOICE_RECOGNITION
         }
-        val offsetDb = if (calibration == LevelCalibration.PLATFORM_SPEC) {
+        val micKey = micKeyFor(usb)
+        val micLabel = micLabelFor(usb)
+        val profile = profiles.load(micKey)
+
+        // Base offset: the Android CDD pins the built-in unprocessed path; a USB
+        // mic's sensitivity is its own business, so it starts as an estimate.
+        // A saved user calibration sits on top of either.
+        val baseOffset = if (usb == null && unprocessed) {
             NoiseMath.CDD_UNPROCESSED_OFFSET_DBA
         } else {
             NoiseMath.ESTIMATE_OFFSET_DBA
         }
+        val userOffset = profile?.offsetDb ?: 0.0
+        val offsetDb = baseOffset + userOffset
+        val calibration = when {
+            profile != null -> LevelCalibration.USER_CALIBRATED
+            usb == null && unprocessed -> LevelCalibration.PLATFORM_SPEC
+            else -> LevelCalibration.ESTIMATE
+        }
+
         val record = runCatching {
             AudioRecord.Builder()
                 .setAudioSource(audioSource)
@@ -88,6 +158,13 @@ class NoiseMeter(private val context: Context) {
             onError("This phone could not initialize its microphone.")
             return
         }
+        if (usb != null) {
+            // Route to the USB mic; if the platform refuses, the built-in mic is used
+            // and the label would lie, so say so instead.
+            if (!record.setPreferredDevice(usb)) {
+                Log.w(TAG, "USB microphone ${usb.productName} could not be selected; using the built-in mic")
+            }
+        }
 
         audioRecord = record
         recordingJob = scope.launch {
@@ -101,7 +178,7 @@ class NoiseMeter(private val context: Context) {
             try {
                 val filter = AWeightingFilter()
                 record.startRecording()
-                logMicrophoneFacts(record, audioSource, calibration, offsetDb)
+                logMicrophoneFacts(record, audioSource, calibration, offsetDb, micLabel)
                 while (isActive && record.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
                     val count = record.read(samples, 0, samples.size, AudioRecord.READ_BLOCKING)
                     when (classifyAudioReadResult(count)) {
@@ -130,6 +207,9 @@ class NoiseMeter(private val context: Context) {
                             elapsedMillis = SystemClock.elapsedRealtime() - startedAt,
                             sampleWindows = windows,
                             calibration = calibration,
+                            micLabel = micLabel,
+                            micKey = micKey,
+                            userOffsetDb = userOffset,
                         ),
                     )
                 }
@@ -161,6 +241,7 @@ class NoiseMeter(private val context: Context) {
         audioSource: Int,
         calibration: LevelCalibration,
         offsetDb: Double,
+        micLabel: String,
     ) {
         val sourceName = if (audioSource == MediaRecorder.AudioSource.UNPROCESSED) "UNPROCESSED" else "VOICE_RECOGNITION"
         val micFacts = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -170,7 +251,7 @@ class NoiseMeter(private val context: Context) {
         }
         Log.i(
             TAG,
-            "source=$sourceName calibration=$calibration offset=$offsetDb " +
+            "source=$sourceName calibration=$calibration offset=$offsetDb mic=\"$micLabel\" " +
                 "model=${Build.MANUFACTURER} ${Build.MODEL} sdk=${Build.VERSION.SDK_INT} " +
                 micFacts,
         )
@@ -189,18 +270,6 @@ class NoiseMeter(private val context: Context) {
             val maxSpl = if (info.maxSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else String.format(Locale.US, "%.0f", info.maxSpl)
             val minSpl = if (info.minSpl == MicrophoneInfo.SPL_UNKNOWN) "unknown" else String.format(Locale.US, "%.0f", info.minSpl)
             "mic ${info.id} sensitivity=$sensitivity maxSpl=$maxSpl minSpl=$minSpl"
-        }
-    }
-
-    private fun preferredAudioSource(): Int {
-        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val supportsUnprocessed = audioManager
-            .getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED)
-            ?.toBooleanStrictOrNull() == true
-        return if (supportsUnprocessed) {
-            MediaRecorder.AudioSource.UNPROCESSED
-        } else {
-            MediaRecorder.AudioSource.VOICE_RECOGNITION
         }
     }
 }
