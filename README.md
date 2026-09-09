@@ -335,3 +335,15 @@ SAYS · Planning Code 17.120.050(G)(2)". Eighteen schedules and three ambient
 recipes carry `sourceQuote` and `sourceCitation`; the catalog refuses a
 schedule without one. Our words explain; the city's words are the claim.
 versionCode 16, versionName 0.10.1, catalog 2026-09-07.1.
+
+
+## 2026-09-08 — a USB label can no longer lie
+
+NoiseFile now stops with a clear message when Android refuses the selected
+USB microphone or routes the recording through a different input. It also
+stops if that USB microphone drops out while recording. A reading is saved
+under a USB microphone's name and calibration only while Android reports that
+exact microphone as the live input. Regression tests cover a rejected USB
+preference, a missing route, and a wrong routed device.
+
+versionCode 17, versionName 0.10.2.

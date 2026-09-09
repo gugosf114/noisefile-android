@@ -46,6 +46,8 @@ class NoiseMeter(private val context: Context) {
     private companion object {
         const val TAG = "NoiseMeter"
         const val BUILT_IN_LABEL = "Built-in microphone"
+        const val USB_ROUTE_ERROR =
+            "NoiseFile could not use the USB microphone. Reconnect it, or unplug it to use the phone microphone."
     }
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -158,12 +160,15 @@ class NoiseMeter(private val context: Context) {
             onError("This phone could not initialize its microphone.")
             return
         }
-        if (usb != null) {
-            // Route to the USB mic; if the platform refuses, the built-in mic is used
-            // and the label would lie, so say so instead.
-            if (!record.setPreferredDevice(usb)) {
-                Log.w(TAG, "USB microphone ${usb.productName} could not be selected; using the built-in mic")
-            }
+        if (usb != null && !usbPreferenceAccepted(
+                hasUsbInput = true,
+                preferenceAccepted = record.setPreferredDevice(usb),
+            )
+        ) {
+            Log.w(TAG, "USB microphone ${usb.productName} could not be selected")
+            record.release()
+            onError(USB_ROUTE_ERROR)
+            return
         }
 
         audioRecord = record
@@ -178,8 +183,18 @@ class NoiseMeter(private val context: Context) {
             try {
                 val filter = AWeightingFilter()
                 record.startRecording()
+                if (!isExpectedUsbRoute(usb?.id, record.routedDevice?.id)) {
+                    Log.w(TAG, "USB microphone ${usb?.productName} was requested but is not the routed input")
+                    onError(USB_ROUTE_ERROR)
+                    return@launch
+                }
                 logMicrophoneFacts(record, audioSource, calibration, offsetDb, micLabel)
                 while (isActive && record.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
+                    if (!isExpectedUsbRoute(usb?.id, record.routedDevice?.id)) {
+                        Log.w(TAG, "USB microphone ${usb?.productName} stopped being the routed input")
+                        onError(USB_ROUTE_ERROR)
+                        break
+                    }
                     val count = record.read(samples, 0, samples.size, AudioRecord.READ_BLOCKING)
                     when (classifyAudioReadResult(count)) {
                         AudioReadAction.PROCESS -> Unit
@@ -285,3 +300,9 @@ internal fun classifyAudioReadResult(sampleCount: Int): AudioReadAction = when {
     sampleCount == 0 -> AudioReadAction.RETRY
     else -> AudioReadAction.FAIL
 }
+
+internal fun usbPreferenceAccepted(hasUsbInput: Boolean, preferenceAccepted: Boolean): Boolean =
+    !hasUsbInput || preferenceAccepted
+
+internal fun isExpectedUsbRoute(expectedUsbDeviceId: Int?, routedDeviceId: Int?): Boolean =
+    expectedUsbDeviceId == null || expectedUsbDeviceId == routedDeviceId
