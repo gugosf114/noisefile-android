@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
@@ -1458,6 +1459,22 @@ private fun ReviewScreen(
     onSaveAndPrepare: () -> Unit,
     onDiscard: () -> Unit,
 ) {
+    // The take is not saved yet. Back (arrow or phone key) must ask before dropping it.
+    var confirmDiscard by remember { mutableStateOf(false) }
+    BackHandler { confirmDiscard = true }
+    if (confirmDiscard) {
+        AlertDialog(
+            onDismissRequest = { confirmDiscard = false },
+            title = { Text("Throw this take away?") },
+            text = { Text("This recording is not saved yet. Going back drops it for good.") },
+            confirmButton = {
+                TextButton(onClick = { confirmDiscard = false; onDiscard() }) { Text("Throw it away") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDiscard = false }) { Text("Keep it") }
+            },
+        )
+    }
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
         containerColor = MaterialTheme.colorScheme.background,
@@ -1474,7 +1491,7 @@ private fun ReviewScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = onDiscard) {
+                    IconButton(onClick = { confirmDiscard = true }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Discard and go back")
                     }
                     Spacer(Modifier.width(6.dp))
@@ -1534,7 +1551,7 @@ private fun ReviewScreen(
                         )
                         Text(
                             text = "Save the incident below. NoiseFile will copy a completed complaint and open the best available city route.",
-                            color = Ink,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -2094,7 +2111,7 @@ private fun IncidentCard(
                     )
                     Text(
                         text = incident.location.ifBlank { "No location added." },
-                        color = if (incident.location.isBlank()) Muted else Ink,
+                        color = if (incident.location.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(5.dp))
@@ -2107,7 +2124,7 @@ private fun IncidentCard(
                     )
                     Text(
                         text = incident.notes.ifBlank { "No notes added." },
-                        color = if (incident.notes.isBlank()) Muted else Ink,
+                        color = if (incident.notes.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     TextButton(
