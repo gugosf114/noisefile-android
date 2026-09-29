@@ -285,15 +285,21 @@ class NoiseMeter(private val context: Context) {
     /**
      * The microphone checks itself: the phone's own speaker plays one pitch at three
      * levels, each exactly 10 dB quieter, and the microphone must hear the same steps.
-     * The media volume is read, never changed. Nothing to buy, nothing to press.
+     * The tone plays from the phone's built-in speaker even with headphones connected, on the
+     * alarm channel, at 80% of that channel's volume; the volume is put back when the test ends.
+     * Music and headphone volume are never touched. Nothing to buy, nothing to press.
      */
     @SuppressLint("MissingPermission")
     fun runSelfTest(onProgress: (Int) -> Unit, onResult: (SelfTestResult) -> Unit) {
         stop()
         val notHeard = SelfTestResult(SelfTestOutcome.TONE_NOT_HEARD, 0, 0, 0.0, emptyList())
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        val micKey = micKeyFor(usbInput(audioManager))
-        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) { onResult(notHeard); return }
+        val usb = usbInput(audioManager)
+        val micKey = micKeyFor(usb)
+        val speaker = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+            .firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
+        val builtInMic = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS)
+            .firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_MIC }
 
         val sampleRate = 48_000
         val source = if (supportsUnprocessed(audioManager)) {
@@ -323,8 +329,8 @@ class NoiseMeter(private val context: Context) {
             AudioTrack.Builder()
                 .setAudioAttributes(
                     AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build(),
                 )
                 .setAudioFormat(
@@ -342,11 +348,20 @@ class NoiseMeter(private val context: Context) {
             track?.release(); record.release(); onResult(notHeard); return
         }
 
+        // The phone's own speaker and its own microphone, whatever else is plugged in or paired.
+        speaker?.let { track.setPreferredDevice(it) }
+        record.setPreferredDevice(usb ?: builtInMic)
+
         audioRecord = record
         recordingJob = scope.launch {
             val windows = ArrayList<ToneWindow>()
             val buffer = ShortArray(SelfTestMath.WINDOW_SAMPLES)
+            val channel = AudioManager.STREAM_ALARM
+            val volumeBefore = audioManager.getStreamVolume(channel)
+            val volumeForTest = (audioManager.getStreamMaxVolume(channel) * SelfTestMath.TEST_VOLUME_SHARE)
+                .toInt().coerceAtLeast(1)
             try {
+                runCatching { audioManager.setStreamVolume(channel, volumeForTest, 0) }
                 record.startRecording()
                 track.write(sequence, 0, sequence.size)
                 track.play()
@@ -368,7 +383,12 @@ class NoiseMeter(private val context: Context) {
                     onProgress(SelfTestMath.stepAt(windows.size, sampleRate))
                 }
                 val result = SelfTestMath.evaluate(windows)
-                Log.i(TAG, "selfTest outcome=${result.outcome} steps=${result.stepsHeard} drops=${result.measuredDropsDb} worst=${result.worstErrorDb}")
+                Log.i(
+                    TAG,
+                    "selfTest outcome=${result.outcome} steps=${result.stepsHeard} drops=${result.measuredDropsDb} " +
+                        "worst=${result.worstErrorDb} plateaus=${SelfTestMath.plateaus(windows)} " +
+                        "out=${track.routedDevice?.type} in=${record.routedDevice?.type} volume=$volumeForTest (was $volumeBefore)",
+                )
                 profiles.saveSelfTest(
                     micKey,
                     SelfTestRecord(result.outcome, result.rangeDb, result.worstErrorDb, System.currentTimeMillis()),
@@ -377,6 +397,7 @@ class NoiseMeter(private val context: Context) {
             } catch (_: Throwable) {
                 if (isActive) onResult(SelfTestResult(SelfTestOutcome.NOT_CONFIRMED, 0, 0, 0.0, emptyList()))
             } finally {
+                runCatching { audioManager.setStreamVolume(channel, volumeBefore, 0) }
                 runCatching { track.stop() }
                 track.release()
                 runCatching { record.stop() }

@@ -40,7 +40,10 @@ object SelfTestMath {
     const val LEAD_SECONDS = 0.5
     const val TONE_SECONDS = 2.0
     const val GAP_SECONDS = 0.6
-    const val BASE_DBFS = -12.0
+    /** Loudest tone, below full scale, so the speaker's own limiter stays out of the way. */
+    const val BASE_DBFS = -15.0
+    /** The test sets the alarm channel to this share of its full volume, then puts it back. */
+    const val TEST_VOLUME_SHARE = 0.8
     val STEP_DROPS_DB = listOf(0.0, 10.0, 20.0)
     const val TOLERANCE_DB = 2.5
     const val MIN_SHARE = 0.5
