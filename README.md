@@ -1,6 +1,6 @@
 # NoiseFile
 
-### ▶ [Download NoiseFile — 2026-09-28 (v0.11.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
+### ▶ [Download NoiseFile — 2026-09-28 (v0.12.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
 
 **Know the rule. Log the noise. File the complaint.**
 
