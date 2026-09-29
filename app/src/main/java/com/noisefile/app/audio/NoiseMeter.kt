@@ -31,6 +31,8 @@ data class MicStatus(
     val micKey: String,
     val micLabel: String,
     val isUsb: Boolean,
+    /** dBFS at 94 dB SPL the phone itself reported for this mic, if it ever did. */
+    val declaredSensitivity: Double? = null,
     val supportsUnprocessed: Boolean,
     val profile: MicProfile?,
 ) {
@@ -84,8 +86,13 @@ class NoiseMeter(private val context: Context) {
             isUsb = usb != null,
             supportsUnprocessed = supportsUnprocessed(audioManager),
             profile = profiles.load(key),
+            declaredSensitivity = profiles.declaredSensitivity(key),
         )
     }
+
+    var calibrationPromptDismissed: Boolean
+        get() = profiles.calibrationPromptDismissed
+        set(value) { profiles.calibrationPromptDismissed = value }
 
     fun saveCalibration(profile: MicProfile) = profiles.save(profile)
 
@@ -142,8 +149,8 @@ class NoiseMeter(private val context: Context) {
             NoiseMath.ESTIMATE_OFFSET_DBA
         }
         val userOffset = profile?.offsetDb ?: 0.0
-        val offsetDb = baseOffset + userOffset
-        val calibration = when {
+        var offsetDb = baseOffset + userOffset
+        var calibration = when {
             profile != null -> LevelCalibration.USER_CALIBRATED
             usb == null && unprocessed -> LevelCalibration.PLATFORM_SPEC
             else -> LevelCalibration.ESTIMATE
@@ -170,6 +177,15 @@ class NoiseMeter(private val context: Context) {
             record.release()
             onError("This phone could not initialize its microphone.")
             return
+        }
+        // Zero taps: a phone that declares its own mic sensitivity (CDD 5.4.1 C-1-4) sets its own level.
+        // The built-in path only; a USB mic's sensitivity is its own. A user calibration still wins.
+        if (usb == null && profile == null && !unprocessed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            declaredSensitivity(record)?.let { dbfs ->
+                profiles.rememberDeclaredSensitivity(micKey, dbfs)
+                offsetDb = NoiseMath.offsetFromSensitivity(dbfs)
+                calibration = LevelCalibration.PLATFORM_SPEC
+            }
         }
         if (usb != null && !usbPreferenceAccepted(
                 hasUsbInput = true,
@@ -286,6 +302,13 @@ class NoiseMeter(private val context: Context) {
                 micFacts,
         )
     }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun declaredSensitivity(record: AudioRecord): Double? =
+        runCatching { record.activeMicrophones }.getOrDefault(emptyList())
+            .map { it.sensitivity }
+            .firstOrNull { it != MicrophoneInfo.SENSITIVITY_UNKNOWN && it > -80f && it < 0f }
+            ?.toDouble()
 
     @RequiresApi(Build.VERSION_CODES.P)
     private fun microphoneFacts(record: AudioRecord): String {

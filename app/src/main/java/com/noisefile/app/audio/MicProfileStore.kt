@@ -43,6 +43,19 @@ class MicProfileStore(context: Context) {
         preferences.edit().remove(micKey).apply()
     }
 
+    /** The phone's own declared mic sensitivity (dBFS at 94 dB SPL), remembered once read; null = never declared. */
+    fun declaredSensitivity(micKey: String): Double? =
+        if (preferences.contains("declared:$micKey")) preferences.getFloat("declared:$micKey", 0f).toDouble() else null
+
+    fun rememberDeclaredSensitivity(micKey: String, dbfsAt94: Double) {
+        preferences.edit().putFloat("declared:$micKey", dbfsAt94.toFloat()).apply()
+    }
+
+    /** The once-only "make your numbers count" card: shown after the first incident until Skip or a calibration. */
+    var calibrationPromptDismissed: Boolean
+        get() = preferences.getBoolean("prompt_dismissed", false)
+        set(value) { preferences.edit().putBoolean("prompt_dismissed", value).apply() }
+
     private companion object {
         const val PREFERENCES_NAME = "noisefile_mic_profiles"
     }
