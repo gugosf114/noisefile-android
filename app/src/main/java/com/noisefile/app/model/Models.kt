@@ -106,6 +106,13 @@ data class Incident(
     val ambientSeconds: Long? = null,
     /** Where the dB numbers came from, for the complaint: mic and calibration, in words. */
     val levelNote: String? = null,
+    /** The take second by second: highest estimate per sample, numbers only, never audio. */
+    val levelTrace: List<Int> = emptyList(),
+    /** Seconds each trace point covers (1, or 2, 4, … for long takes). */
+    val traceSecondsPerSample: Int = 1,
+    /** SHA-256 evidence seal over the measured facts and the previous seal. Null for takes saved before sealing existed. */
+    val evidenceHash: String? = null,
+    val previousHash: String? = null,
 )
 
 /** How a published schedule reads: the windows are when noise is allowed, or when it is restricted. */

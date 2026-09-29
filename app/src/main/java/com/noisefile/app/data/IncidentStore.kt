@@ -18,12 +18,17 @@ class IncidentStore(context: Context) {
 
     @Synchronized
     fun add(incident: Incident): List<Incident> {
-        val incidents = (listOf(incident) + load())
+        val existing = load()
+        val sealed = EvidenceSeal.seal(incident, existing.maxByOrNull { it.id })
+        val incidents = (listOf(sealed) + existing)
             .distinctBy { it.id }
             .take(MAX_INCIDENTS)
         persist(incidents)
         return incidents
     }
+
+    /** Re-check every seal in the chain. */
+    fun verify(): EvidenceSeal.Report = EvidenceSeal.verify(load())
 
     @Synchronized
     fun updateDetails(
@@ -66,6 +71,10 @@ class IncidentStore(context: Context) {
         .put("ambientDb", ambientDb ?: JSONObject.NULL)
         .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
         .put("levelNote", levelNote ?: JSONObject.NULL)
+        .put("levelTrace", JSONArray().also { array -> levelTrace.forEach { array.put(it) } })
+        .put("traceSecondsPerSample", traceSecondsPerSample)
+        .put("evidenceHash", evidenceHash ?: JSONObject.NULL)
+        .put("previousHash", previousHash ?: JSONObject.NULL)
 
     private companion object {
         const val PREFERENCES_NAME = "noisefile_incidents"
@@ -100,4 +109,8 @@ private fun JSONObject.toIncident(): Incident = Incident(
     ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
     ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
     levelNote = if (has("levelNote") && !isNull("levelNote")) getString("levelNote") else null,
+    levelTrace = optJSONArray("levelTrace")?.let { array -> List(array.length()) { array.getInt(it) } } ?: emptyList(),
+    traceSecondsPerSample = optInt("traceSecondsPerSample", 1),
+    evidenceHash = if (has("evidenceHash") && !isNull("evidenceHash")) getString("evidenceHash") else null,
+    previousHash = if (has("previousHash") && !isNull("previousHash")) getString("previousHash") else null,
 )
