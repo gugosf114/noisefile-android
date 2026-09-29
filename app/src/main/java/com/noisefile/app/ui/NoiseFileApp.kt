@@ -537,9 +537,14 @@ internal fun MeterScreen(
                 style = MaterialTheme.typography.displayLarge,
             )
             Text("estimated dB", color = Muted, style = MaterialTheme.typography.labelMedium)
-            if (cityLimit != null) {
-                Text("city limit now ${cityLimit.roundToInt()}", color = Danger, style = MaterialTheme.typography.labelSmall)
-            }
+        }
+        if (cityLimit != null) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = "${rule.jurisdiction.substringBefore(",")} limit now ${cityLimit.roundToInt()} dB",
+                color = Danger,
+                style = MaterialTheme.typography.labelLarge,
+            )
         }
         Spacer(Modifier.height(24.dp))
 
