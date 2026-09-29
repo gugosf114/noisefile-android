@@ -1120,11 +1120,11 @@ private fun MeterScreen(
         Text(
             text = when (reading.calibration) {
                 LevelCalibration.USER_CALIBRATED ->
-                    "${reading.micLabel}, calibrated by you against a reference meter (${CalibrationMath.signed(reading.userOffsetDb)}). Still not a certified meter."
+                    "${reading.micLabel}, calibrated by you (${CalibrationMath.signed(reading.userOffsetDb)}). Still not a certified meter."
                 LevelCalibration.PLATFORM_SPEC ->
                     "Level set by the Android compatibility spec for this phone's unprocessed microphone path (94 dB SPL = -36 dBFS). Still not a certified meter."
                 LevelCalibration.ESTIMATE ->
-                    "${reading.micLabel}, phone estimate. The microphone path carries its own gain, so the number can sit several dB off a real meter."
+                    "${reading.micLabel}, phone estimate. The microphone path carries its own gain, so the number can sit several dB off a sound level meter."
             },
             color = Muted,
             fontSize = 12.sp,
@@ -1154,7 +1154,7 @@ private fun MeterScreen(
                     Text(
                         text = if (alarm) {
                             "Stand 10 feet from the smoke alarm. Press and hold its test button until it sounds a few times. " +
-                                "The alarm is 85 dB at 10 feet by law; the phone learns the difference from its loudest moment."
+                                "The alarm is 85 dB at 10 feet by law. The phone listens for the alarm's own tone; other sounds do not count."
                         } else {
                             "Hold the meter next to this phone's microphone in a steady sound, a fan or radio hiss. " +
                                 "Wait until both numbers settle, then type what the meter reads."
@@ -1163,7 +1163,11 @@ private fun MeterScreen(
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
-                        text = if (alarm) "Loudest so far: ${reading.maximumDb.roundToInt()} dB" else "Phone average so far: ${reading.averageDb.roundToInt()} dB",
+                        text = when {
+                            alarm && reading.alarmToneDb > 0.0 -> "Alarm heard: ${reading.alarmToneDb.roundToInt()} dB. Tap Save calibration."
+                            alarm -> "Listening for the alarm's tone…"
+                            else -> "Phone average so far: ${reading.averageDb.roundToInt()} dB"
+                        },
                         color = Ink,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,

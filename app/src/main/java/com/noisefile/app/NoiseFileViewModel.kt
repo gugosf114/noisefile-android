@@ -270,6 +270,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             )
         }
         noiseMeter.start(
+            listenForAlarm = mode == CalibrationMode.SMOKE_ALARM,
             onReading = { reading ->
                 _uiState.update { state -> state.copy(meterReading = reading) }
             },
@@ -299,9 +300,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         val phoneDb: Double
         if (alarm) {
             // The alarm beeps in bursts; its loudest window is the 85 dBA the standard names.
+            // Only the alarm's own tone counts. A loud room, a voice, a TV never calibrate the phone.
             reference = CalibrationMath.SMOKE_ALARM_DBA_AT_10_FT
-            phoneDb = reading.maximumDb
-            if (reading.sampleWindows < 20 || reading.maximumDb < 55.0) {
+            phoneDb = reading.alarmToneDb
+            if (reading.alarmToneDb <= 0.0) {
                 _uiState.update { it.copy(error = "No alarm heard yet. Press and hold the test button, 10 feet from the phone.") }
                 return
             }
@@ -318,12 +320,19 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             reference = typed
             phoneDb = reading.averageDb
         }
-        noiseMeter.stop()
         val offset = CalibrationMath.newUserOffset(
             existingUserOffsetDb = reading.userOffsetDb,
             phoneAverageDb = phoneDb,
             referenceDb = reference,
         )
+        if (kotlin.math.abs(offset) > com.noisefile.app.audio.AlarmTone.MAX_PLAUSIBLE_OFFSET_DB) {
+            _uiState.update {
+                it.copy(error = "That would move the phone's numbers by ${CalibrationMath.signed(offset)}, too far to be right. " +
+                    if (alarm) "Stand 10 feet from the alarm and try again." else "Check the meter's reading and try again.")
+            }
+            return
+        }
+        noiseMeter.stop()
         noiseMeter.saveCalibration(
             MicProfile(
                 micKey = reading.micKey,
