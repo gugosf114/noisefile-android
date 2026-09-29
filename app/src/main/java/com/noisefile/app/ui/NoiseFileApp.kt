@@ -134,6 +134,7 @@ import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.audio.MicStatus
+import com.noisefile.app.audio.SelfTestMath
 import com.noisefile.app.audio.SelfTestOutcome
 import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.audio.CalibrationMath
@@ -1854,7 +1855,7 @@ private fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("CALIBRATE YOUR MICROPHONE", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
             Text(
-                "Highly recommended. The phone plays three short tones from its own speaker and listens to itself. " +
+                "Highly recommended. The phone plays six short tones from its own speaker and listens to itself. " +
                     "It sets the volume for the test and puts it back after. 10 seconds. Nothing to buy. Or skip.",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
@@ -1880,7 +1881,17 @@ private fun SelfTestDialog(
     onClose: () -> Unit,
     onAgain: () -> Unit,
 ) {
-    val drops = result?.measuredDropsDb?.joinToString(" and ") { "${it.roundToInt()} dB" }.orEmpty()
+    val steps = result?.measuredDropsDb.orEmpty().map { "${it.roundToInt()}" }
+    val stepWords = when (steps.size) {
+        0 -> ""
+        1 -> "${steps[0]} dB"
+        else -> steps.dropLast(1).joinToString(", ") + " and ${steps.last()} dB"
+    }
+    val squeezedWords = when (result?.squeezedLoudSteps ?: 0) {
+        0 -> ""
+        1 -> " The loudest tone came out squeezed, so it was left out. The test cannot tell if the speaker or the microphone did that."
+        else -> " The loudest tones came out squeezed, so they were left out. The test cannot tell if the speaker or the microphone did that."
+    }
     AlertDialog(
         onDismissRequest = { if (!running) onClose() },
         title = {
@@ -1896,21 +1907,18 @@ private fun SelfTestDialog(
         text = {
             Text(
                 when {
-                    running -> "Tone $step of 3. The tones play from the phone's own speaker, even with headphones on. " +
+                    running -> "Tone $step of ${SelfTestMath.TONES}. The tones play from the phone's own speaker, even with headphones on. " +
                         "The volume is set for the test and put back after. Put the phone on a table and keep the room quiet."
-                    result?.outcome == SelfTestOutcome.READS_STRAIGHT && result.stepsHeard >= 3 ->
-                        "The phone played three tones, each 10 dB quieter than the last. The microphone heard drops of $drops. " +
-                            "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
                     result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
-                        "The phone played three tones, each 10 dB quieter than the last. The microphone heard the first two: " +
-                            "a drop of $drops. The third was too quiet for this room. " +
-                            "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
+                        "The phone played six tones, each 10 dB quieter than the last. The microphone heard steps of $stepWords." +
+                            squeezedWords +
+                            " Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
                     result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
                         "Uncover the speaker and the microphone, take the phone out of its case if it has one, then try again."
-                    result != null && result.stepsHeard >= 2 ->
-                        "The tones dropped by 10 dB each. The microphone heard drops of $drops. " +
-                            "A loud room or a case over the speaker can cause this. Try again in a quiet room."
-                    else -> "Only the loudest tone was heard. Find a quieter room, then try again."
+                    result != null && result.stepsHeard >= 3 ->
+                        "The tones dropped by 10 dB each. The microphone heard steps of $stepWords. " +
+                            "They do not match, so nothing is claimed. Your numbers stay labeled estimates."
+                    else -> "Only ${result?.stepsHeard ?: 0} of the six tones were heard. Find a quieter room, then try again."
                 },
             )
         },

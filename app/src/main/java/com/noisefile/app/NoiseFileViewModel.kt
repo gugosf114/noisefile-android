@@ -71,7 +71,7 @@ data class NoiseFileUiState(
     /** True while the once-only "make your numbers count" card should show on Home. */
     val showCalibrationPrompt: Boolean = false,
     val selfTestRunning: Boolean = false,
-    /** Which of the three tones is playing, 1..3. */
+    /** Which of the six tones is playing, 1..6. */
     val selfTestStep: Int = 0,
     val selfTestResult: SelfTestResult? = null,
     val draftLocation: String = "",
@@ -370,7 +370,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    /** The microphone checks itself: three tones from the phone's own speaker. */
+    /** The microphone checks itself: six tones from the phone's own speaker. */
     fun startSelfTest() {
         _uiState.update { it.copy(selfTestRunning = true, selfTestStep = 1, selfTestResult = null, message = null, error = null) }
         noiseMeter.runSelfTest(

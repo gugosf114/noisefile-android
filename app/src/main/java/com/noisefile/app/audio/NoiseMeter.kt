@@ -283,7 +283,7 @@ class NoiseMeter(private val context: Context) {
     }
 
     /**
-     * The microphone checks itself: the phone's own speaker plays one pitch at three
+     * The microphone checks itself: the phone's own speaker plays one pitch at six
      * levels, each exactly 10 dB quieter, and the microphone must hear the same steps.
      * The tone plays from the phone's built-in speaker even with headphones connected, on the
      * alarm channel, at 80% of that channel's volume; the volume is put back when the test ends.
@@ -335,13 +335,13 @@ class NoiseMeter(private val context: Context) {
                 )
                 .setAudioFormat(
                     AudioFormat.Builder()
-                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setEncoding(AudioFormat.ENCODING_PCM_FLOAT)
                         .setSampleRate(sampleRate)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build(),
                 )
                 .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(sequence.size * 2)
+                .setBufferSizeInBytes(sequence.size * 4)
                 .build()
         }.getOrNull()
         if (track == null || track.state == AudioTrack.STATE_UNINITIALIZED) {
@@ -363,7 +363,7 @@ class NoiseMeter(private val context: Context) {
             try {
                 runCatching { audioManager.setStreamVolume(channel, volumeForTest, 0) }
                 record.startRecording()
-                track.write(sequence, 0, sequence.size)
+                track.write(sequence, 0, sequence.size, AudioTrack.WRITE_BLOCKING)
                 track.play()
                 val wanted = SelfTestMath.totalWindows(sampleRate)
                 while (isActive && windows.size < wanted) {
@@ -387,7 +387,8 @@ class NoiseMeter(private val context: Context) {
                 Log.i(
                     TAG,
                     "selfTest outcome=${result.outcome} steps=${result.stepsHeard} drops=${result.measuredDropsDb} " +
-                        "worst=${result.worstErrorDb} plateaus=${SelfTestMath.plateaus(windows)} " +
+                        "worst=${result.worstErrorDb} range=${result.rangeDb} squeezed=${result.squeezedLoudSteps} " +
+                        "onset=${SelfTestMath.onset(windows)} levels=${SelfTestMath.toneLevels(windows)} " +
                         "out=${track.routedDevice?.type} in=${record.routedDevice?.type} volume=$volumeForTest (was $volumeBefore)",
                 )
                 profiles.saveSelfTest(
