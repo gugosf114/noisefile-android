@@ -425,7 +425,7 @@ private fun CityPickerDialog(
 }
 
 @Composable
-private fun MeterScreen(
+internal fun MeterScreen(
     rule: RuleWorkflow,
     reading: MeterReading,
     incidentCount: Int,
@@ -865,7 +865,7 @@ private fun RuleAssessmentCard(
 }
 
 @Composable
-private fun ReviewScreen(
+internal fun ReviewScreen(
     state: NoiseFileUiState,
     rule: RuleWorkflow,
     incidentCount: Int,
@@ -1386,7 +1386,7 @@ private fun ImpactOption(
 }
 
 @Composable
-private fun HistoryScreen(
+internal fun HistoryScreen(
     cityName: String,
     incidents: List<Incident>,
     ruleForIncident: (String) -> RuleWorkflow?,

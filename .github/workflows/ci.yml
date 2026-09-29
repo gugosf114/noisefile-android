@@ -24,6 +24,12 @@ jobs:
         with:
           name: noisefile-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: noisefile-store-screens
+          path: app/build/outputs/store-screens/
+          if-no-files-found: ignore
       - name: Restore Play upload key
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
