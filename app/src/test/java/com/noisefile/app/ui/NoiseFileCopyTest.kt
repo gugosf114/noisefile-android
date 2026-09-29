@@ -15,7 +15,7 @@ class NoiseFileCopyTest {
         assertFalse(source.contains("avg >= 55"))
         assertFalse(source.contains("legally admissible", ignoreCase = true))
         assertFalse(source.contains("MORE EVIDENCE NEEDED"))
-        assertTrue(source.contains("METER CANNOT DECIDE"))
+        assertTrue(source.contains("The meter cannot decide"))
         assertTrue(source.contains("City enforcement uses the required equipment"))
     }
 
@@ -23,7 +23,7 @@ class NoiseFileCopyTest {
     fun reviewAndIncidentCardsLeadWithMaximumInsteadOfAverage() {
         val source = sourceFile().readText()
 
-        assertTrue(source.contains("maximum estimated dB"))
+        assertTrue(source.contains("highest estimated dB"))
         assertTrue(source.contains("dB max"))
         assertFalse(source.contains("estimated average dB"))
         assertFalse(source.contains("dB avg"))
@@ -35,16 +35,17 @@ class NoiseFileCopyTest {
 
         assertTrue(
             source.contains(
-                "MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Signal",
+                "MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> PaperAmber",
             ),
         )
-        assertTrue(source.contains("RuleConditionOutcome.NOT_REACHED -> Signal"))
+        assertTrue(source.contains("RuleConditionOutcome.NOT_REACHED -> PaperAmber"))
         assertFalse(
             source.contains(
                 "MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Success",
             ),
         )
         assertFalse(source.contains("RuleConditionOutcome.NOT_REACHED -> Success"))
+        assertFalse(source.contains("RuleConditionOutcome.NOT_REACHED -> PaperGreen"))
     }
 
     private fun sourceFile(): File {
