@@ -108,6 +108,37 @@ private class ReportPainter(private val doc: PdfDocument) {
 
     private fun label(s: String) { text(s.uppercase(Locale.US), 8.5f, cobalt, bold = true); gap(1f) }
 
+    private fun heightOf(s: String, size: Float, indent: Float = 0f, lineGap: Float = 1.35f): Float =
+        wrap(s, paint(size), width - 2 * margin - indent).size * size * lineGap
+
+    /** Everything on an exhibit page below the chart, at a given body size. */
+    private fun exhibitTailHeight(e: ReportExhibit, body: Float): Float {
+        var h = 0f
+        e.assessment?.let { a ->
+            h += 14f + heightOf(a.headline, body + 2.5f) + 2f + heightOf(a.detail, body) + 4f
+            a.conditions.forEach { cnd ->
+                h += heightOf("• ${cnd.text}", body, indent = 4f) + 2f
+                if (cnd.sourceQuote != null && cnd.sourceCitation != null) {
+                    h += heightOf("The code says · ${cnd.sourceCitation}", body - 1.5f, indent = 16f) +
+                        heightOf("“${cnd.sourceQuote}”", body - 1f, indent = 16f) + 4f
+                }
+            }
+        } ?: run { h += heightOf("No city rule on file for this take.", body) }
+        h += personBlockHeight(e, body)
+        return h
+    }
+
+    private fun personBlockHeight(e: ReportExhibit, body: Float): Float {
+        val inc = e.incident
+        var h = 6f + 10f + 14f
+        h += heightOf("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        h += heightOf("Impact: ${inc.impact}", body + 0.5f)
+        h += heightOf("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
+        inc.levelNote?.let { h += 2f + heightOf(it, body - 0.5f) }
+        h += 6f + 10f + 14f + heightOf("SHA-256 ${inc.evidenceHash ?: "unsealed (saved before sealing existed)"}", 8f) + 12f
+        return h
+    }
+
     fun cover(plan: ReportPlan) {
         newPage()
         gap(120f)
@@ -208,6 +239,10 @@ private class ReportPainter(private val doc: PdfDocument) {
     fun exhibit(e: ReportExhibit, plan: ReportPlan) {
         newPage()
         val inc = e.incident
+        // Header + facts + chart take about 250 pt; shrink the body type until the rest fits the page, down to 8 pt.
+        val available = bottom - margin - 250f
+        var body = 9.5f
+        while (body > 8f && exhibitTailHeight(e, body) > available) body -= 0.5f
         label("Exhibit ${e.number} of ${plan.exhibits.size}")
         text("${inc.noiseType.displayName} · ${e.rule?.jurisdiction?.substringBefore(",") ?: "city not on file"}", 15f, bold = true); gap(2f)
         text(e.whenLabel, 11f, muted); gap(8f)
@@ -238,8 +273,8 @@ private class ReportPainter(private val doc: PdfDocument) {
                 else -> cobalt
             }
             label("City check · ${e.statusWord()}")
-            text(a.headline, 12f, headColor, bold = true); gap(2f)
-            text(a.detail, 9.5f, muted); gap(4f)
+            text(a.headline, body + 2.5f, headColor, bold = true); gap(2f)
+            text(a.detail, body, muted); gap(4f)
             a.conditions.forEach { cnd ->
                 val marker = when (cnd.outcome) {
                     RuleConditionOutcome.REACHED -> "■"
@@ -251,19 +286,21 @@ private class ReportPainter(private val doc: PdfDocument) {
                     RuleConditionOutcome.NOT_REACHED -> amber
                     RuleConditionOutcome.NEEDS_INFORMATION -> ink
                 }
-                text("$marker ${cnd.text}", 9.5f, color, indent = 4f); gap(2f)
+                text("$marker ${cnd.text}", body, color, indent = 4f); gap(2f)
                 if (cnd.sourceQuote != null && cnd.sourceCitation != null) {
-                    text("The code says · ${cnd.sourceCitation}", 8f, muted, bold = true, indent = 16f)
-                    text("“${cnd.sourceQuote}”", 8.5f, muted, italic = true, indent = 16f); gap(4f)
+                    text("The code says · ${cnd.sourceCitation}", body - 1.5f, muted, bold = true, indent = 16f)
+                    text("“${cnd.sourceQuote}”", body - 1f, muted, italic = true, indent = 16f); gap(4f)
                 }
             }
-        } ?: run { text("No city rule on file for this take.", 10f, muted) }
+        } ?: run { text("No city rule on file for this take.", body, muted) }
+        // the person's words and the seal stay together: never three orphan lines on a page of their own
+        need(personBlockHeight(e, body))
         gap(6f); rule()
         label("What the person recorded")
-        text("Location: ${inc.location.ifBlank { "not added" }}", 10f)
-        text("Impact: ${inc.impact}", 10f)
-        text("Notes: ${inc.notes.ifBlank { "none" }}", 10f)
-        inc.levelNote?.let { gap(2f); text(it, 9f, muted, italic = true) }
+        text("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        text("Impact: ${inc.impact}", body + 0.5f)
+        text("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
+        inc.levelNote?.let { gap(2f); text(it, body - 0.5f, muted, italic = true) }
         gap(6f); rule()
         label("Evidence seal")
         text("SHA-256 ${inc.evidenceHash ?: "unsealed (saved before sealing existed)"}", 8f, muted)
