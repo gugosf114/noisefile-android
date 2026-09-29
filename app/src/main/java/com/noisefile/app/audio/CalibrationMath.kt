@@ -14,6 +14,9 @@ object CalibrationMath {
     fun newUserOffset(existingUserOffsetDb: Double, phoneAverageDb: Double, referenceDb: Double): Double =
         existingUserOffsetDb + (referenceDb - phoneAverageDb)
 
+    /** UL 217 / NFPA 72: a residential smoke alarm sounds at 85 dBA or more, measured 10 feet away. */
+    const val SMOKE_ALARM_DBA_AT_10_FT = 85.0
+
     fun isPlausibleReference(referenceDb: Double): Boolean =
         referenceDb in MIN_REFERENCE_DB..MAX_REFERENCE_DB
 

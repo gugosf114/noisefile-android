@@ -44,6 +44,14 @@ enum class CaptureStage {
     CALIBRATE,
 }
 
+/** What the phone is being checked against while calibrating. */
+enum class CalibrationMode {
+    /** Press the smoke alarm's test button 10 feet away; the alarm is 85 dBA by law. */
+    SMOKE_ALARM,
+    /** A sound level meter held next to the phone; the person types its reading. */
+    METER,
+}
+
 data class NoiseFileUiState(
     val screen: AppScreen = AppScreen.HOME,
     val selectedJurisdictionId: String = RuleCatalog.SAN_JOSE_ID,
@@ -55,6 +63,9 @@ data class NoiseFileUiState(
     val ambient: AmbientReading? = null,
     val ambientTargetSeconds: Int = 0,
     val calibrationReferenceText: String = "",
+    val calibrationMode: CalibrationMode = CalibrationMode.SMOKE_ALARM,
+    /** True while the once-only "make your numbers count" card should show on Home. */
+    val showCalibrationPrompt: Boolean = false,
     val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
     val draftNotes: String = "",
@@ -244,12 +255,13 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
      * Calibrate this microphone against a reference meter: the meter runs, the
      * user reads the reference and types it, the difference is saved per mic.
      */
-    fun startCalibration() {
+    fun startCalibration(mode: CalibrationMode = CalibrationMode.SMOKE_ALARM) {
         val startedAt = System.currentTimeMillis()
         _uiState.update {
             it.copy(
                 screen = AppScreen.METER,
                 captureStage = CaptureStage.CALIBRATE,
+                calibrationMode = mode,
                 meterReading = MeterReading(),
                 measurementStartedAt = startedAt,
                 calibrationReferenceText = "",
@@ -281,34 +293,46 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     fun finishCalibration() {
         val state = _uiState.value
         if (state.captureStage != CaptureStage.CALIBRATE) return
-        val reference = state.calibrationReferenceText.trim().toDoubleOrNull()
-        if (reference == null || !CalibrationMath.isPlausibleReference(reference)) {
-            _uiState.update {
-                it.copy(error = "Type the reference meter's reading in dB, between 30 and 120.")
-            }
-            return
-        }
         val reading = state.meterReading
-        if (reading.sampleWindows < 20) {
-            _uiState.update {
-                it.copy(error = "Let the meter run a few seconds in a steady sound before saving.")
+        val alarm = state.calibrationMode == CalibrationMode.SMOKE_ALARM
+        val reference: Double
+        val phoneDb: Double
+        if (alarm) {
+            // The alarm beeps in bursts; its loudest window is the 85 dBA the standard names.
+            reference = CalibrationMath.SMOKE_ALARM_DBA_AT_10_FT
+            phoneDb = reading.maximumDb
+            if (reading.sampleWindows < 20 || reading.maximumDb < 55.0) {
+                _uiState.update { it.copy(error = "No alarm heard yet. Press and hold the test button, 10 feet from the phone.") }
+                return
             }
-            return
+        } else {
+            val typed = state.calibrationReferenceText.trim().toDoubleOrNull()
+            if (typed == null || !CalibrationMath.isPlausibleReference(typed)) {
+                _uiState.update { it.copy(error = "Type the meter's reading in dB, between 30 and 120.") }
+                return
+            }
+            if (reading.sampleWindows < 20) {
+                _uiState.update { it.copy(error = "Let the meter run a few seconds in a steady sound before saving.") }
+                return
+            }
+            reference = typed
+            phoneDb = reading.averageDb
         }
         noiseMeter.stop()
         val offset = CalibrationMath.newUserOffset(
             existingUserOffsetDb = reading.userOffsetDb,
-            phoneAverageDb = reading.averageDb,
+            phoneAverageDb = phoneDb,
             referenceDb = reference,
         )
         noiseMeter.saveCalibration(
             MicProfile(
                 micKey = reading.micKey,
                 offsetDb = offset,
-                referenceLabel = "reference meter",
+                referenceLabel = if (alarm) "smoke alarm test button, 85 dB at 10 feet" else "sound level meter",
                 calibratedAtEpochMillis = System.currentTimeMillis(),
             ),
         )
+        noiseMeter.calibrationPromptDismissed = true
         _uiState.update {
             it.copy(
                 screen = AppScreen.HOME,
@@ -316,12 +340,28 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 meterReading = MeterReading(),
                 measurementStartedAt = null,
                 calibrationReferenceText = "",
-                message = "Calibrated ${reading.micLabel}: this phone averaged ${reading.averageDb.roundToInt()} dB, " +
-                    "the meter said ${reference.roundToInt()} dB, so ${CalibrationMath.signed(offset)} is saved for it.",
+                showCalibrationPrompt = false,
+                message = if (alarm) {
+                    "Calibrated ${reading.micLabel} with your smoke alarm: the phone heard ${phoneDb.roundToInt()} dB, " +
+                        "the alarm is ${reference.roundToInt()} dB, so ${CalibrationMath.signed(offset)} is saved."
+                } else {
+                    "Calibrated ${reading.micLabel}: this phone averaged ${phoneDb.roundToInt()} dB, " +
+                        "the meter said ${reference.roundToInt()} dB, so ${CalibrationMath.signed(offset)} is saved for it."
+                },
                 error = null,
             )
         }
     }
+
+    fun skipCalibrationPrompt() {
+        noiseMeter.calibrationPromptDismissed = true
+        _uiState.update { it.copy(showCalibrationPrompt = false) }
+    }
+
+    /** The card shows once: after the first saved incident, while the numbers are still estimates. */
+    private fun shouldPromptCalibration(incidents: List<Incident>): Boolean =
+        incidents.isNotEmpty() && !noiseMeter.calibrationPromptDismissed &&
+            noiseMeter.inputStatus().let { it.profile == null && it.declaredSensitivity == null }
 
     fun clearCalibration() {
         val status = noiseMeter.inputStatus()
@@ -506,6 +546,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 draftPhotos = emptyList(),
                 draftClip = null,
                 draftClipSeconds = 0,
+                showCalibrationPrompt = shouldPromptCalibration(incidents),
                 message = "Incident saved to your private history.",
                 error = null,
             )
@@ -522,12 +563,12 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                     .format(Instant.ofEpochMilli(it.calibratedAtEpochMillis).atZone(ZoneId.systemDefault()))
             }
             "The sound levels above come from my phone's ${reading.micLabel.lowercase(Locale.US)}, " +
-                "calibrated against a reference meter" + (day?.let { " on $it" } ?: "") +
+                "calibrated against a ${profile?.referenceLabel ?: "reference"}" + (day?.let { " on $it" } ?: "") +
                 " (${CalibrationMath.signed(reading.userOffsetDb)}), and are included as incident context."
         }
         LevelCalibration.PLATFORM_SPEC ->
-            "The sound levels above come from my phone's built-in microphone on its unprocessed path, whose level " +
-                "Android's compatibility specification pins (94 dB SPL reads -36 dBFS); they are included as incident context."
+            "The sound levels above come from my phone's built-in microphone at the level the phone itself declares " +
+                "under Android's compatibility specification; they are included as incident context."
         LevelCalibration.ESTIMATE -> null
     }
 

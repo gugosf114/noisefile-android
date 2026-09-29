@@ -121,6 +121,7 @@ import com.noisefile.app.data.writeIncidentPdf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
+import com.noisefile.app.CalibrationMode
 import com.noisefile.app.CaptureStage
 import com.noisefile.app.NoiseFileUiState
 import com.noisefile.app.NoiseFileViewModel
@@ -169,10 +170,11 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val haptic = LocalHapticFeedback.current
     var showCityPicker by remember { mutableStateOf(false) }
     var pendingStage by remember { mutableStateOf(CaptureStage.NOISE) }
+    var pendingCalibrationMode by remember { mutableStateOf(CalibrationMode.SMOKE_ALARM) }
     val startStage = { stage: CaptureStage ->
         when (stage) {
             CaptureStage.AMBIENT -> viewModel.startAmbientMeasurement()
-            CaptureStage.CALIBRATE -> viewModel.startCalibration()
+            CaptureStage.CALIBRATE -> viewModel.startCalibration(pendingCalibrationMode)
             CaptureStage.NOISE -> viewModel.startMeasurement()
         }
     }
@@ -199,7 +201,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     }
     val beginCapture = { beginStage(CaptureStage.NOISE) }
     val beginAmbient = { beginStage(CaptureStage.AMBIENT) }
-    val beginCalibration = { beginStage(CaptureStage.CALIBRATE) }
+    val beginCalibration = { mode: CalibrationMode -> pendingCalibrationMode = mode; beginStage(CaptureStage.CALIBRATE) }
 
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
@@ -216,6 +218,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             micStatus = viewModel.micStatus(),
             onBeginCalibration = beginCalibration,
             onClearCalibration = viewModel::clearCalibration,
+            onSkipCalibrationPrompt = viewModel::skipCalibrationPrompt,
             onShareNeighbor = {
                 shareNeighborInvite(context, viewModel.selectedRule())
             },
@@ -232,6 +235,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             ambient = state.ambient,
             ambientTargetSeconds = state.ambientTargetSeconds,
             calibrationReferenceText = state.calibrationReferenceText,
+            calibrationMode = state.calibrationMode,
             error = state.error,
             onCalibrationReferenceChange = viewModel::setCalibrationReference,
             onStop = viewModel::stopMeasurement,
@@ -303,8 +307,9 @@ private fun HomeScreen(
     onBeginAmbient: () -> Unit,
     ambientTargetSeconds: Int,
     micStatus: MicStatus,
-    onBeginCalibration: () -> Unit,
+    onBeginCalibration: (CalibrationMode) -> Unit,
     onClearCalibration: () -> Unit,
+    onSkipCalibrationPrompt: () -> Unit,
     onShareNeighbor: () -> Unit,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
@@ -403,6 +408,15 @@ private fun HomeScreen(
                     Icon(Icons.Default.RadioButtonChecked, contentDescription = null)
                     Spacer(Modifier.width(10.dp))
                     Text("Start Recording", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+
+            if (state.showCalibrationPrompt) {
+                item {
+                    CalibrationPromptCard(
+                        onListen = { onBeginCalibration(CalibrationMode.SMOKE_ALARM) },
+                        onSkip = onSkipCalibrationPrompt,
+                    )
                 }
             }
 
@@ -998,6 +1012,7 @@ private fun MeterScreen(
     ambient: AmbientReading?,
     ambientTargetSeconds: Int,
     calibrationReferenceText: String,
+    calibrationMode: CalibrationMode = CalibrationMode.SMOKE_ALARM,
     error: String?,
     onCalibrationReferenceChange: (String) -> Unit,
     onStop: () -> Unit,
@@ -1128,30 +1143,36 @@ private fun MeterScreen(
                     modifier = Modifier.padding(18.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
+                    val alarm = calibrationMode == CalibrationMode.SMOKE_ALARM
                     Text(
-                        text = "AGAINST A REFERENCE METER",
+                        text = if (alarm) "WITH YOUR SMOKE ALARM" else "WITH A SOUND LEVEL METER",
                         color = Cobalt,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 0.9.sp,
                     )
                     Text(
-                        text = "Hold a real sound level meter next to this phone's microphone in a steady sound, " +
-                            "a fan or radio hiss. Wait until both numbers settle, then type what the meter reads.",
+                        text = if (alarm) {
+                            "Stand 10 feet from the smoke alarm. Press and hold its test button until it sounds a few times. " +
+                                "The alarm is 85 dB at 10 feet by law; the phone learns the difference from its loudest moment."
+                        } else {
+                            "Hold the meter next to this phone's microphone in a steady sound, a fan or radio hiss. " +
+                                "Wait until both numbers settle, then type what the meter reads."
+                        },
                         color = Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Text(
-                        text = "Phone average so far: ${reading.averageDb.roundToInt()} dB",
+                        text = if (alarm) "Loudest so far: ${reading.maximumDb.roundToInt()} dB" else "Phone average so far: ${reading.averageDb.roundToInt()} dB",
                         color = Ink,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
-                    OutlinedTextField(
+                    if (!alarm) OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         value = calibrationReferenceText,
                         onValueChange = onCalibrationReferenceChange,
-                        label = { Text("Reference meter reading, dB") },
+                        label = { Text("Meter reading, dB") },
                         placeholder = { Text("Example: 62") },
                         singleLine = true,
                         shape = RoundedCornerShape(16.dp),
@@ -1224,7 +1245,11 @@ private fun MeterScreen(
                 Spacer(Modifier.height(7.dp))
                 
                 Text(
-                    text = if (isCalibrating) {
+                    text = if (isCalibrating && calibrationMode == CalibrationMode.SMOKE_ALARM) {
+                        "• 10 feet from the alarm, phone held up, microphone uncovered.\n" +
+                            "• Hold the test button through two or three beeps.\n" +
+                            "• The saved offset applies to this microphone only."
+                    } else if (isCalibrating) {
                         "• A steady sound works best: a fan, a shower, radio static.\n" +
                             "• Meter and phone microphone side by side, same height, same direction.\n" +
                             "• The saved offset applies to this microphone only."
@@ -1798,9 +1823,38 @@ private fun CodeQuote(quote: String, citation: String) {
 
 /** Which microphone the meter will use and how it is calibrated; the way in to calibrate it. */
 @Composable
+private fun CalibrationPromptCard(onListen: () -> Unit, onSkip: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = Signal.copy(alpha = 0.14f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Signal.copy(alpha = 0.5f)),
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("MAKE YOUR NUMBERS COUNT", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+            Text(
+                "Your phone's sound numbers are estimates. To tighten them, press your smoke alarm's test button, " +
+                    "hold the phone 10 feet away, and tap Listen. Takes 20 seconds. Or skip.",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onListen,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White),
+                ) { Text("Listen for my smoke alarm", fontWeight = FontWeight.SemiBold) }
+                TextButton(onClick = onSkip) { Text("Skip") }
+            }
+        }
+    }
+}
+
+@Composable
 private fun MicrophoneCard(
     status: MicStatus,
-    onBeginCalibration: () -> Unit,
+    onBeginCalibration: (CalibrationMode) -> Unit,
     onClearCalibration: () -> Unit,
 ) {
     Surface(
@@ -1829,12 +1883,13 @@ private fun MicrophoneCard(
             Text(
                 text = when (status.calibration) {
                     LevelCalibration.USER_CALIBRATED ->
-                        "Calibrated by you against a reference meter (${CalibrationMath.signed(status.profile?.offsetDb ?: 0.0)})."
+                        "Calibrated by you with a ${status.profile?.referenceLabel ?: "reference"} (${CalibrationMath.signed(status.profile?.offsetDb ?: 0.0)})."
                     LevelCalibration.PLATFORM_SPEC ->
-                        "Level set by the Android compatibility spec for this phone's unprocessed microphone path. A reference meter can still tighten it."
+                        "This phone declares its own microphone level, so the numbers are set by the phone itself. " +
+                            "Your smoke alarm or a sound level meter can still tighten them."
                     LevelCalibration.ESTIMATE ->
-                        "Estimate. This phone gives no calibration of its own. Hold a real meter next to it once and the app remembers the offset. " +
-                            "Plug in a USB-C measurement microphone and it is picked up automatically."
+                        "Estimate. This phone does not declare its microphone level. Your smoke alarm's test button " +
+                            "(85 dB at 10 feet by law) or a sound level meter can set it. Optional."
                 },
                 color = Muted,
                 style = MaterialTheme.typography.bodyMedium,
@@ -1842,16 +1897,19 @@ private fun MicrophoneCard(
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
-                    onClick = onBeginCalibration,
+                    onClick = { onBeginCalibration(CalibrationMode.SMOKE_ALARM) },
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Icon(Icons.Default.Mic, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Calibrate against a meter", fontWeight = FontWeight.SemiBold)
+                    Text("Use my smoke alarm", fontWeight = FontWeight.SemiBold)
                 }
                 if (status.profile != null) {
                     TextButton(onClick = onClearCalibration) { Text("Clear") }
                 }
+            }
+            TextButton(onClick = { onBeginCalibration(CalibrationMode.METER) }, contentPadding = PaddingValues(0.dp)) {
+                Text("I have a sound level meter", color = Muted)
             }
         }
     }

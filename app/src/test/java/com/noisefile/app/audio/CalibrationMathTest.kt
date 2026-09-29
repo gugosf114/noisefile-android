@@ -31,4 +31,18 @@ class CalibrationMathTest {
         assertEquals("-6 dB", CalibrationMath.signed(-5.5))
         assertEquals("+0 dB", CalibrationMath.signed(0.2))
     }
+
+    @Test
+    fun theSmokeAlarmIsTheKnownSoundAndItsPeakSetsTheOffset() {
+        // The alarm is 85 dBA at 10 ft by UL 217; the phone's loudest window heard 71 -> +14.
+        assertEquals(85.0, CalibrationMath.SMOKE_ALARM_DBA_AT_10_FT, 0.0)
+        assertEquals(14.0, CalibrationMath.newUserOffset(0.0, 71.0, CalibrationMath.SMOKE_ALARM_DBA_AT_10_FT), 0.001)
+    }
+
+    @Test
+    fun aDeclaredSensitivityGivesTheOffsetDirectly() {
+        // -26 dBFS at 94 dB SPL -> dB SPL = dBFS + 120
+        assertEquals(120.0, NoiseMath.offsetFromSensitivity(-26.0), 0.001)
+        assertEquals(NoiseMath.CDD_UNPROCESSED_OFFSET_DBA, NoiseMath.offsetFromSensitivity(-36.0), 0.001)
+    }
 }
