@@ -1463,9 +1463,10 @@ private fun HistoryScreen(
 @Composable
 private fun EvidenceSealLine(report: EvidenceSeal.Report) {
     val (text, color) = when {
+        !report.intact -> "Evidence seal broken at incident ${report.brokenAtId}: a measured number, an incident, or the order changed after saving." to Danger
         report.sealedCount == 0 -> "Evidence seal: incidents saved before sealing existed are unsealed." to Muted
         report.intact -> "Evidence seal intact on ${report.sealedCount} incident${if (report.sealedCount == 1) "" else "s"}. Numbers, times and order unchanged since saving." to Success
-        else -> "Evidence seal broken at incident ${report.brokenAtId}: a measured number, an incident, or the order changed after saving." to Danger
+        else -> "Evidence seal: nothing to check yet." to Muted
     }
     Text(text, color = color, style = MaterialTheme.typography.bodySmall)
 }

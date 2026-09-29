@@ -81,6 +81,26 @@ class EvidenceSealTest {
     }
 
     @Test
+    fun sealsMadeBeforePhotosAndClipsExistedStillVerify() {
+        // 0.12.x sealed with the first recipe. Those incidents must verify after every later update.
+        val first = take(1)
+        val firstSealed = first.copy(
+            previousHash = EvidenceSeal.GENESIS,
+            evidenceHash = sha256(EvidenceSeal.canonicalV1(first, EvidenceSeal.GENESIS)),
+        )
+        val second = EvidenceSeal.seal(take(2).copy(clipHash = "abc", clipSeconds = 10), firstSealed)
+        val report = EvidenceSeal.verify(listOf(firstSealed, second))
+        assertTrue(report.intact)
+        assertEquals(2, report.sealedCount)
+        // an old-recipe seal cannot be used to hide a file swapped in later
+        assertFalse(EvidenceSeal.verify(listOf(firstSealed.copy(clipHash = "swapped", clipSeconds = 10))).intact)
+    }
+
+    private fun sha256(text: String): String =
+        java.security.MessageDigest.getInstance("SHA-256").digest(text.toByteArray(Charsets.UTF_8))
+            .joinToString("") { String.format(java.util.Locale.US, "%02x", it) }
+
+    @Test
     fun differentTracesGiveDifferentSeals() {
         assertNotEquals(
             EvidenceSeal.hash(take(1), EvidenceSeal.GENESIS),
