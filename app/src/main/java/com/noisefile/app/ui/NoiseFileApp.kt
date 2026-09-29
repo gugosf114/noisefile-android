@@ -1854,8 +1854,8 @@ private fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("CALIBRATE YOUR MICROPHONE", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
             Text(
-                "Highly recommended. The phone plays a short tone and listens to itself. " +
-                    "30 seconds. Nothing to buy. Or skip.",
+                "Highly recommended. The phone plays three short tones from its own speaker and listens to itself. " +
+                    "It sets the volume for the test and puts it back after. 10 seconds. Nothing to buy. Or skip.",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -1896,17 +1896,17 @@ private fun SelfTestDialog(
         text = {
             Text(
                 when {
-                    running -> "Tone $step of 3. Put the phone on a table. Keep the room quiet. " +
-                        "Leave the speaker and microphone uncovered."
+                    running -> "Tone $step of 3. The tones play from the phone's own speaker, even with headphones on. " +
+                        "The volume is set for the test and put back after. Put the phone on a table and keep the room quiet."
                     result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
                         "The phone played three tones, each 10 dB quieter than the last. The microphone heard drops of $drops. " +
                             "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
                     result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
-                        "Turn the media volume up, unplug headphones, uncover the speaker and microphone, then try again."
+                        "Uncover the speaker and the microphone, take the phone out of its case if it has one, then try again."
                     result != null && result.stepsHeard >= 2 ->
                         "The tones dropped by 10 dB each. The microphone heard drops of $drops. " +
                             "A loud room or a case over the speaker can cause this. Try again in a quiet room."
-                    else -> "Only the loudest tone was heard. Turn the media volume up or find a quieter room, then try again."
+                    else -> "Only the loudest tone was heard. Find a quieter room, then try again."
                 },
             )
         },
