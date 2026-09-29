@@ -29,6 +29,9 @@ object EvidenceSeal {
         incident.levelNote ?: "",
         incident.traceSecondsPerSample.toString(),
         incident.levelTrace.joinToString(","),
+        incident.photoHashes.joinToString(","),
+        incident.clipHash ?: "",
+        incident.clipSeconds.toString(),
         previousHash,
     ).joinToString("|")
 

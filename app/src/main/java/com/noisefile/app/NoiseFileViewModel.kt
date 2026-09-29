@@ -6,7 +6,10 @@ import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.audio.MicProfile
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
+import com.noisefile.app.data.IncidentFiles
 import com.noisefile.app.data.IncidentStore
+import android.net.Uri
+import java.io.File
 import com.noisefile.app.data.LevelTraceRecorder
 import com.noisefile.app.data.EvidenceSeal
 import com.noisefile.app.data.RuleCatalog
@@ -57,6 +60,10 @@ data class NoiseFileUiState(
     val draftNotes: String = "",
     val message: String? = null,
     val error: String? = null,
+    /** Staged files for the incident being reviewed. */
+    val draftPhotos: List<File> = emptyList(),
+    val draftClip: File? = null,
+    val draftClipSeconds: Int = 0,
 )
 
 class NoiseFileViewModel(application: Application) : AndroidViewModel(application) {
@@ -67,6 +74,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val incidentStore = IncidentStore(application)
     private val trace = LevelTraceRecorder()
+    private val files = IncidentFiles(application)
     private val noiseMeter = NoiseMeter(application)
     private val _uiState = MutableStateFlow(
         NoiseFileUiState(incidents = incidentStore.load()),
@@ -337,7 +345,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             )
         }
 
+        files.clearDraft()
+        _uiState.update { it.copy(draftPhotos = emptyList(), draftClip = null, draftClipSeconds = 0) }
         noiseMeter.start(
+            keepClip = true,
             onReading = { reading ->
                 trace.add(reading.elapsedMillis, reading.currentDb)
                 _uiState.update { state -> state.copy(meterReading = reading) }
@@ -384,15 +395,42 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             }
             return
         }
+        val clip = noiseMeter.takeClip()?.let { (bytes, seconds) -> files.stageDraftClip(bytes) to seconds }
         _uiState.update {
             it.copy(
                 screen = AppScreen.REVIEW,
                 draftImpact = "Interrupted rest or quiet use",
                 draftNotes = "",
+                draftClip = clip?.first,
+                draftClipSeconds = clip?.second ?: 0,
                 error = null,
             )
         }
     }
+
+    /** A picked photo joins the draft (at most two). */
+    fun addDraftPhoto(uri: Uri) {
+        val current = _uiState.value.draftPhotos
+        if (current.size >= 2) return
+        val staged = runCatching { files.stageDraftPhoto(uri, current.size + 1) }.getOrNull()
+        if (staged == null) {
+            _uiState.update { it.copy(error = "That photo could not be read.") }
+            return
+        }
+        _uiState.update { it.copy(draftPhotos = current + staged, error = null) }
+    }
+
+    fun removeDraftPhoto(file: File) {
+        file.delete()
+        _uiState.update { it.copy(draftPhotos = it.draftPhotos.filterNot { f -> f == file }) }
+    }
+
+    fun dropDraftClip() {
+        _uiState.value.draftClip?.delete()
+        _uiState.update { it.copy(draftClip = null, draftClipSeconds = 0) }
+    }
+
+    fun incidentFile(incident: Incident, name: String): File = files.file(incident.id, name)
 
     fun setImpact(impact: String) {
         _uiState.update { it.copy(draftImpact = impact) }
@@ -431,8 +469,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             }
             return null
         }
+        val incidentId = System.currentTimeMillis()
+        val committed = files.commit(incidentId, state.draftPhotos, state.draftClip)
         val incident = Incident(
-            id = System.currentTimeMillis(),
+            id = incidentId,
             ruleId = rule.id,
             noiseType = rule.noiseType,
             startedAtEpochMillis = startedAt,
@@ -448,6 +488,11 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             levelNote = levelNoteFor(reading),
             levelTrace = trace.snapshot(),
             traceSecondsPerSample = trace.secondsPerSample,
+            photoNames = committed.photoNames,
+            photoHashes = committed.photoHashes,
+            clipName = committed.clipName,
+            clipHash = committed.clipHash,
+            clipSeconds = if (committed.clipName != null) state.draftClipSeconds else 0,
         )
         val incidents = incidentStore.add(incident)
         _uiState.update {
@@ -458,6 +503,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 measurementStartedAt = null,
                 ambient = null,
                 draftNotes = "",
+                draftPhotos = emptyList(),
+                draftClip = null,
+                draftClipSeconds = 0,
                 message = "Incident saved to your private history.",
                 error = null,
             )
@@ -500,7 +548,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun ruleForIncident(ruleId: String): RuleWorkflow? = ruleCatalog.byId(ruleId)
 
-    fun verifyEvidence(): EvidenceSeal.Report = incidentStore.verify()
+    fun verifyEvidence(): EvidenceSeal.Report = incidentStore.verify(files)
 
     fun incidentCountFor(ruleId: String): Int =
         _uiState.value.incidents.count { it.ruleId == ruleId }
