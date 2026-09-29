@@ -207,7 +207,9 @@ class NoiseMeter(private val context: Context) {
 
                     val filteredSamples = filter.process(samples, count)
                     val current = NoiseMath.rmsToEstimatedDbA(filteredSamples, count, offsetDb)
-                    minimum = min(minimum, current)
+                    // A window of pure digital silence (0 dB) is the mic warming up, not the room.
+                    // It must not pin MIN to 0 for the whole take.
+                    if (current > 0.0) minimum = min(minimum, current)
                     maximum = max(maximum, current)
                     energyTotal += 10.0.pow(current / 10.0)
                     windows += 1

@@ -247,6 +247,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
         }
 
         AppScreen.HISTORY -> HistoryScreen(
+            cityName = viewModel.selectedJurisdiction().displayName,
             incidents = state.incidents,
             ruleForIncident = viewModel::ruleForIncident,
             onShowHome = viewModel::showHome,
@@ -482,7 +483,7 @@ private fun CityPickerDialog(
                             Column {
                                 Text(
                                     text = jurisdiction.displayName,
-                                    color = if (jurisdiction.isAvailable) Ink else Muted,
+                                    color = if (jurisdiction.isAvailable) MaterialTheme.colorScheme.onSurface else Muted,
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                                 Text(
@@ -1413,12 +1414,22 @@ private fun RuleAssessmentCard(
                     RuleConditionOutcome.NOT_REACHED -> "○"
                     RuleConditionOutcome.NEEDS_INFORMATION -> "•"
                 }
+                val preview = conditionPreview(condition.text)
+                var expanded by remember(condition.text) { mutableStateOf(false) }
                 Text(
-                    text = "$marker ${condition.text}",
+                    text = "$marker ${if (expanded || preview == null) condition.text else preview}",
                     color = conditionColor,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
+                if (preview != null) {
+                    TextButton(
+                        onClick = { expanded = !expanded },
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Text(if (expanded) "Show less" else "Read the full rule")
+                    }
+                }
                 if (condition.sourceQuote != null && condition.sourceCitation != null) {
                     CodeQuote(quote = condition.sourceQuote, citation = condition.sourceCitation)
                 }
@@ -1715,6 +1726,20 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambien
     }
 }
 
+/**
+ * Long rule text folds to its first sentences on the phone; the reader opens the rest.
+ * Returns null when the text is short enough to show whole.
+ */
+internal fun conditionPreview(text: String, maxChars: Int = 420): String? {
+    if (text.length <= maxChars) return null
+    val sentenceEnds = Regex("""[.!?](\s|$)""").findAll(text).map { it.range.first + 1 }.toList()
+    val cut = sentenceEnds.filter { it in 60..maxChars }.lastOrNull()
+        ?: sentenceEnds.firstOrNull { it > 60 }
+        ?: maxChars
+    val head = text.substring(0, cut).trimEnd()
+    return if (head.length >= text.length - 40) null else "$head …"
+}
+
 /** The ordinance's own sentence, shown under the line it justifies. Not our words. */
 @Composable
 private fun CodeQuote(quote: String, citation: String) {
@@ -1906,6 +1931,7 @@ private fun ImpactOption(
 
 @Composable
 private fun HistoryScreen(
+    cityName: String,
     incidents: List<Incident>,
     ruleForIncident: (String) -> RuleWorkflow?,
     onShowHome: () -> Unit,
@@ -1927,7 +1953,7 @@ private fun HistoryScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
-                BrandHeader()
+                BrandHeader(cityName = cityName)
                 Spacer(Modifier.height(26.dp))
                 SectionTitle(
                     eyebrow = "PRIVATE · ON THIS PHONE",
