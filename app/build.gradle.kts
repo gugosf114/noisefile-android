@@ -25,8 +25,8 @@ android {
         applicationId = "com.wimlabs.noisefile"
         minSdk = 26
         targetSdk = 36
-        versionCode = 31
-        versionName = "0.16.1"
+        versionCode = 32
+        versionName = "0.17.0"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -45,6 +45,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // A separate app on the phone: the preview never touches the real one or its saved incidents.
+            applicationIdSuffix = ".preview"
+            versionNameSuffix = "-preview"
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(

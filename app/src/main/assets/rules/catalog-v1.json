@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-28.1",
+  "catalogVersion": "2026-09-29.1",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -247,7 +247,7 @@
       "actionLabel": "Call Animal Control",
       "actionUri": "tel:5105354884",
       "officialSourceLabel": "Oakland Municipal Code §8.18.010(B)–(D)",
-      "officialSourceUrl": "https://oakland-ca.elaws.us/code/coor_title8_ch8.18_sec8.18.010",
+      "officialSourceUrl": "https://library.municode.com/ca/oakland/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.18NU",
       "verifiedDate": "2026-07-29"
     },
     {
@@ -263,7 +263,7 @@
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:5107773333",
       "officialSourceLabel": "Oakland Municipal Code §§8.18.010–8.18.020 and Planning Code §17.120.050",
-      "officialSourceUrl": "https://oakland-ca.elaws.us/code/coor_title8_ch8.18_sec8.18.010",
+      "officialSourceUrl": "https://library.municode.com/ca/oakland/codes/code_of_ordinances?nodeId=TIT8HESA_CH8.18NU",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://aca-prod.accela.com/OAKLAND/Cap/CapApplyDisclaimer.aspx?TabName=Enforcement&module=Enforcement",
       "secondaryActionLabel": "File Ongoing Property Complaint",
@@ -294,7 +294,7 @@
       "actionLabel": "File Construction-Noise Complaint",
       "actionUri": "https://aca-prod.accela.com/OAKLAND/Cap/CapApplyDisclaimer.aspx?TabName=Enforcement&module=Enforcement",
       "officialSourceLabel": "Oakland Planning Code §17.120.050 and Municipal Code §8.18.020",
-      "officialSourceUrl": "https://oakland-ca.elaws.us/code/pc_ch17.120_sec17.120.050",
+      "officialSourceUrl": "https://library.municode.com/ca/oakland/codes/planning_code?nodeId=TIT17PL_CH17.120PEST_17.120.050NO",
       "verifiedDate": "2026-07-29",
       "secondaryActionLabel": "Call Noise Complaint Line",
       "secondaryActionUri": "tel:5102383381",

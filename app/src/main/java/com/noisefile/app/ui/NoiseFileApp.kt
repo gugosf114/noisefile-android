@@ -92,6 +92,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -101,7 +102,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -143,7 +147,16 @@ import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
+import com.noisefile.app.ui.theme.Brass
+import com.noisefile.app.ui.theme.Chalk
+import com.noisefile.app.ui.theme.DeckHigh
 import com.noisefile.app.ui.theme.Cobalt
+import com.noisefile.app.ui.theme.CodeQuoteStyle
+import com.noisefile.app.ui.theme.PaperAmber
+import com.noisefile.app.ui.theme.PaperBlue
+import com.noisefile.app.ui.theme.PaperMuted
+import com.noisefile.app.ui.theme.PaperRed
+import com.noisefile.app.ui.theme.Sky
 import com.noisefile.app.ui.theme.Danger
 import com.noisefile.app.ui.theme.Ink
 import com.noisefile.app.ui.theme.Line
@@ -154,6 +167,7 @@ import com.noisefile.app.ui.theme.Success
 import com.noisefile.app.ui.theme.White
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -208,29 +222,51 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val beginCalibration = { mode: CalibrationMode -> pendingCalibrationMode = mode; beginStage(CaptureStage.CALIBRATE) }
     val beginSelfTest = { beginStage(CaptureStage.SELF_TEST) }
 
+    val nav = NavActions(
+        home = viewModel::showHome,
+        incidents = viewModel::showHistory,
+        record = beginCapture,
+        rules = viewModel::showRules,
+        more = viewModel::showMore,
+    )
+
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
             state = state,
             workflows = viewModel.workflows,
             selectedRule = viewModel.selectedRule(),
             selectedJurisdiction = viewModel.selectedJurisdiction(),
-            incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
             onSelectRule = viewModel::selectRule,
             onShowCityPicker = { showCityPicker = true },
             onBeginCapture = beginCapture,
             onBeginAmbient = beginAmbient,
             ambientTargetSeconds = viewModel.ambientTargetSecondsFor(viewModel.selectedRule()),
-            micStatus = viewModel.micStatus(),
-            onBeginCalibration = beginCalibration,
-            onClearCalibration = viewModel::clearCalibration,
             onSkipCalibrationPrompt = viewModel::skipCalibrationPrompt,
             onBeginSelfTest = beginSelfTest,
-            onShareNeighbor = {
-                shareNeighborInvite(context, viewModel.selectedRule())
-            },
-            onShowHome = viewModel::showHome,
-            onShowHistory = viewModel::showHistory,
+            nav = nav,
+        )
+
+        AppScreen.RULES -> RulesScreen(
+            workflows = viewModel.workflows,
+            selectedRule = viewModel.selectedRule(),
+            selectedJurisdiction = viewModel.selectedJurisdiction(),
+            incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
+            onSelectRule = viewModel::selectRule,
+            onShowCityPicker = { showCityPicker = true },
             onOpenUri = { openUri(context, it) },
+            nav = nav,
+        )
+
+        AppScreen.MORE -> MoreScreen(
+            selectedJurisdiction = viewModel.selectedJurisdiction(),
+            micStatus = viewModel.micStatus(),
+            onShowCityPicker = { showCityPicker = true },
+            onBeginSelfTest = beginSelfTest,
+            onBeginCalibration = beginCalibration,
+            onClearCalibration = viewModel::clearCalibration,
+            onShareNeighbor = { shareNeighborInvite(context, viewModel.selectedRule()) },
+            onOpenUri = { openUri(context, it) },
+            nav = nav,
         )
 
         AppScreen.METER -> MeterScreen(
@@ -276,8 +312,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             ruleForIncident = viewModel::ruleForIncident,
             sealReport = remember(state.incidents) { viewModel.verifyEvidence() },
             fileFor = viewModel::incidentFile,
-            onShowHome = viewModel::showHome,
-            onShowHistory = viewModel::showHistory,
+            nav = nav,
             onExport = { shareHistory(context, state.incidents) },
             onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) },
             onUpdateDetails = viewModel::updateIncidentDetails,
@@ -311,178 +346,6 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
 }
 
 @Composable
-private fun HomeScreen(
-    state: NoiseFileUiState,
-    workflows: List<RuleWorkflow>,
-    selectedRule: RuleWorkflow,
-    selectedJurisdiction: Jurisdiction,
-    incidentCount: Int,
-    onSelectRule: (String) -> Unit,
-    onShowCityPicker: () -> Unit,
-    onBeginCapture: () -> Unit,
-    onBeginAmbient: () -> Unit,
-    ambientTargetSeconds: Int,
-    micStatus: MicStatus,
-    onBeginCalibration: (CalibrationMode) -> Unit,
-    onClearCalibration: () -> Unit,
-    onSkipCalibrationPrompt: () -> Unit,
-    onBeginSelfTest: () -> Unit,
-    onShareNeighbor: () -> Unit,
-    onShowHome: () -> Unit,
-    onShowHistory: () -> Unit,
-    onOpenUri: (String) -> Unit,
-) {
-    AppScaffold(
-        selectedScreen = AppScreen.HOME,
-        onShowHome = onShowHome,
-        onShowHistory = onShowHistory,
-    ) { contentPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
-            item {
-                BrandHeader(
-                    cityName = selectedJurisdiction.displayName,
-                    onCityClick = onShowCityPicker,
-                )
-            }
-
-            if (state.message != null) {
-                item {
-                    StatusMessage(
-                        text = state.message,
-                        color = Success,
-                        icon = Icons.Default.CheckCircle,
-                    )
-                }
-            }
-
-            if (state.error != null) {
-                item {
-                    StatusMessage(
-                        text = state.error,
-                        color = Danger,
-                        icon = Icons.Default.Shield,
-                    )
-                }
-            }
-
-            item {
-                SectionTitle(
-                    eyebrow = "${selectedJurisdiction.displayName.uppercase(Locale.US)} · VERIFIED WORKFLOWS",
-                    title = "What are you hearing?",
-                )
-                Spacer(Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    workflows.forEach { workflow ->
-                        FilterChip(
-                            modifier = Modifier.weight(1f),
-                            selected = workflow.id == selectedRule.id,
-                            onClick = { onSelectRule(workflow.id) },
-                            label = {
-                                Text(
-                                    text = when (workflow.noiseType) {
-                                        NoiseType.BARKING_DOG -> "Animal"
-                                        NoiseType.PARTY_MUSIC -> "Noise"
-                                        NoiseType.CONSTRUCTION -> "Construction"
-                                    },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                            },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = Ink,
-                                selectedLabelColor = White,
-                            ),
-                        )
-                    }
-                }
-            }
-
-            item {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    onClick = onBeginCapture,
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Cobalt,
-                        contentColor = White,
-                    ),
-                ) {
-                    Icon(Icons.Default.RadioButtonChecked, contentDescription = null)
-                    Spacer(Modifier.width(10.dp))
-                    Text("Start Recording", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-
-            if (state.showCalibrationPrompt) {
-                item {
-                    CalibrationPromptCard(
-                        onCalibrate = onBeginSelfTest,
-                        onSkip = onSkipCalibrationPrompt,
-                    )
-                }
-            }
-
-            item {
-                AmbientBaselineCard(
-                    rule = selectedRule,
-                    ambient = state.ambient,
-                    targetSeconds = ambientTargetSeconds,
-                    onBeginAmbient = onBeginAmbient,
-                )
-            }
-
-            item {
-                MicrophoneCard(
-                    status = micStatus,
-                    onBeginSelfTest = onBeginSelfTest,
-                    onBeginCalibration = onBeginCalibration,
-                    onClearCalibration = onClearCalibration,
-                )
-            }
-
-            item {
-                RuleCard(
-                    rule = selectedRule,
-                    incidentCount = incidentCount,
-                    onOpenUri = onOpenUri,
-                )
-            }
-
-            item {
-                MicrophoneNotice()
-            }
-
-            item {
-                HeroCard()
-            }
-
-            item {
-                NeighborVerifyCard(onShare = onShareNeighbor)
-            }
-
-            item {
-                ThreeStepStrip()
-            }
-        }
-    }
-}
-
-@Composable
 private fun CityPickerDialog(
     jurisdictions: List<Jurisdiction>,
     selectedJurisdiction: Jurisdiction,
@@ -491,14 +354,14 @@ private fun CityPickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Choose your city") },
+        title = { Text("Your city") },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Only verified city packets can be selected. More Bay Area cities are added with the ordinance library.",
+                    text = "Pick the city where the noise is.",
                     color = Muted,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -536,7 +399,7 @@ private fun CityPickerDialog(
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                                 Text(
-                                    text = if (isSelected) "Selected · verified" else jurisdiction.region,
+                                    text = if (isSelected) "Selected" else jurisdiction.region,
                                     color = Muted,
                                     style = MaterialTheme.typography.bodySmall,
                                 )
@@ -559,466 +422,6 @@ private fun CityPickerDialog(
             }
         },
     )
-}
-
-@Composable
-private fun BrandHeader(
-    cityName: String = "San Jose",
-    onCityClick: (() -> Unit)? = null,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Surface(
-                modifier = Modifier.size(44.dp),
-                shape = RoundedCornerShape(14.dp),
-                color = Ink,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.GraphicEq,
-                    contentDescription = null,
-                    tint = Signal,
-                    modifier = Modifier.padding(10.dp),
-                )
-            }
-            Spacer(Modifier.width(11.dp))
-            Column {
-                Text(
-                    text = "NoiseFile",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Text(
-                    text = "KNOW · LOG · FILE",
-                    color = Muted,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.2.sp,
-                )
-            }
-        }
-        Surface(
-            modifier = if (onCityClick != null) {
-                Modifier.clickable(onClick = onCityClick)
-            } else {
-                Modifier
-            },
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface,
-            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    Icons.Default.LocationOn,
-                    contentDescription = null,
-                    tint = Cobalt,
-                    modifier = Modifier.size(16.dp),
-                )
-                Spacer(Modifier.width(5.dp))
-                Text(cityName, style = MaterialTheme.typography.labelLarge)
-                if (onCityClick != null) {
-                    Spacer(Modifier.width(2.dp))
-                    Icon(
-                        Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Change city",
-                        tint = Muted,
-                        modifier = Modifier.size(17.dp),
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun HeroCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(220.dp),
-        shape = RoundedCornerShape(30.dp),
-        colors = CardDefaults.cardColors(containerColor = Ink),
-    ) {
-        Box(Modifier.fillMaxSize()) {
-            WaveDecoration(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .fillMaxWidth(0.58f)
-                    .fillMaxHeight(),
-            )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Surface(
-                    shape = CircleShape,
-                    color = Signal,
-                ) {
-                    Text(
-                        text = "LOCAL RULES · PRIVATE RECORD",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                        color = Ink,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.8.sp,
-                    )
-                }
-                Text(
-                    text = "Know what counts.\nBe ready when it happens.",
-                    color = White,
-                    style = MaterialTheme.typography.headlineLarge,
-                )
-                Text(
-                    text = "Your city’s process, your incident history, your next step.",
-                    color = White.copy(alpha = 0.72f),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun WaveDecoration(
-    modifier: Modifier = Modifier,
-    color: Color = Signal,
-    alpha: Float = 0.26f,
-    variant: Int = 0,
-    horizontalBars: Boolean = false,
-) {
-    val infiniteTransition = rememberInfiniteTransition()
-    val animatedAlpha by infiniteTransition.animateFloat(
-        initialValue = alpha * 0.4f,
-        targetValue = alpha,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "WaveAlpha"
-    )
-    Canvas(modifier = modifier) {
-        val factors = when (variant) {
-            1 -> floatArrayOf(0.88f, 0.74f, 0.58f, 0.43f, 0.30f, 0.20f, 0.12f, 0.06f, 0.02f)
-            2 -> floatArrayOf(0.08f, 0.20f, 0.42f, 0.70f, 0.94f, 0.82f, 0.55f, 0.28f, 0.10f)
-            3 -> floatArrayOf(0.03f, 0.08f, 0.17f, 0.32f, 0.51f, 0.73f, 0.91f, 0.70f, 0.42f)
-            else -> floatArrayOf(0.18f, 0.35f, 0.55f, 0.78f, 0.95f, 0.78f, 0.55f, 0.35f, 0.18f)
-        }
-
-        factors.forEachIndexed { index, factor ->
-            if (horizontalBars) {
-                val y = index * (size.height / (factors.size - 1))
-                drawLine(
-                    color = color.copy(alpha = animatedAlpha),
-                    start = Offset(size.width * (1f - factor), y),
-                    end = Offset(size.width, y),
-                    strokeWidth = 4.dp.toPx(),
-                    cap = StrokeCap.Round,
-                )
-            } else {
-                val x = index * (size.width / (factors.size - 1))
-                drawLine(
-                    color = color.copy(alpha = animatedAlpha),
-                    start = Offset(x, size.height * (1f - factor) / 2f),
-                    end = Offset(x, size.height * (1f + factor) / 2f),
-                    strokeWidth = 5.dp.toPx(),
-                    cap = StrokeCap.Round,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SectionTitle(eyebrow: String, title: String) {
-    Column {
-        Text(
-            text = eyebrow,
-            color = Cobalt,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 1.1.sp,
-        )
-        Spacer(Modifier.height(5.dp))
-        Text(text = title, style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
-@Composable
-private fun RuleCard(
-    rule: RuleWorkflow,
-    incidentCount: Int,
-    onOpenUri: (String) -> Unit,
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-    ) {
-        Box {
-            WaveDecoration(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .width(158.dp)
-                    .height(132.dp),
-                color = Cobalt,
-                alpha = 0.08f,
-                variant = 1,
-                horizontalBars = true,
-            )
-            Column(
-                modifier = Modifier.padding(22.dp),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-            ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    modifier = Modifier.size(44.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    color = Signal.copy(alpha = 0.22f),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Shield,
-                        contentDescription = null,
-                        tint = Ink,
-                        modifier = Modifier.padding(10.dp),
-                    )
-                }
-                Spacer(Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "WHAT HAPPENS HERE",
-                        color = Muted,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp,
-                    )
-                    Text(text = rule.title, style = MaterialTheme.typography.titleLarge)
-                }
-            }
-
-            Text(text = rule.summary, style = MaterialTheme.typography.bodyLarge)
-            rule.hoursRule?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
-            rule.ambientRecipe?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
-
-            rule.requiredIncidentCount?.let { required ->
-                val progress = (incidentCount.toFloat() / required).coerceIn(0f, 1f)
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text("Your documented history", style = MaterialTheme.typography.labelLarge)
-                        Text(
-                            "${incidentCount.coerceAtMost(required)} of $required",
-                            color = if (progress >= 1f) Success else Cobalt,
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                    }
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(9.dp)
-                            .clip(CircleShape),
-                        color = if (progress >= 1f) Success else Cobalt,
-                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    )
-                }
-            }
-
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-            ) {
-                Text(
-                    text = rule.captureInstruction,
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = { onOpenUri(rule.actionUri) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Ink,
-                        contentColor = White,
-                    ),
-                ) {
-                    Text(rule.actionLabel, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-                IconButton(
-                    onClick = { onOpenUri(rule.officialSourceUrl) },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
-                ) {
-                    Icon(Icons.Default.OpenInNew, contentDescription = "Open official source")
-                }
-            }
-            Text(
-                text = "Official source verified ${rule.verifiedDate}",
-                color = Muted,
-                fontSize = 12.sp,
-            )
-            }
-        }
-    }
-}
-
-@Composable
-private fun MicrophoneNotice() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        color = Cobalt.copy(alpha = 0.09f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.22f)),
-    ) {
-        Box {
-            WaveDecoration(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .width(104.dp)
-                    .height(64.dp),
-                color = Cobalt,
-                alpha = 0.10f,
-                variant = 3,
-            )
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    Icons.Default.Mic,
-                    contentDescription = null,
-                    tint = Cobalt,
-                    modifier = Modifier.size(22.dp),
-                )
-                Spacer(Modifier.width(11.dp))
-                Text(
-                    text = "Microphone permission is requested only when you start measuring. NoiseFile does not listen while idle.",
-                    modifier = Modifier.padding(end = 22.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun NeighborVerifyCard(onShare: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        colors = CardDefaults.cardColors(containerColor = Ink),
-    ) {
-        Box {
-            WaveDecoration(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .width(184.dp)
-                    .height(148.dp),
-                color = Signal,
-                alpha = 0.12f,
-                variant = 2,
-                horizontalBars = true,
-            )
-            Column(
-                modifier = Modifier.padding(22.dp),
-                verticalArrangement = Arrangement.spacedBy(13.dp),
-            ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    modifier = Modifier.size(44.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    color = Signal,
-                ) {
-                    Icon(
-                        Icons.Default.GroupAdd,
-                        contentDescription = null,
-                        tint = Ink,
-                        modifier = Modifier.padding(10.dp),
-                    )
-                }
-                Spacer(Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "NEIGHBOR VERIFY",
-                        color = Signal,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.sp,
-                    )
-                    Text(
-                        text = "Someone else hears it too?",
-                        color = White,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-            }
-            Text(
-                text = "Send a private invite asking a nearby resident to independently confirm the time and impact. Secure expiring verification links are the next backend step.",
-                color = White.copy(alpha = 0.74f),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onShare,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Signal,
-                    contentColor = Ink,
-                ),
-            ) {
-                Icon(Icons.Default.Share, contentDescription = null)
-                Spacer(Modifier.width(9.dp))
-                Text("Share a private invite")
-            }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ThreeStepStrip() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        SectionTitle(eyebrow = "ONE CLEAR PATH", title = "From noise to next action")
-        listOf(
-            "1" to "Know the local process before you start.",
-            "2" to "Measure and save each incident privately.",
-            "3" to "File or escalate when your history is ready.",
-        ).forEach { (number, text) ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    modifier = Modifier.size(34.dp),
-                    shape = CircleShape,
-                    color = Ink,
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(number, color = Signal, fontWeight = FontWeight.Bold)
-                    }
-                }
-                Spacer(Modifier.width(12.dp))
-                Text(text, style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-    }
 }
 
 @Composable
@@ -1046,10 +449,10 @@ private fun MeterScreen(
 
     val scrollState = rememberScrollState()
 
+    NightBackground {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Ink)
             .statusBarsPadding()
             .navigationBarsPadding()
             .padding(horizontal = 22.dp, vertical = 14.dp),
@@ -1073,20 +476,18 @@ private fun MeterScreen(
             ) {
                 Text(
                     text = when {
-                        isCalibrating -> "CALIBRATING THIS MICROPHONE"
-                        isAmbient -> "MEASURING THE QUIET FIRST"
-                        else -> "MEASURING NOW"
+                        isCalibrating -> "Calibrating this microphone"
+                        isAmbient -> "Measuring the quiet first"
+                        else -> "Measuring now"
                     },
                     color = Signal,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.2.sp,
+                    style = MaterialTheme.typography.labelMedium,
                 )
                 Text(
                     text = when {
                         isCalibrating -> reading.micLabel
-                        isAmbient -> "Quiet baseline · ${rule.jurisdiction.substringBefore(",")}"
-                        else -> "${rule.jurisdiction.substringBefore(",")} · ${rule.noiseType.displayName}"
+                        isAmbient -> "Quiet baseline in ${rule.jurisdiction.substringBefore(",")}"
+                        else -> "${rule.jurisdiction.substringBefore(",")}, ${rule.noiseType.displayName}"
                     },
                     color = White,
                     style = MaterialTheme.typography.titleLarge,
@@ -1102,10 +503,16 @@ private fun MeterScreen(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val breath by rememberInfiniteTransition(label = "Recording").animateFloat(
+                        initialValue = 1f,
+                        targetValue = 0.25f,
+                        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+                        label = "RecordingLight",
+                    )
                     Box(
                         modifier = Modifier
-                            .size(8.dp)
-                            .background(White, CircleShape),
+                            .size(9.dp)
+                            .background(White.copy(alpha = breath), CircleShape),
                     )
                     Spacer(Modifier.width(7.dp))
                     Text(
@@ -1122,16 +529,27 @@ private fun MeterScreen(
         }
 
         Spacer(Modifier.height(28.dp))
-        MeterGauge(reading)
+        val cityLimit = if (isAmbient || isCalibrating) null else limitAt(rule, LocalTime.now().hour)
+        InstrumentDial(valueDb = reading.currentDb, limitDb = cityLimit, size = 264.dp) {
+            Text(
+                text = reading.currentDb.roundToInt().toString(),
+                color = if (cityLimit != null && reading.currentDb >= cityLimit) Danger else Chalk,
+                style = MaterialTheme.typography.displayLarge,
+            )
+            Text("estimated dB", color = Muted, style = MaterialTheme.typography.labelMedium)
+            if (cityLimit != null) {
+                Text("city limit now ${cityLimit.roundToInt()}", color = Danger, style = MaterialTheme.typography.labelSmall)
+            }
+        }
         Spacer(Modifier.height(24.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            MeterStat("MIN", reading.minimumDb, Modifier.weight(1f))
-            MeterStat("AVERAGE", reading.averageDb, Modifier.weight(1f))
-            MeterStat("MAX", reading.maximumDb, Modifier.weight(1f))
+            MeterStat("Min", reading.minimumDb, Modifier.weight(1f))
+            MeterStat("Average", reading.averageDb, Modifier.weight(1f))
+            MeterStat("Max", reading.maximumDb, Modifier.weight(1f))
         }
 
         Spacer(Modifier.height(8.dp))
@@ -1145,29 +563,19 @@ private fun MeterScreen(
                     "${reading.micLabel}, phone estimate. The microphone path carries its own gain, so the number can sit several dB off a sound level meter."
             },
             color = Muted,
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.bodySmall,
         )
 
         Spacer(Modifier.height(16.dp))
 
         if (isCalibrating) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = Paper,
-                border = androidx.compose.foundation.BorderStroke(2.dp, Cobalt),
-            ) {
-                Column(
-                    modifier = Modifier.padding(18.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
+            PaperCard(edge = PaperBlue, edgeWidth = 2.dp) {
+                run {
                     val alarm = calibrationMode == CalibrationMode.SMOKE_ALARM
                     Text(
-                        text = if (alarm) "WITH YOUR SMOKE ALARM" else "WITH A SOUND LEVEL METER",
-                        color = Cobalt,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.9.sp,
+                        text = if (alarm) "With your smoke alarm" else "With a sound level meter",
+                        color = PaperBlue,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = if (alarm) {
@@ -1200,28 +608,18 @@ private fun MeterScreen(
                         shape = RoundedCornerShape(16.dp),
                     )
                     if (error != null) {
-                        Text(text = error, color = Danger, style = MaterialTheme.typography.bodyMedium)
+                        Text(text = error, color = PaperRed, style = MaterialTheme.typography.bodyMedium)
                     }
                     TextButton(onClick = onCancel) { Text("Cancel") }
                 }
             }
         } else if (isAmbient) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                color = Paper,
-                border = androidx.compose.foundation.BorderStroke(2.dp, Cobalt),
-            ) {
-                Column(
-                    modifier = Modifier.padding(18.dp),
-                    verticalArrangement = Arrangement.spacedBy(9.dp),
-                ) {
+            PaperCard(edge = PaperBlue, edgeWidth = 2.dp) {
+                run {
                     Text(
-                        text = "QUIET BASELINE · ${rule.jurisdiction.substringBefore(",").uppercase(Locale.US)}",
-                        color = Cobalt,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.9.sp,
+                        text = "Quiet baseline in ${rule.jurisdiction.substringBefore(",")}",
+                        color = PaperBlue,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = "Running average so far: ${reading.averageDb.roundToInt()} dB",
@@ -1235,7 +633,7 @@ private fun MeterScreen(
                             (rule.ambientRecipe?.note
                                 ?: "${rule.jurisdiction.substringBefore(",")}'s code sets no ambient recipe; " +
                                     "NoiseFile records ${ambientTargetSeconds / 60} minutes."),
-                        color = Muted,
+                        color = PaperMuted,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
@@ -1258,11 +656,9 @@ private fun MeterScreen(
         ) {
             Column(Modifier.padding(18.dp)) {
                 Text(
-                    text = "CAPTURE COACH",
+                    text = "While you record",
                     color = Signal,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp,
+                    style = MaterialTheme.typography.titleSmall,
                 )
                 Spacer(Modifier.height(7.dp))
                 
@@ -1281,10 +677,10 @@ private fun MeterScreen(
                             "• Keep still and quiet for the whole ${ambientTargetSeconds / 60} minutes; the capture ends on its own."
                     } else {
                         "• Hold the phone steady with its microphone uncovered.\n" +
-                            "• Stay quiet while measuring.\n\n${rule.captureInstruction}"
+                            "• Stay quiet while measuring."
                     },
-                    color = White,
-                    style = MaterialTheme.typography.bodyLarge,
+                    color = Chalk,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -1299,12 +695,12 @@ private fun MeterScreen(
         ) {
             Text(
                 text = when {
-                    isCalibrating -> "Calibration · Saved for ${reading.micLabel}"
-                    isAmbient -> "Quiet baseline · The phone's offset cancels out of the difference"
-                    else -> "Estimated sound level · Keep the microphone uncovered"
+                    isCalibrating -> "Saved for ${reading.micLabel}"
+                    isAmbient -> "The phone's offset cancels out of the difference"
+                    else -> "Keep the microphone uncovered"
                 },
                 color = White.copy(alpha = 0.58f),
-                fontSize = 12.sp,
+                style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(12.dp))
@@ -1315,7 +711,7 @@ private fun MeterScreen(
                 onClick = onStop,
                 shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = White,
+                    containerColor = Chalk,
                     contentColor = Ink,
                 ),
             ) {
@@ -1332,55 +728,6 @@ private fun MeterScreen(
             }
         }
     }
-}
-
-@Composable
-private fun MeterGauge(reading: MeterReading) {
-    val sweep = ((reading.currentDb / 100.0).coerceIn(0.0, 1.0) * 260.0).toFloat()
-    val animatedSweep by animateFloatAsState(targetValue = sweep, label = "GaugeSweep")
-    
-    val targetColor = when {
-        reading.currentDb >= 75 -> Danger
-        reading.currentDb >= 60 -> Signal
-        else -> Cobalt
-    }
-    val animatedColor by animateColorAsState(targetValue = targetColor, label = "GaugeColor")
-
-    Box(
-        modifier = Modifier.size(250.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Canvas(Modifier.fillMaxSize()) {
-            drawArc(
-                color = White.copy(alpha = 0.12f),
-                startAngle = 140f,
-                sweepAngle = 260f,
-                useCenter = false,
-                style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
-            )
-            drawArc(
-                color = animatedColor,
-                startAngle = 140f,
-                sweepAngle = animatedSweep,
-                useCenter = false,
-                style = Stroke(width = 18.dp.toPx(), cap = StrokeCap.Round),
-            )
-        }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = reading.currentDb.roundToInt().toString(),
-                color = White,
-                fontSize = 72.sp,
-                lineHeight = 76.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-2).sp,
-            )
-            Text(
-                text = "estimated dB",
-                color = White.copy(alpha = 0.62f),
-                style = MaterialTheme.typography.titleMedium,
-            )
-        }
     }
 }
 
@@ -1398,9 +745,7 @@ private fun MeterStat(label: String, value: Double, modifier: Modifier = Modifie
             Text(
                 text = label,
                 color = White.copy(alpha = 0.52f),
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.8.sp,
+                style = MaterialTheme.typography.labelMedium,
             )
             Text(
                 text = value.roundToInt().toString(),
@@ -1427,34 +772,24 @@ private fun RuleAssessmentCard(
         ambient = ambient,
     )
     val statusColor = when (assessment.status) {
-        MeterAssessmentStatus.LISTENING -> Muted
-        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> Danger
-        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> Signal
-        MeterAssessmentStatus.NEEDS_INFORMATION -> Cobalt
+        MeterAssessmentStatus.LISTENING -> PaperMuted
+        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> PaperRed
+        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> PaperAmber
+        MeterAssessmentStatus.NEEDS_INFORMATION -> PaperBlue
     }
     val statusLabel = when (assessment.status) {
-        MeterAssessmentStatus.LISTENING -> "CHECKING CITY RULE"
-        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> "LISTED CONDITION REACHED"
-        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> "CONDITION NOT YET REACHED"
-        MeterAssessmentStatus.NEEDS_INFORMATION -> "METER CANNOT DECIDE"
+        MeterAssessmentStatus.LISTENING -> "Checking the city rule"
+        MeterAssessmentStatus.REACHES_LISTED_CONDITION -> "Listed condition reached"
+        MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION -> "Condition not yet reached"
+        MeterAssessmentStatus.NEEDS_INFORMATION -> "The meter cannot decide"
     }
 
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = Paper,
-        border = androidx.compose.foundation.BorderStroke(2.dp, statusColor),
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(9.dp),
-        ) {
+    PaperCard(edge = statusColor, edgeWidth = 2.dp) {
+        run {
             Text(
-                text = "$statusLabel · ${rule.jurisdiction.substringBefore(",").uppercase(Locale.US)}",
+                text = "$statusLabel in ${rule.jurisdiction.substringBefore(",")}",
                 color = statusColor,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.9.sp,
+                style = MaterialTheme.typography.labelLarge,
             )
             Text(
                 text = assessment.headline,
@@ -1464,14 +799,14 @@ private fun RuleAssessmentCard(
             )
             Text(
                 text = assessment.detail,
-                color = Muted,
+                color = PaperMuted,
                 style = MaterialTheme.typography.bodyMedium,
             )
             assessment.conditions.forEach { condition ->
                 val conditionColor = when (condition.outcome) {
-                    RuleConditionOutcome.REACHED -> Danger
-                    RuleConditionOutcome.NOT_REACHED -> Signal
-                    RuleConditionOutcome.NEEDS_INFORMATION -> Cobalt
+                    RuleConditionOutcome.REACHED -> PaperRed
+                    RuleConditionOutcome.NOT_REACHED -> PaperAmber
+                    RuleConditionOutcome.NEEDS_INFORMATION -> PaperBlue
                 }
                 val marker = when (condition.outcome) {
                     RuleConditionOutcome.REACHED -> "✓"
@@ -1480,11 +815,18 @@ private fun RuleAssessmentCard(
                 }
                 val preview = conditionPreview(condition.text)
                 var expanded by remember(condition.text) { mutableStateOf(false) }
+                val shown = if (expanded || preview == null) condition.text else preview
+                val head = shown.substringBefore(": ", "")
                 Text(
-                    text = "$marker ${if (expanded || preview == null) condition.text else preview}",
-                    color = conditionColor,
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(color = conditionColor, fontWeight = FontWeight.Bold)) {
+                            append("$marker ")
+                            if (head.isNotEmpty() && head.length <= 18) append("$head. ")
+                        }
+                        append(if (head.isNotEmpty() && head.length <= 18) shown.substringAfter(": ") else shown)
+                    },
+                    color = Ink,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
                 )
                 if (preview != null) {
                     TextButton(
@@ -1502,8 +844,8 @@ private fun RuleAssessmentCard(
             if (assessment.status == MeterAssessmentStatus.NEEDS_INFORMATION) {
                 Text(
                     text = "The phone reading remains useful evidence. The city makes the final determination.",
-                    color = Muted,
-                    fontSize = 12.sp,
+                    color = PaperMuted,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             } else {
                 Text(
@@ -1514,8 +856,8 @@ private fun RuleAssessmentCard(
                 )
                 Text(
                     text = "Phone estimate only. City enforcement uses the required equipment, position, duration, and other rule conditions.",
-                    color = Muted,
-                    fontSize = 12.sp,
+                    color = PaperMuted,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
@@ -1537,13 +879,13 @@ private fun ReviewScreen(
     onRemovePhoto: (File) -> Unit = {},
     onDropClip: () -> Unit = {},
 ) {
-    // The take is not saved yet. Back (arrow or phone key) must ask before dropping it.
+    // The recording is not saved yet. Back (arrow or phone key) must ask before dropping it.
     var confirmDiscard by remember { mutableStateOf(false) }
     BackHandler { confirmDiscard = true }
     if (confirmDiscard) {
         AlertDialog(
             onDismissRequest = { confirmDiscard = false },
-            title = { Text("Throw this take away?") },
+            title = { Text("Throw this recording away?") },
             text = { Text("This recording is not saved yet. Going back drops it for good.") },
             confirmButton = {
                 TextButton(onClick = { confirmDiscard = false; onDiscard() }) { Text("Throw it away") }
@@ -1553,9 +895,11 @@ private fun ReviewScreen(
             },
         )
     }
+    NightBackground {
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = Color.Transparent,
+        contentColor = Chalk,
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier
@@ -1575,11 +919,9 @@ private fun ReviewScreen(
                     Spacer(Modifier.width(6.dp))
                     Column {
                         Text(
-                            "REVIEW INCIDENT",
-                            color = Cobalt,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.1.sp,
+                            "Review incident",
+                            color = Sky,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         Text("What happened?", style = MaterialTheme.typography.headlineMedium)
                     }
@@ -1616,11 +958,9 @@ private fun ReviewScreen(
                         verticalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
                         Text(
-                            text = "CITY-SPECIFIC NEXT STEP",
-                            color = Cobalt,
-                            fontSize = 11.sp,
-                            letterSpacing = 1.sp,
-                            fontWeight = FontWeight.Bold,
+                            text = "City-specific next step",
+                            color = Sky,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         Text(
                             text = rule.nextAction,
@@ -1647,10 +987,7 @@ private fun ReviewScreen(
             }
 
             item {
-                SectionTitle(
-                    eyebrow = "LOCATION",
-                    title = "Where was the noise?",
-                )
+                Text("Where was the noise?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
             }
 
             item {
@@ -1670,10 +1007,7 @@ private fun ReviewScreen(
             }
 
             item {
-                SectionTitle(
-                    eyebrow = "IMPACT",
-                    title = "How did it affect you?",
-                )
+                Text("How did it affect you?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
             }
 
             items(impactOptions) { impact ->
@@ -1746,25 +1080,17 @@ private fun ReviewScreen(
             }
         }
     }
+    }
 }
 
 @Composable
 private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambient: AmbientReading? = null) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Ink),
-        shape = RoundedCornerShape(26.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(22.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
+    DeckCard {
+        run {
             Text(
                 text = rule.noiseType.displayName,
                 color = Signal,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.sp,
+                style = MaterialTheme.typography.labelLarge,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1774,25 +1100,23 @@ private fun MeasurementSummary(reading: MeterReading, rule: RuleWorkflow, ambien
                 Column {
                     Text(
                         text = reading.maximumDb.roundToInt().toString(),
-                        color = White,
-                        fontSize = 54.sp,
-                        lineHeight = 56.sp,
-                        fontWeight = FontWeight.Bold,
+                        color = Chalk,
+                        style = MaterialTheme.typography.displayLarge,
                     )
-                    Text("maximum estimated dB", color = White.copy(alpha = 0.62f))
+                    Text("highest estimated dB", color = Muted)
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(formatElapsed(reading.elapsedMillis), color = White)
                     Text(
-                        "AVERAGE ${reading.averageDb.roundToInt()} dB",
-                        color = White.copy(alpha = 0.62f),
-                        fontWeight = FontWeight.Bold,
+                        "Average ${reading.averageDb.roundToInt()} dB",
+                        color = Muted,
+                        fontWeight = FontWeight.SemiBold,
                     )
                 }
             }
             if (ambient != null) {
                 Text(
-                    text = "Quiet baseline ${ambient.db.roundToInt()} dB over ${formatElapsed(ambient.seconds * 1_000L)} · " +
+                    text = "Quiet baseline ${ambient.db.roundToInt()} dB over ${formatElapsed(ambient.seconds * 1_000L)}; " +
                         "this recording ${(reading.averageDb - ambient.db).roundToInt()} dB above it on average, " +
                         "${(reading.maximumDb - ambient.db).roundToInt()} dB above at peak",
                     color = Signal,
@@ -1820,32 +1144,21 @@ internal fun conditionPreview(text: String, maxChars: Int = 420): String? {
 
 /** The ordinance's own sentence, shown under the line it justifies. Not our words. */
 @Composable
-private fun CodeQuote(quote: String, citation: String) {
+internal fun CodeQuote(quote: String, citation: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, top = 2.dp, bottom = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+            .drawBehind { drawLine(Line, Offset(0f, 0f), Offset(0f, size.height), strokeWidth = 3.dp.toPx()) }
+            .padding(start = 14.dp, top = 2.dp, bottom = 2.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = "THE CODE SAYS · $citation",
-            color = Muted,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 0.8.sp,
-        )
-        Text(
-            text = "“$quote”",
-            color = Muted,
-            style = MaterialTheme.typography.bodySmall,
-            fontStyle = FontStyle.Italic,
-        )
+        Text("The code says, $citation", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
+        Text("\u201C$quote\u201D", color = Ink, style = CodeQuoteStyle)
     }
 }
 
-/** Which microphone the meter will use and how it is calibrated; the way in to calibrate it. */
 @Composable
-private fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
+internal fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -1853,7 +1166,7 @@ private fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
         border = androidx.compose.foundation.BorderStroke(1.dp, Signal.copy(alpha = 0.5f)),
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("CALIBRATE YOUR MICROPHONE", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+            Text("Calibrate your microphone", color = Signal, style = MaterialTheme.typography.titleMedium)
             Text(
                 "Highly recommended. The phone plays six short tones from its own speaker and listens to itself. " +
                     "It sets the volume for the test and puts it back after. 10 seconds. Nothing to buy. Or skip.",
@@ -1952,7 +1265,7 @@ private fun SelfTestDialog(
 }
 
 @Composable
-private fun MicrophoneCard(
+internal fun MicrophoneCard(
     status: MicStatus,
     onBeginSelfTest: () -> Unit,
     onBeginCalibration: (CalibrationMode) -> Unit,
@@ -1975,11 +1288,9 @@ private fun MicrophoneCard(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
-                text = "MICROPHONE",
+                text = "Microphone",
                 color = Muted,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.sp,
+                style = MaterialTheme.typography.labelMedium,
             )
             Text(
                 text = status.micLabel,
@@ -2023,63 +1334,6 @@ private fun MicrophoneCard(
                 TextButton(onClick = { onBeginCalibration(CalibrationMode.METER) }, contentPadding = PaddingValues(0.dp)) {
                     Text("I have a sound level meter")
                 }
-            }
-        }
-    }
-}
-
-/**
- * The jump's first half: measure the quiet room before the noise. Shown under
- * Start Recording; once a baseline exists it says so and offers a remeasure.
- */
-@Composable
-private fun AmbientBaselineCard(
-    rule: RuleWorkflow,
-    ambient: AmbientReading?,
-    targetSeconds: Int,
-    onBeginAmbient: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = Cobalt.copy(alpha = 0.08f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Cobalt.copy(alpha = 0.25f)),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text(
-                text = "MEASURE THE QUIET FIRST",
-                color = Cobalt,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.sp,
-            )
-            Text(
-                text = if (ambient != null) {
-                    "Quiet baseline ready: ${ambient.db.roundToInt()} dB over ${formatElapsed(ambient.seconds * 1_000L)}. " +
-                        "Record the noise from the same spot and the app shows how far above the quiet it is."
-                } else {
-                    "A phone's dB number can sit several dB off. The difference between the quiet room and the noise does not, " +
-                        "because both come from the same phone in the same spot. " +
-                        (rule.ambientRecipe?.let { "${rule.jurisdiction.substringBefore(",")}'s code measures ambient over ${it.minutes} minutes." }
-                            ?: "${rule.jurisdiction.substringBefore(",")}'s code sets no ambient recipe; NoiseFile records ${targetSeconds / 60} minutes.")
-                },
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = onBeginAmbient,
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Icon(Icons.Default.GraphicEq, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    if (ambient != null) "Remeasure the quiet · ${targetSeconds / 60} min" else "Measure the quiet first · ${targetSeconds / 60} min",
-                    fontWeight = FontWeight.SemiBold,
-                )
             }
         }
     }
@@ -2138,18 +1392,13 @@ private fun HistoryScreen(
     ruleForIncident: (String) -> RuleWorkflow?,
     sealReport: EvidenceSeal.Report,
     fileFor: (Incident, String) -> File,
-    onShowHome: () -> Unit,
-    onShowHistory: () -> Unit,
+    nav: NavActions,
     onExport: () -> Unit,
     onExportPdf: () -> Unit,
     onUpdateDetails: (Long, String, String) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
 ) {
-    AppScaffold(
-        selectedScreen = AppScreen.HISTORY,
-        onShowHome = onShowHome,
-        onShowHistory = onShowHistory,
-    ) { contentPadding ->
+    AppScaffold(selectedScreen = AppScreen.HISTORY, nav = nav) { contentPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -2160,10 +1409,8 @@ private fun HistoryScreen(
             item {
                 BrandHeader(cityName = cityName)
                 Spacer(Modifier.height(26.dp))
-                SectionTitle(
-                    eyebrow = "PRIVATE · ON THIS PHONE",
-                    title = "Incident history",
-                )
+                Text("Incidents", style = MaterialTheme.typography.headlineMedium, color = Chalk)
+                Label("Saved on this phone only")
             }
 
             if (incidents.isNotEmpty()) {
@@ -2216,9 +1463,9 @@ private fun HistoryScreen(
 @Composable
 private fun EvidenceSealLine(report: EvidenceSeal.Report) {
     val (text, color) = when {
-        report.sealedCount == 0 -> "Evidence seal: takes saved before sealing existed are unsealed." to Muted
-        report.intact -> "Evidence seal intact · ${report.sealedCount} sealed take${if (report.sealedCount == 1) "" else "s"}. Numbers, times and order unchanged since saving." to Success
-        else -> "Evidence seal BROKEN at take ${report.brokenAtId}: a measured number, a take, or the order changed after saving." to Danger
+        report.sealedCount == 0 -> "Evidence seal: incidents saved before sealing existed are unsealed." to Muted
+        report.intact -> "Evidence seal intact on ${report.sealedCount} incident${if (report.sealedCount == 1) "" else "s"}. Numbers, times and order unchanged since saving." to Success
+        else -> "Evidence seal broken at incident ${report.brokenAtId}: a measured number, an incident, or the order changed after saving." to Danger
     }
     Text(text, color = color, style = MaterialTheme.typography.bodySmall)
 }
@@ -2232,7 +1479,7 @@ private fun PatternCard(sentence: String, grid: Array<IntArray>) {
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("WHEN IT HAPPENS", color = Cobalt, fontSize = 11.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text("When it happens", color = Sky, style = MaterialTheme.typography.labelLarge)
             Text(sentence, style = MaterialTheme.typography.bodyLarge)
             val maxCount = grid.maxOf { it.max() }.coerceAtLeast(1)
             val days = listOf("M", "T", "W", "T", "F", "S", "S")
@@ -2251,7 +1498,7 @@ private fun PatternCard(sentence: String, grid: Array<IntArray>) {
                     )
                 }
             }
-            Text("Rows Monday to Sunday · columns midnight to 11 PM · darker = more takes", color = Muted, fontSize = 11.sp)
+            Text("Rows are Monday to Sunday. Columns are midnight to 11 PM. Darker means more incidents.", color = Muted, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -2296,7 +1543,7 @@ private fun EmptyHistory() {
                 Icon(
                     Icons.Default.History,
                     contentDescription = null,
-                    tint = Cobalt,
+                    tint = Sky,
                     modifier = Modifier.padding(17.dp),
                 )
             }
@@ -2325,21 +1572,17 @@ private fun IncidentCard(
     var locationDraft by remember(incident.id, incident.location) { mutableStateOf(incident.location) }
     var noteDraft by remember(incident.id, incident.notes) { mutableStateOf(incident.notes) }
     val date = DateTimeFormatter
-        .ofPattern("EEE, MMM d · h:mm a", Locale.US)
+        .ofPattern("EEE, MMM d, h:mm a", Locale.US)
         .format(
             Instant.ofEpochMilli(incident.startedAtEpochMillis)
                 .atZone(ZoneId.systemDefault()),
         )
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
+    val limit = rule?.let {
+        limitAt(it, Instant.ofEpochMilli(incident.startedAtEpochMillis).atZone(ZoneId.systemDefault()).hour)
+    }
+    val overLimit = limit != null && incident.maximumDb >= limit
+    PaperCard(edge = if (overLimit) PaperRed else Line, edgeWidth = if (overLimit) 2.dp else 1.dp) {
+        run {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -2350,21 +1593,27 @@ private fun IncidentCard(
                         text = incident.noiseType.displayName,
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    Text(date, color = Muted, style = MaterialTheme.typography.bodyMedium)
+                    Text(date, color = PaperMuted, style = MaterialTheme.typography.bodyMedium)
                 }
-                Surface(
-                    shape = CircleShape,
-                    color = Signal.copy(alpha = 0.20f),
-                ) {
+                Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = "${incident.maximumDb.roundToInt()} dB max",
-                        modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
-                        color = Ink,
-                        fontWeight = FontWeight.Bold,
+                        color = if (overLimit) PaperRed else Ink,
+                        style = MaterialTheme.typography.headlineSmall,
                     )
+                    if (limit != null) {
+                        Text(
+                            text = if (overLimit) "at or above the ${limit.roundToInt()} dB limit" else "below the ${limit.roundToInt()} dB limit",
+                            color = if (overLimit) PaperRed else PaperMuted,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
                 }
             }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            if (incident.levelTrace.size >= 2) {
+                TraceStrip(trace = incident.levelTrace, limitDb = limit)
+            }
+            HorizontalDivider(color = Line)
             Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
             if (isEditingDetails) {
                 OutlinedTextField(
@@ -2411,28 +1660,24 @@ private fun IncidentCard(
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(
-                        text = "LOCATION",
-                        color = Cobalt,
-                        fontSize = 11.sp,
-                        letterSpacing = 1.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = "Location",
+                        color = PaperMuted,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = incident.location.ifBlank { "No location added." },
-                        color = if (incident.location.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
+                        color = if (incident.location.isBlank()) PaperMuted else Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(
-                        text = "NOTES",
-                        color = Cobalt,
-                        fontSize = 11.sp,
-                        letterSpacing = 1.sp,
-                        fontWeight = FontWeight.Bold,
+                        text = "Notes",
+                        color = PaperMuted,
+                        style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = incident.notes.ifBlank { "No notes added." },
-                        color = if (incident.notes.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
+                        color = if (incident.notes.isBlank()) PaperMuted else Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     TextButton(
@@ -2469,14 +1714,14 @@ private fun IncidentCard(
                 if (incident.location.isBlank()) {
                     Text(
                         text = "Add the incident location before preparing the complaint.",
-                        color = Danger,
+                        color = PaperRed,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             } else {
                 Text(
                     text = "This incident's city rule is no longer available.",
-                    color = Danger,
+                    color = PaperRed,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -2484,21 +1729,45 @@ private fun IncidentCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
-                Text("Average ${incident.averageDb.roundToInt()} dB", color = Muted)
+                Text("Length ${formatElapsed(incident.durationSeconds * 1_000)}", color = PaperMuted, style = MaterialTheme.typography.bodySmall)
+                Text("Average ${incident.averageDb.roundToInt()} dB", color = PaperMuted, style = MaterialTheme.typography.bodySmall)
             }
             if (incident.photoNames.isNotEmpty() || incident.clipName != null) {
                 SavedAttachments(incident = incident, fileFor = fileFor)
             }
             Text(
                 text = "Seal ${EvidenceSeal.short(incident.evidenceHash)}" +
-                    if (incident.levelTrace.size >= 2) " · ${incident.levelTrace.size} trace points" else "",
-                color = Muted,
-                fontSize = 11.sp,
+                    if (incident.levelTrace.size >= 2) ", ${incident.levelTrace.size} trace points" else "",
+                color = PaperMuted,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
 }
+
+/** The sound of one incident, second by second, with the city's limit as a red line. */
+@Composable
+private fun TraceStrip(trace: List<Int>, limitDb: Double?) {
+    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(54.dp)) {
+        val low = 20f; val high = 100f
+        fun y(db: Float) = size.height - ((db - low) / (high - low)).coerceIn(0f, 1f) * size.height
+        drawLine(Line, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = 1.dp.toPx())
+        val step = size.width / (trace.size - 1).coerceAtLeast(1)
+        val path = androidx.compose.ui.graphics.Path()
+        trace.forEachIndexed { i, v -> if (i == 0) path.moveTo(0f, y(v.toFloat())) else path.lineTo(i * step, y(v.toFloat())) }
+        drawPath(path, PaperBlue, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), join = androidx.compose.ui.graphics.StrokeJoin.Round))
+        if (limitDb != null) {
+            drawLine(
+                PaperRed,
+                Offset(0f, y(limitDb.toFloat())),
+                Offset(size.width, y(limitDb.toFloat())),
+                strokeWidth = 1.5.dp.toPx(),
+                pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(10f, 8f)),
+            )
+        }
+    }
+}
+
 
 @Composable
 private fun PhotoThumb(file: File, size: androidx.compose.ui.unit.Dp, onRemove: (() -> Unit)? = null) {
@@ -2509,7 +1778,7 @@ private fun PhotoThumb(file: File, size: androidx.compose.ui.unit.Dp, onRemove: 
         Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(size)) {
             bitmap?.let { Image(bitmap = it.asImageBitmap(), contentDescription = "Photo", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize()) }
         }
-        onRemove?.let { TextButton(onClick = it, contentPadding = PaddingValues(0.dp)) { Text("Remove", fontSize = 11.sp) } }
+        onRemove?.let { TextButton(onClick = it, contentPadding = PaddingValues(0.dp)) { Text("Remove", style = MaterialTheme.typography.labelMedium) } }
     }
 }
 
@@ -2530,7 +1799,7 @@ private fun AttachmentsBlock(
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("PHOTOS AND SOUND", color = Cobalt, fontSize = 11.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text("Photos and sound", style = MaterialTheme.typography.titleMedium)
             Text(
                 text = if (clip != null) "The loudest $clipSeconds seconds were kept as a sound clip. It stays on this phone."
                 else "No sound clip was kept for this incident.",
@@ -2551,7 +1820,7 @@ private fun AttachmentsBlock(
                     ) { Text(if (photos.isEmpty()) "Add a photo" else "Add another") }
                 }
             }
-            Text("Up to two photos, shrunk and kept in the app's own folder. Both go on the PDF and under the seal.", color = Muted, fontSize = 11.sp)
+            Text("Up to two photos. They stay on this phone, go on the PDF, and sit under the seal.", color = Muted, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -2581,13 +1850,13 @@ private fun SavedAttachments(incident: Incident, fileFor: (Incident, String) -> 
         incident.photoNames.forEach { name -> PhotoThumb(fileFor(incident, name), 64.dp) }
         incident.clipName?.let { name ->
             val f = fileFor(incident, name)
-            if (f.isFile) Column { ClipPlayButton(f); Text("${incident.clipSeconds} s · loudest moment", color = Muted, fontSize = 11.sp) }
+            if (f.isFile) Column { ClipPlayButton(f); Text("${incident.clipSeconds} s, loudest moment", color = PaperMuted, style = MaterialTheme.typography.bodySmall) }
         }
     }
 }
 
 @Composable
-private fun StatusMessage(
+internal fun StatusMessage(
     text: String,
     color: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
@@ -2609,51 +1878,7 @@ private fun StatusMessage(
     }
 }
 
-@Composable
-private fun AppScaffold(
-    selectedScreen: AppScreen,
-    onShowHome: () -> Unit,
-    onShowHistory: () -> Unit,
-    content: @Composable (PaddingValues) -> Unit,
-) {
-    Scaffold(
-        contentWindowInsets = WindowInsets.safeDrawing,
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            NavigationBar(
-                containerColor = Ink,
-                tonalElevation = 0.dp,
-            ) {
-                NavigationBarItem(
-                    selected = selectedScreen == AppScreen.HOME,
-                    onClick = onShowHome,
-                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                    label = { Text("Home") },
-                    colors = navColors(),
-                )
-                NavigationBarItem(
-                    selected = selectedScreen == AppScreen.HISTORY,
-                    onClick = onShowHistory,
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text("History") },
-                    colors = navColors(),
-                )
-            }
-        },
-        content = content,
-    )
-}
-
-@Composable
-private fun navColors() = NavigationBarItemDefaults.colors(
-    selectedIconColor = Ink,
-    selectedTextColor = White,
-    indicatorColor = Signal,
-    unselectedIconColor = White.copy(alpha = 0.58f),
-    unselectedTextColor = White.copy(alpha = 0.58f),
-)
-
-private fun formatElapsed(millis: Long): String {
+internal fun formatElapsed(millis: Long): String {
     val totalSeconds = millis.coerceAtLeast(0L) / 1_000L
     val minutes = totalSeconds / 60L
     val seconds = totalSeconds % 60L

@@ -170,7 +170,9 @@ private fun meterCondition(
         } else {
             RuleConditionOutcome.NOT_REACHED
         },
-        text = if (isAtOrAbove) {
+        text = if (isAtOrAbove && differenceDb == 0) {
+            "Limit: ${observedDb.roundToInt()} dB highest estimate is at or above the city's listed$periodLabel ${limitDb.roundToInt()} dB limit. ${meterLimit.comparisonContext}"
+        } else if (isAtOrAbove) {
             "Limit: ${observedDb.roundToInt()} dB highest estimate is $differenceDb dB at or above the city's listed$periodLabel ${limitDb.roundToInt()} dB limit. ${meterLimit.comparisonContext}"
         } else {
             "Limit: ${observedDb.roundToInt()} dB highest estimate is $differenceDb dB below the city's listed$periodLabel ${limitDb.roundToInt()} dB limit. ${meterLimit.comparisonContext}"

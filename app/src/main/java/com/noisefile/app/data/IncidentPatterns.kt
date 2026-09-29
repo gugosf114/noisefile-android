@@ -19,7 +19,7 @@ object IncidentPatterns {
         return grid
     }
 
-    /** "Most takes: Friday and Saturday, 10 PM–1 AM." Null until there are three takes. */
+    /** "Most incidents: Friday and Saturday, 10 PM–1 AM." Null until there are three takes. */
     fun sentence(incidents: List<Incident>, zone: ZoneId): String? {
         if (incidents.size < 3) return null
         val grid = grid(incidents, zone)
@@ -34,7 +34,7 @@ object IncidentPatterns {
             if (sum > bestSum) { bestSum = sum; bestStart = start }
         }
         val days = when (topDays.size) { 0 -> ""; 1 -> topDays[0]; else -> "${topDays[0]} and ${topDays[1]}" }
-        return "Most takes: $days, ${hourLabel(bestStart)}–${hourLabel((bestStart + 3) % 24)}."
+        return "Most incidents: $days, ${hourLabel(bestStart)}–${hourLabel((bestStart + 3) % 24)}."
     }
 
     fun hourLabel(hour: Int): String = when {
