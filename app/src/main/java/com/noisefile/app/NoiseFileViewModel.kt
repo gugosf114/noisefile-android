@@ -613,7 +613,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             val day = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
                 .format(Instant.ofEpochMilli(test.atEpochMillis).atZone(ZoneId.systemDefault()))
             "The sound levels above are estimates from my phone's ${reading.micLabel.lowercase(Locale.US)}, which passed " +
-                "NoiseFile's self-test on $day (it read level steps correctly over ${test.rangeDb} dB); " +
+                "NoiseFile's microphone check on $day (it hears changes in loudness correctly); " +
                 "they are included as incident context."
         }
     }
