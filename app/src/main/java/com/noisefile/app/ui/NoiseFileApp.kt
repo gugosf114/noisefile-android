@@ -971,10 +971,7 @@ private fun ReviewScreen(
             }
 
             item {
-                SectionTitle(
-                    eyebrow = "Location",
-                    title = "Where was the noise?",
-                )
+                Text("Where was the noise?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
             }
 
             item {
@@ -994,10 +991,7 @@ private fun ReviewScreen(
             }
 
             item {
-                SectionTitle(
-                    eyebrow = "Impact",
-                    title = "How did it affect you?",
-                )
+                Text("How did it affect you?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
             }
 
             items(impactOptions) { impact ->
