@@ -134,6 +134,8 @@ import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.audio.MicStatus
+import com.noisefile.app.audio.SelfTestOutcome
+import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.LevelCalibration
@@ -176,6 +178,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             CaptureStage.AMBIENT -> viewModel.startAmbientMeasurement()
             CaptureStage.CALIBRATE -> viewModel.startCalibration(pendingCalibrationMode)
             CaptureStage.NOISE -> viewModel.startMeasurement()
+            CaptureStage.SELF_TEST -> viewModel.startSelfTest()
         }
     }
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -202,6 +205,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val beginCapture = { beginStage(CaptureStage.NOISE) }
     val beginAmbient = { beginStage(CaptureStage.AMBIENT) }
     val beginCalibration = { mode: CalibrationMode -> pendingCalibrationMode = mode; beginStage(CaptureStage.CALIBRATE) }
+    val beginSelfTest = { beginStage(CaptureStage.SELF_TEST) }
 
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
@@ -219,6 +223,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onBeginCalibration = beginCalibration,
             onClearCalibration = viewModel::clearCalibration,
             onSkipCalibrationPrompt = viewModel::skipCalibrationPrompt,
+            onBeginSelfTest = beginSelfTest,
             onShareNeighbor = {
                 shareNeighborInvite(context, viewModel.selectedRule())
             },
@@ -281,6 +286,16 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
         )
     }
 
+    if (state.selfTestRunning || state.selfTestResult != null) {
+        SelfTestDialog(
+            running = state.selfTestRunning,
+            step = state.selfTestStep,
+            result = state.selfTestResult,
+            onClose = viewModel::dismissSelfTest,
+            onAgain = beginSelfTest,
+        )
+    }
+
     if (showCityPicker) {
         CityPickerDialog(
             jurisdictions = viewModel.jurisdictions,
@@ -310,6 +325,7 @@ private fun HomeScreen(
     onBeginCalibration: (CalibrationMode) -> Unit,
     onClearCalibration: () -> Unit,
     onSkipCalibrationPrompt: () -> Unit,
+    onBeginSelfTest: () -> Unit,
     onShareNeighbor: () -> Unit,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
@@ -414,7 +430,7 @@ private fun HomeScreen(
             if (state.showCalibrationPrompt) {
                 item {
                     CalibrationPromptCard(
-                        onListen = { onBeginCalibration(CalibrationMode.SMOKE_ALARM) },
+                        onCalibrate = onBeginSelfTest,
                         onSkip = onSkipCalibrationPrompt,
                     )
                 }
@@ -432,6 +448,7 @@ private fun HomeScreen(
             item {
                 MicrophoneCard(
                     status = micStatus,
+                    onBeginSelfTest = onBeginSelfTest,
                     onBeginCalibration = onBeginCalibration,
                     onClearCalibration = onClearCalibration,
                 )
@@ -1827,7 +1844,7 @@ private fun CodeQuote(quote: String, citation: String) {
 
 /** Which microphone the meter will use and how it is calibrated; the way in to calibrate it. */
 @Composable
-private fun CalibrationPromptCard(onListen: () -> Unit, onSkip: () -> Unit) {
+private fun CalibrationPromptCard(onCalibrate: () -> Unit, onSkip: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -1835,20 +1852,20 @@ private fun CalibrationPromptCard(onListen: () -> Unit, onSkip: () -> Unit) {
         border = androidx.compose.foundation.BorderStroke(1.dp, Signal.copy(alpha = 0.5f)),
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("MAKE YOUR NUMBERS COUNT", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+            Text("CALIBRATE YOUR MICROPHONE", color = Signal, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
             Text(
-                "Your phone's sound numbers are estimates. To tighten them, press your smoke alarm's test button, " +
-                    "hold the phone 10 feet away, and tap Listen. Takes 20 seconds. Or skip.",
+                "Highly recommended. The phone plays a short tone and listens to itself. " +
+                    "30 seconds. Nothing to buy. Or skip.",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Button(
                     modifier = Modifier.weight(1f),
-                    onClick = onListen,
+                    onClick = onCalibrate,
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White),
-                ) { Text("Listen for my smoke alarm", fontWeight = FontWeight.SemiBold) }
+                ) { Text("Calibrate my microphone", fontWeight = FontWeight.SemiBold) }
                 TextButton(onClick = onSkip) { Text("Skip") }
             }
         }
@@ -1856,11 +1873,71 @@ private fun CalibrationPromptCard(onListen: () -> Unit, onSkip: () -> Unit) {
 }
 
 @Composable
+private fun SelfTestDialog(
+    running: Boolean,
+    step: Int,
+    result: SelfTestResult?,
+    onClose: () -> Unit,
+    onAgain: () -> Unit,
+) {
+    val drops = result?.measuredDropsDb?.joinToString(" and ") { "${it.roundToInt()} dB" }.orEmpty()
+    AlertDialog(
+        onDismissRequest = { if (!running) onClose() },
+        title = {
+            Text(
+                when {
+                    running -> "Calibrating your microphone"
+                    result?.outcome == SelfTestOutcome.READS_STRAIGHT -> "Your microphone reads straight"
+                    result?.outcome == SelfTestOutcome.TONE_NOT_HEARD -> "The microphone did not hear the tone"
+                    else -> "Could not confirm"
+                },
+            )
+        },
+        text = {
+            Text(
+                when {
+                    running -> "Tone $step of 3. Put the phone on a table. Keep the room quiet. " +
+                        "Leave the speaker and microphone uncovered."
+                    result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
+                        "The phone played three tones, each 10 dB quieter than the last. The microphone heard drops of $drops. " +
+                            "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
+                    result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
+                        "Turn the media volume up, unplug headphones, uncover the speaker and microphone, then try again."
+                    result != null && result.stepsHeard >= 2 ->
+                        "The tones dropped by 10 dB each. The microphone heard drops of $drops. " +
+                            "A loud room or a case over the speaker can cause this. Try again in a quiet room."
+                    else -> "Only the loudest tone was heard. Turn the media volume up or find a quieter room, then try again."
+                },
+            )
+        },
+        confirmButton = {
+            if (running) {
+                TextButton(onClick = onClose) { Text("Cancel") }
+            } else {
+                TextButton(onClick = onClose) { Text("Done") }
+            }
+        },
+        dismissButton = {
+            if (!running && result?.outcome != SelfTestOutcome.READS_STRAIGHT) {
+                TextButton(onClick = onAgain) { Text("Try again") }
+            }
+        },
+    )
+}
+
+@Composable
 private fun MicrophoneCard(
     status: MicStatus,
+    onBeginSelfTest: () -> Unit,
     onBeginCalibration: (CalibrationMode) -> Unit,
     onClearCalibration: () -> Unit,
 ) {
+    var showOtherWays by remember { mutableStateOf(false) }
+    val selfTestLine = status.selfTest?.takeIf { it.passed }?.let { test ->
+        val day = DateTimeFormatter.ofPattern("MMM d", Locale.US)
+            .format(Instant.ofEpochMilli(test.atEpochMillis).atZone(ZoneId.systemDefault()))
+        " Self-test passed $day: level changes read correctly over ${test.rangeDb} dB."
+    }.orEmpty()
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -1889,31 +1966,37 @@ private fun MicrophoneCard(
                     LevelCalibration.USER_CALIBRATED ->
                         "Calibrated by you with a ${status.profile?.referenceLabel ?: "reference"} (${CalibrationMath.signed(status.profile?.offsetDb ?: 0.0)})."
                     LevelCalibration.PLATFORM_SPEC ->
-                        "This phone declares its own microphone level, so the numbers are set by the phone itself. " +
-                            "Your smoke alarm or a sound level meter can still tighten them."
+                        "This phone declares its own microphone level, so the numbers are set by the phone itself."
                     LevelCalibration.ESTIMATE ->
-                        "Estimate. This phone does not declare its microphone level. Your smoke alarm's test button " +
-                            "(85 dB at 10 feet by law) or a sound level meter can set it. Optional."
-                },
+                        "Estimate."
+                } + selfTestLine,
                 color = Muted,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
-                    onClick = { onBeginCalibration(CalibrationMode.SMOKE_ALARM) },
+                    onClick = onBeginSelfTest,
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Icon(Icons.Default.Mic, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Use my smoke alarm", fontWeight = FontWeight.SemiBold)
+                    Text("Calibrate my microphone", fontWeight = FontWeight.SemiBold)
                 }
                 if (status.profile != null) {
                     TextButton(onClick = onClearCalibration) { Text("Clear") }
                 }
             }
-            TextButton(onClick = { onBeginCalibration(CalibrationMode.METER) }, contentPadding = PaddingValues(0.dp)) {
-                Text("I have a sound level meter", color = Muted)
+            TextButton(onClick = { showOtherWays = !showOtherWays }, contentPadding = PaddingValues(0.dp)) {
+                Text(if (showOtherWays) "Hide other ways" else "Other ways", color = Muted)
+            }
+            if (showOtherWays) {
+                TextButton(onClick = { onBeginCalibration(CalibrationMode.SMOKE_ALARM) }, contentPadding = PaddingValues(0.dp)) {
+                    Text("Use my smoke alarm")
+                }
+                TextButton(onClick = { onBeginCalibration(CalibrationMode.METER) }, contentPadding = PaddingValues(0.dp)) {
+                    Text("I have a sound level meter")
+                }
             }
         }
     }

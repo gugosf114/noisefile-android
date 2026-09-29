@@ -2,7 +2,9 @@ package com.noisefile.app.audio
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
+import android.media.AudioTrack
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
@@ -33,6 +35,8 @@ data class MicStatus(
     val isUsb: Boolean,
     /** dBFS at 94 dB SPL the phone itself reported for this mic, if it ever did. */
     val declaredSensitivity: Double? = null,
+    /** The last self-test of this microphone, if one was run. */
+    val selfTest: SelfTestRecord? = null,
     val supportsUnprocessed: Boolean,
     val profile: MicProfile?,
 ) {
@@ -87,6 +91,7 @@ class NoiseMeter(private val context: Context) {
             supportsUnprocessed = supportsUnprocessed(audioManager),
             profile = profiles.load(key),
             declaredSensitivity = profiles.declaredSensitivity(key),
+            selfTest = profiles.selfTest(key),
         )
     }
 
@@ -270,6 +275,110 @@ class NoiseMeter(private val context: Context) {
             } catch (_: Throwable) {
                 if (isActive) onError("Measurement stopped because the microphone became unavailable.")
             } finally {
+                runCatching { record.stop() }
+                record.release()
+                if (audioRecord === record) audioRecord = null
+            }
+        }
+    }
+
+    /**
+     * The microphone checks itself: the phone's own speaker plays one pitch at three
+     * levels, each exactly 10 dB quieter, and the microphone must hear the same steps.
+     * The media volume is read, never changed. Nothing to buy, nothing to press.
+     */
+    @SuppressLint("MissingPermission")
+    fun runSelfTest(onProgress: (Int) -> Unit, onResult: (SelfTestResult) -> Unit) {
+        stop()
+        val notHeard = SelfTestResult(SelfTestOutcome.TONE_NOT_HEARD, 0, 0, 0.0, emptyList())
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val micKey = micKeyFor(usbInput(audioManager))
+        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) { onResult(notHeard); return }
+
+        val sampleRate = 48_000
+        val source = if (supportsUnprocessed(audioManager)) {
+            MediaRecorder.AudioSource.UNPROCESSED
+        } else {
+            MediaRecorder.AudioSource.VOICE_RECOGNITION
+        }
+        val minimum = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
+        val record = runCatching {
+            AudioRecord.Builder()
+                .setAudioSource(source)
+                .setAudioFormat(
+                    AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(sampleRate)
+                        .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                        .build(),
+                )
+                .setBufferSizeInBytes(max(minimum * 2, SelfTestMath.WINDOW_SAMPLES * 4))
+                .build()
+        }.getOrNull()
+        if (record == null || record.state != AudioRecord.STATE_INITIALIZED) {
+            record?.release(); onResult(notHeard); return
+        }
+        val sequence = SelfTestMath.toneSequence(sampleRate)
+        val track = runCatching {
+            AudioTrack.Builder()
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build(),
+                )
+                .setAudioFormat(
+                    AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(sampleRate)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build(),
+                )
+                .setTransferMode(AudioTrack.MODE_STATIC)
+                .setBufferSizeInBytes(sequence.size * 2)
+                .build()
+        }.getOrNull()
+        if (track == null || track.state == AudioTrack.STATE_UNINITIALIZED) {
+            track?.release(); record.release(); onResult(notHeard); return
+        }
+
+        audioRecord = record
+        recordingJob = scope.launch {
+            val windows = ArrayList<ToneWindow>()
+            val buffer = ShortArray(SelfTestMath.WINDOW_SAMPLES)
+            try {
+                record.startRecording()
+                track.write(sequence, 0, sequence.size)
+                track.play()
+                val wanted = SelfTestMath.totalWindows(sampleRate)
+                while (isActive && windows.size < wanted) {
+                    var got = 0
+                    while (got < buffer.size) {
+                        val n = record.read(buffer, got, buffer.size - got, AudioRecord.READ_BLOCKING)
+                        if (n <= 0) break
+                        got += n
+                    }
+                    if (got < buffer.size) break
+                    windows.add(
+                        ToneWindow(
+                            share = ToneProbe.share(buffer, got, SelfTestMath.TONE_HZ, sampleRate),
+                            levelDb = ToneProbe.levelDbfs(buffer, got, SelfTestMath.TONE_HZ, sampleRate),
+                        ),
+                    )
+                    onProgress(SelfTestMath.stepAt(windows.size, sampleRate))
+                }
+                val result = SelfTestMath.evaluate(windows)
+                Log.i(TAG, "selfTest outcome=${result.outcome} steps=${result.stepsHeard} drops=${result.measuredDropsDb} worst=${result.worstErrorDb}")
+                profiles.saveSelfTest(
+                    micKey,
+                    SelfTestRecord(result.outcome, result.rangeDb, result.worstErrorDb, System.currentTimeMillis()),
+                )
+                if (isActive) onResult(result)
+            } catch (_: Throwable) {
+                if (isActive) onResult(SelfTestResult(SelfTestOutcome.NOT_CONFIRMED, 0, 0, 0.0, emptyList()))
+            } finally {
+                runCatching { track.stop() }
+                track.release()
                 runCatching { record.stop() }
                 record.release()
                 if (audioRecord === record) audioRecord = null

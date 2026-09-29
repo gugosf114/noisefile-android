@@ -4,6 +4,16 @@ import android.content.Context
 import org.json.JSONObject
 
 /** One microphone's user calibration: offset, what it was checked against, and when. */
+/** The last self-test of one microphone. */
+data class SelfTestRecord(
+    val outcome: SelfTestOutcome,
+    val rangeDb: Int,
+    val worstErrorDb: Double,
+    val atEpochMillis: Long,
+) {
+    val passed: Boolean get() = outcome == SelfTestOutcome.READS_STRAIGHT
+}
+
 data class MicProfile(
     val micKey: String,
     val offsetDb: Double,
@@ -49,6 +59,28 @@ class MicProfileStore(context: Context) {
 
     fun rememberDeclaredSensitivity(micKey: String, dbfsAt94: Double) {
         preferences.edit().putFloat("declared:$micKey", dbfsAt94.toFloat()).apply()
+    }
+
+    fun selfTest(micKey: String): SelfTestRecord? {
+        val raw = preferences.getString("selftest:$micKey", null) ?: return null
+        return runCatching {
+            val json = JSONObject(raw)
+            SelfTestRecord(
+                outcome = SelfTestOutcome.valueOf(json.getString("outcome")),
+                rangeDb = json.getInt("rangeDb"),
+                worstErrorDb = json.getDouble("worstErrorDb"),
+                atEpochMillis = json.getLong("at"),
+            )
+        }.getOrNull()
+    }
+
+    fun saveSelfTest(micKey: String, record: SelfTestRecord) {
+        val json = JSONObject()
+            .put("outcome", record.outcome.name)
+            .put("rangeDb", record.rangeDb)
+            .put("worstErrorDb", record.worstErrorDb)
+            .put("at", record.atEpochMillis)
+        preferences.edit().putString("selftest:$micKey", json.toString()).apply()
     }
 
     /** The once-only "make your numbers count" card: shown after the first incident until Skip or a calibration. */
