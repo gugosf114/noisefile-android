@@ -125,7 +125,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
                         heightOf("“${cnd.sourceQuote}”", body - 1f, indent = 16f) + 4f
                 }
             }
-        } ?: run { h += heightOf("No city rule on file for this take.", body) }
+        } ?: run { h += heightOf("No city rule on file for this incident.", body) }
         h += personBlockHeight(e, body)
         return h
     }
@@ -147,12 +147,12 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         newPage()
         gap(120f)
         text(plan.title, 26f, bold = true); gap(6f)
-        text("Incident log with the city's own rule applied to each take", 12f, muted); gap(28f)
+        text("Incident log with the city's own rule applied to each incident", 12f, muted); gap(28f)
         val rows = listOf(
             "Prepared on" to plan.preparedOn,
             "City" to (plan.cities.joinToString(", ").ifBlank { "—" }),
             "Period" to plan.dateRange.ifBlank { "—" },
-            "Takes" to plan.exhibits.size.toString(),
+            "Incidents" to plan.exhibits.size.toString(),
             "Evidence seal" to sealWords(plan.seal),
         )
         rows.forEach { (k, v) ->
@@ -166,24 +166,24 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         text("Address where the noise was heard: _______________________________________________________", 10.5f)
         gap(30f)
         text("How to read this report", 12f, bold = true); gap(4f)
-        text("Each take is one recording made on a phone with NoiseFile. The phone's sound level is an estimate; a city officer's calibrated meter at the code's measurement point decides. NoiseFile compares each take to the city's published rule and prints the rule's own words. Where the code lists a decibel limit, hours, or a required count, the take is checked against it; where it does not, the report says what the city still needs.", 10f, muted)
+        text("Each incident is one recording made on a phone with NoiseFile. The phone's sound level is an estimate; a city officer's calibrated meter at the code's measurement point decides. NoiseFile compares each take to the city's published rule and prints the rule's own words. Where the code lists a decibel limit, hours, or a required count, the incident is checked against it; where it does not, the report says what the city still needs.", 10f, muted)
         gap(10f)
         text("NoiseFile is an independent app by WiM Labs. It is not affiliated with, endorsed by, or representing any city, county, or government agency.", 9f, muted, italic = true)
     }
 
     private fun sealWords(seal: EvidenceSeal.Report): String = when {
         seal.sealedCount == 0 && seal.unsealedCount > 0 -> "not sealed (saved before sealing existed)"
-        seal.intact && seal.unsealedCount == 0 -> "intact · ${seal.sealedCount} sealed takes"
+        seal.intact && seal.unsealedCount == 0 -> "intact · ${seal.sealedCount} sealed incidents"
         seal.intact -> "intact · ${seal.sealedCount} sealed, ${seal.unsealedCount} earlier unsealed"
-        else -> "BROKEN at take id ${seal.brokenAtId} · edited, removed or reordered after saving"
+        else -> "broken at incident id ${seal.brokenAtId} · edited, removed or reordered after saving"
     }
 
     fun summary(plan: ReportPlan) {
         newPage()
-        text("Summary of takes", 16f, bold = true); gap(6f)
+        text("Summary of incidents", 16f, bold = true); gap(6f)
         val counts = plan.statusCounts
         val reached = counts[MeterAssessmentStatus.REACHES_LISTED_CONDITION] ?: 0
-        text("${plan.exhibits.size} takes · $reached reached a listed condition · ${counts[MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION] ?: 0} did not · ${counts[MeterAssessmentStatus.NEEDS_INFORMATION] ?: 0} need the city's own test", 10f, muted)
+        text("${plan.exhibits.size} incidents, $reached reached a listed condition, ${counts[MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION] ?: 0} did not, ${counts[MeterAssessmentStatus.NEEDS_INFORMATION] ?: 0} need the city's own test", 10f, muted)
         gap(10f)
         val cols = floatArrayOf(0f, 28f, 190f, 300f, 350f, 410f)
         val head = listOf("#", "When", "Type", "Length", "Avg / Max", "City check")
@@ -217,7 +217,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         newPage()
         text("When it happens", 16f, bold = true); gap(4f)
         plan.patternSentence?.let { text(it, 11f); gap(8f) }
-        text("Takes by day of week and hour of day (darker = more takes)", 9f, muted); gap(8f)
+        text("Incidents by day of week and hour of day. Darker means more.", 9f, muted); gap(8f)
         val cell = 19f; val rowH = 18f; val left = margin + 34f
         val maxCount = plan.patternGrid.maxOf { it.max() }.coerceAtLeast(1)
         need(rowH * 8 + 20f)
@@ -296,7 +296,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
                     text("“${cnd.sourceQuote}”", body - 1f, muted, italic = true, indent = 16f); gap(4f)
                 }
             }
-        } ?: run { text("No city rule on file for this take.", body, muted) }
+        } ?: run { text("No city rule on file for this incident.", body, muted) }
         // the person's words and the seal stay together: never three orphan lines on a page of their own
         need(personBlockHeight(e, body))
         gap(6f); rule()
@@ -379,10 +379,10 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         }
         gap(10f); rule()
         text("Method", 13f, bold = true); gap(4f)
-        text("Sound levels are A-weighted estimates from a phone microphone, computed by NoiseFile on the device. The phone is not a Type 1 or Type 2 sound level meter; unless the report says an incident was calibrated, the numbers may sit several dB from a certified meter. Where a take includes a quiet baseline, the difference between the noise and the baseline comes from the same phone at the same spot, so the phone's own offset cancels out of that difference. No audio is stored; the second-by-second line is a list of level numbers. Each take is sealed with a SHA-256 hash over its measured facts and the previous take's seal; an intact seal means the numbers, times and order were not changed after saving.", 9.5f, muted)
+        text("Sound levels are A-weighted estimates from a phone microphone, computed by NoiseFile on the device. The phone is not a Type 1 or Type 2 sound level meter; unless the report says an incident was calibrated, the numbers may sit several dB from a certified meter. Where an incident includes a quiet baseline, the difference between the noise and the baseline comes from the same phone at the same spot, so the phone's own offset cancels out of that difference. No audio is stored; the second-by-second line is a list of level numbers. Each incident is sealed with a SHA-256 hash over its measured facts and the previous incident's seal; an intact seal means the numbers, times and order were not changed after saving.", 9.5f, muted)
         gap(14f); rule()
         text("Declaration", 13f, bold = true); gap(6f)
-        text("I declare that the takes in this report were recorded by me, at the times shown, at the location stated, and that the notes are my own observations.", 10.5f)
+        text("I declare that the incidents in this report were recorded by me, at the times shown, at the location stated, and that the notes are my own observations.", 10.5f)
         gap(26f)
         text("Signature: ________________________________________          Date: ____________________", 10.5f)
         gap(18f)

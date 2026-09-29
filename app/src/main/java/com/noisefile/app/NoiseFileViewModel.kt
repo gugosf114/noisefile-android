@@ -37,6 +37,8 @@ enum class AppScreen {
     METER,
     REVIEW,
     HISTORY,
+    RULES,
+    MORE,
 }
 
 /** What the microphone is measuring right now: the quiet baseline, or the noise. */
@@ -178,6 +180,28 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update {
             it.copy(
                 screen = AppScreen.HISTORY,
+                captureStage = CaptureStage.NOISE,
+                error = null,
+            )
+        }
+    }
+
+    fun showRules() {
+        noiseMeter.stop()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.RULES,
+                captureStage = CaptureStage.NOISE,
+                error = null,
+            )
+        }
+    }
+
+    fun showMore() {
+        noiseMeter.stop()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.MORE,
                 captureStage = CaptureStage.NOISE,
                 error = null,
             )

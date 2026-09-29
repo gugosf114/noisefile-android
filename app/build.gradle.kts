@@ -45,6 +45,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // A separate app on the phone: the preview never touches the real one or its saved incidents.
+            applicationIdSuffix = ".preview"
+            versionNameSuffix = "-preview"
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(

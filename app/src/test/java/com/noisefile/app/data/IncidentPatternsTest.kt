@@ -38,6 +38,6 @@ class IncidentPatternsTest {
             take(4, LocalDateTime.of(2026, 9, 25, 22, 0)),  // Fri 10 PM
         )
         // Friday and Saturday tie at two; the busiest three hours start at 10 PM (10 PM, 11 PM, 12 AM hold 1 + 2 + 1).
-        assertEquals("Most takes: Friday and Saturday, 10 PM–1 AM.", IncidentPatterns.sentence(takes, ZoneOffset.UTC))
+        assertEquals("Most incidents: Friday and Saturday, 10 PM–1 AM.", IncidentPatterns.sentence(takes, ZoneOffset.UTC))
     }
 }
