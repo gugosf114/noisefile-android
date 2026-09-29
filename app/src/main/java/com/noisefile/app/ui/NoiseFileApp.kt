@@ -107,6 +107,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import com.noisefile.app.data.EvidenceSeal
+import com.noisefile.app.data.IncidentPatterns
+import com.noisefile.app.data.buildReportPlan
+import com.noisefile.app.data.writeIncidentPdf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.noisefile.app.AppScreen
@@ -250,9 +255,11 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             cityName = viewModel.selectedJurisdiction().displayName,
             incidents = state.incidents,
             ruleForIncident = viewModel::ruleForIncident,
+            sealReport = remember(state.incidents) { EvidenceSeal.verify(state.incidents) },
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
             onExport = { shareHistory(context, state.incidents) },
+            onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident) },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
                 copyComplaintAndOpenDestination(context, incident, rule)
@@ -1934,9 +1941,11 @@ private fun HistoryScreen(
     cityName: String,
     incidents: List<Incident>,
     ruleForIncident: (String) -> RuleWorkflow?,
+    sealReport: EvidenceSeal.Report,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
     onExport: () -> Unit,
+    onExportPdf: () -> Unit,
     onUpdateDetails: (Long, String, String) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
 ) {
@@ -1963,15 +1972,28 @@ private fun HistoryScreen(
 
             if (incidents.isNotEmpty()) {
                 item {
-                    Button(
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        onClick = onExport,
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White)
-                    ) {
-                        Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text("Share incident history", style = MaterialTheme.typography.titleSmall)
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            onClick = onExportPdf,
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White)
+                        ) {
+                            Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Export PDF report", style = MaterialTheme.typography.titleSmall)
+                        }
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                            onClick = onExport,
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            Text("Share as plain text", style = MaterialTheme.typography.titleSmall)
+                        }
+                        EvidenceSealLine(sealReport)
+                        IncidentPatterns.sentence(incidents, ZoneId.systemDefault())?.let { sentence ->
+                            PatternCard(sentence = sentence, grid = IncidentPatterns.grid(incidents, ZoneId.systemDefault()))
+                        }
                     }
                 }
             }
@@ -1992,6 +2014,68 @@ private fun HistoryScreen(
             }
         }
     }
+}
+
+@Composable
+private fun EvidenceSealLine(report: EvidenceSeal.Report) {
+    val (text, color) = when {
+        report.sealedCount == 0 -> "Evidence seal: takes saved before sealing existed are unsealed." to Muted
+        report.intact -> "Evidence seal intact · ${report.sealedCount} sealed take${if (report.sealedCount == 1) "" else "s"}. Numbers, times and order unchanged since saving." to Success
+        else -> "Evidence seal BROKEN at take ${report.brokenAtId}: a measured number, a take, or the order changed after saving." to Danger
+    }
+    Text(text, color = color, style = MaterialTheme.typography.bodySmall)
+}
+
+@Composable
+private fun PatternCard(sentence: String, grid: Array<IntArray>) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    ) {
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("WHEN IT HAPPENS", color = Cobalt, fontSize = 11.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text(sentence, style = MaterialTheme.typography.bodyLarge)
+            val maxCount = grid.maxOf { it.max() }.coerceAtLeast(1)
+            val days = listOf("M", "T", "W", "T", "F", "S", "S")
+            val cellColor = MaterialTheme.colorScheme.surfaceVariant
+            androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(126.dp)) {
+                val labelW = 18.dp.toPx()
+                val cellW = (size.width - labelW) / 24f
+                val cellH = size.height / 7f
+                for (d in 0 until 7) for (h in 0 until 24) {
+                    val n = grid[d][h]
+                    val c = if (n == 0) cellColor else Cobalt.copy(alpha = 0.25f + 0.75f * n / maxCount)
+                    drawRect(
+                        color = c,
+                        topLeft = androidx.compose.ui.geometry.Offset(labelW + h * cellW + 1f, d * cellH + 1f),
+                        size = androidx.compose.ui.geometry.Size(cellW - 2f, cellH - 2f),
+                    )
+                }
+            }
+            Text("Rows Monday to Sunday · columns midnight to 11 PM · darker = more takes", color = Muted, fontSize = 11.sp)
+        }
+    }
+}
+
+private fun shareHistoryPdf(context: Context, incidents: List<Incident>, ruleFor: (String) -> RuleWorkflow?) {
+    val result = runCatching {
+        val plan = buildReportPlan(incidents, ruleFor)
+        writeIncidentPdf(context, plan)
+    }
+    val file = result.getOrElse {
+        Toast.makeText(context, "Could not build the PDF: ${it.message}", Toast.LENGTH_LONG).show()
+        return
+    }
+    val uri = FileProvider.getUriForFile(context, context.packageName + ".reports", file)
+    val send = Intent(Intent.ACTION_SEND).apply {
+        type = "application/pdf"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        putExtra(Intent.EXTRA_SUBJECT, file.nameWithoutExtension)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(send, "Share PDF report"))
 }
 
 @Composable
@@ -2205,6 +2289,12 @@ private fun IncidentCard(
                 Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
                 Text("Average ${incident.averageDb.roundToInt()} dB", color = Muted)
             }
+            Text(
+                text = "Seal ${EvidenceSeal.short(incident.evidenceHash)}" +
+                    if (incident.levelTrace.size >= 2) " · ${incident.levelTrace.size} trace points" else "",
+                color = Muted,
+                fontSize = 11.sp,
+            )
         }
     }
 }

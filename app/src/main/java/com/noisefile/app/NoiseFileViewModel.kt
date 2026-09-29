@@ -7,6 +7,8 @@ import com.noisefile.app.audio.MicProfile
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
 import com.noisefile.app.data.IncidentStore
+import com.noisefile.app.data.LevelTraceRecorder
+import com.noisefile.app.data.EvidenceSeal
 import com.noisefile.app.data.RuleCatalog
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.Incident
@@ -64,6 +66,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         get() = ruleCatalog.forJurisdiction(_uiState.value.selectedJurisdictionId)
 
     private val incidentStore = IncidentStore(application)
+    private val trace = LevelTraceRecorder()
     private val noiseMeter = NoiseMeter(application)
     private val _uiState = MutableStateFlow(
         NoiseFileUiState(incidents = incidentStore.load()),
@@ -322,6 +325,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun startMeasurement() {
         val startedAt = System.currentTimeMillis()
+        trace.reset()
         _uiState.update {
             it.copy(
                 screen = AppScreen.METER,
@@ -335,6 +339,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
         noiseMeter.start(
             onReading = { reading ->
+                trace.add(reading.elapsedMillis, reading.currentDb)
                 _uiState.update { state -> state.copy(meterReading = reading) }
             },
             onError = { error ->
@@ -441,6 +446,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             ambientDb = state.ambient?.db,
             ambientSeconds = state.ambient?.seconds,
             levelNote = levelNoteFor(reading),
+            levelTrace = trace.snapshot(),
+            traceSecondsPerSample = trace.secondsPerSample,
         )
         val incidents = incidentStore.add(incident)
         _uiState.update {
@@ -492,6 +499,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun ruleForIncident(ruleId: String): RuleWorkflow? = ruleCatalog.byId(ruleId)
+
+    fun verifyEvidence(): EvidenceSeal.Report = incidentStore.verify()
 
     fun incidentCountFor(ruleId: String): Int =
         _uiState.value.incidents.count { it.ruleId == ruleId }

@@ -24,6 +24,22 @@ class IncidentStoreTest {
         assertEquals(emptyList<com.noisefile.app.model.Incident>(), parseIncidents("not json"))
     }
 
+    @Test
+    fun traceAndSealFieldsRoundTripAndOldEntriesDefault() {
+        val sealed = incidentJson(id = 3L, startedAt = 300L)
+            .put("levelTrace", JSONArray().put(40).put(55).put(68))
+            .put("traceSecondsPerSample", 2)
+            .put("evidenceHash", "abc")
+            .put("previousHash", "GENESIS")
+        val incidents = parseIncidents(JSONArray().put(sealed).put(incidentJson(id = 1L, startedAt = 100L)).toString())
+        assertEquals(listOf(40, 55, 68), incidents[0].levelTrace)
+        assertEquals(2, incidents[0].traceSecondsPerSample)
+        assertEquals("abc", incidents[0].evidenceHash)
+        assertEquals(emptyList<Int>(), incidents[1].levelTrace)
+        assertEquals(1, incidents[1].traceSecondsPerSample)
+        assertEquals(null, incidents[1].evidenceHash)
+    }
+
     private fun incidentJson(id: Long, startedAt: Long): JSONObject = JSONObject()
         .put("id", id)
         .put("ruleId", "san-jose-party_music")
