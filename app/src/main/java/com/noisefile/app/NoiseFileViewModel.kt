@@ -6,6 +6,8 @@ import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.audio.MicProfile
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
+import com.noisefile.app.audio.SelfTestOutcome
+import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.data.IncidentFiles
 import com.noisefile.app.data.IncidentStore
 import android.net.Uri
@@ -42,6 +44,8 @@ enum class CaptureStage {
     AMBIENT,
     NOISE,
     CALIBRATE,
+    /** The microphone's own check: the phone plays tones and listens. Runs on Home, in a dialog. */
+    SELF_TEST,
 }
 
 /** What the phone is being checked against while calibrating. */
@@ -66,6 +70,10 @@ data class NoiseFileUiState(
     val calibrationMode: CalibrationMode = CalibrationMode.SMOKE_ALARM,
     /** True while the once-only "make your numbers count" card should show on Home. */
     val showCalibrationPrompt: Boolean = false,
+    val selfTestRunning: Boolean = false,
+    /** Which of the three tones is playing, 1..3. */
+    val selfTestStep: Int = 0,
+    val selfTestResult: SelfTestResult? = null,
     val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
     val draftNotes: String = "",
@@ -362,6 +370,29 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    /** The microphone checks itself: three tones from the phone's own speaker. */
+    fun startSelfTest() {
+        _uiState.update { it.copy(selfTestRunning = true, selfTestStep = 1, selfTestResult = null, message = null, error = null) }
+        noiseMeter.runSelfTest(
+            onProgress = { step -> _uiState.update { it.copy(selfTestStep = step) } },
+            onResult = { result ->
+                if (result.outcome == SelfTestOutcome.READS_STRAIGHT) noiseMeter.calibrationPromptDismissed = true
+                _uiState.update {
+                    it.copy(
+                        selfTestRunning = false,
+                        selfTestResult = result,
+                        showCalibrationPrompt = it.showCalibrationPrompt && result.outcome != SelfTestOutcome.READS_STRAIGHT,
+                    )
+                }
+            },
+        )
+    }
+
+    fun dismissSelfTest() {
+        noiseMeter.stop()
+        _uiState.update { it.copy(selfTestRunning = false, selfTestResult = null) }
+    }
+
     fun skipCalibrationPrompt() {
         noiseMeter.calibrationPromptDismissed = true
         _uiState.update { it.copy(showCalibrationPrompt = false) }
@@ -370,7 +401,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     /** The card shows once: after the first saved incident, while the numbers are still estimates. */
     private fun shouldPromptCalibration(incidents: List<Incident>): Boolean =
         incidents.isNotEmpty() && !noiseMeter.calibrationPromptDismissed &&
-            noiseMeter.inputStatus().let { it.profile == null && it.declaredSensitivity == null }
+            noiseMeter.inputStatus().let { it.profile == null && it.declaredSensitivity == null && it.selfTest?.passed != true }
 
     fun clearCalibration() {
         val status = noiseMeter.inputStatus()
@@ -578,7 +609,13 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         LevelCalibration.PLATFORM_SPEC ->
             "The sound levels above come from my phone's built-in microphone at the level the phone itself declares " +
                 "under Android's compatibility specification; they are included as incident context."
-        LevelCalibration.ESTIMATE -> null
+        LevelCalibration.ESTIMATE -> noiseMeter.inputStatus().selfTest?.takeIf { it.passed }?.let { test ->
+            val day = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
+                .format(Instant.ofEpochMilli(test.atEpochMillis).atZone(ZoneId.systemDefault()))
+            "The sound levels above are estimates from my phone's ${reading.micLabel.lowercase(Locale.US)}, which passed " +
+                "NoiseFile's self-test on $day (it read level steps correctly over ${test.rangeDb} dB); " +
+                "they are included as incident context."
+        }
     }
 
     fun updateIncidentDetails(
