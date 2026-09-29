@@ -20,8 +20,10 @@ class IncidentFiles(private val context: Context) {
     /** Copy a picked photo into the draft folder, shrunk to at most [maxSide] px, JPEG. Returns the file. */
     fun stageDraftPhoto(uri: Uri, index: Int, maxSide: Int = 1_600): File? {
         val resolver = context.contentResolver
+        // The bounds pass returns no bitmap by design; only its outWidth/outHeight matter.
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) } ?: return null
+        resolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
         var sample = 1
         while (bounds.outWidth / sample > maxSide * 2 || bounds.outHeight / sample > maxSide * 2) sample *= 2
         val opts = BitmapFactory.Options().apply { inSampleSize = sample }
