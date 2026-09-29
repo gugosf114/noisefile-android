@@ -354,14 +354,14 @@ private fun CityPickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Choose your city") },
+        title = { Text("Your city") },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Only verified city packets can be selected. More Bay Area cities are added with the ordinance library.",
+                    text = "Pick the city where the noise is.",
                     color = Muted,
                     style = MaterialTheme.typography.bodyMedium,
                 )
