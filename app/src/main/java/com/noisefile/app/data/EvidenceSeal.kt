@@ -15,6 +15,35 @@ import java.util.Locale
 object EvidenceSeal {
     const val GENESIS = "GENESIS"
 
+    /**
+     * The first seal recipe (0.12.x), before photos and clips existed. Seals made then must keep
+     * verifying, so a recipe is never changed in place: a new one is added and the old one stays.
+     */
+    fun canonicalV1(incident: Incident, previousHash: String): String = listOf(
+        incident.id.toString(),
+        incident.ruleId,
+        incident.noiseType.name,
+        incident.startedAtEpochMillis.toString(),
+        incident.durationSeconds.toString(),
+        fmt(incident.minimumDb),
+        fmt(incident.averageDb),
+        fmt(incident.maximumDb),
+        incident.ambientDb?.let(::fmt) ?: "",
+        incident.ambientSeconds?.toString() ?: "",
+        incident.levelNote ?: "",
+        incident.traceSecondsPerSample.toString(),
+        incident.levelTrace.joinToString(","),
+        previousHash,
+    ).joinToString("|")
+
+    /** True when [incident]'s own seal matches its facts under any recipe this app has ever used. */
+    fun matches(incident: Incident, previousHash: String): Boolean {
+        val own = incident.evidenceHash ?: return false
+        if (hash(incident, previousHash) == own) return true
+        val noFiles = incident.photoHashes.isEmpty() && incident.clipHash == null
+        return noFiles && sha256(canonicalV1(incident, previousHash)) == own
+    }
+
     fun canonical(incident: Incident, previousHash: String): String = listOf(
         incident.id.toString(),
         incident.ruleId,
@@ -63,7 +92,7 @@ object EvidenceSeal {
             if (own == null) { unsealed += 1; continue }
             val previous = incident.previousHash ?: GENESIS
             if (previous != expectedPrevious) return Report(sealed, unsealed, incident.id)
-            if (hash(incident, previous) != own) return Report(sealed, unsealed, incident.id)
+            if (!matches(incident, previous)) return Report(sealed, unsealed, incident.id)
             sealed += 1
             expectedPrevious = own
         }
