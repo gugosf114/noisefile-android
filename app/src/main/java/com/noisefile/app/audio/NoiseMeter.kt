@@ -91,7 +91,6 @@ class NoiseMeter(private val context: Context) {
 
     fun clearCalibration(micKey: String) = profiles.clear(micKey)
 
-    @SuppressLint("MissingPermission")
     private var clipKeeper: PeakClipKeeper? = null
 
     /** The loudest 10 seconds of the last measurement started with keepClip = true, as WAV bytes. */
@@ -102,6 +101,7 @@ class NoiseMeter(private val context: Context) {
         return WavWriter.bytes(samples, keeper.sampleRate) to (samples.size / keeper.sampleRate)
     }
 
+    @SuppressLint("MissingPermission")
     fun start(
         onReading: (MeterReading) -> Unit,
         onError: (String) -> Unit,
