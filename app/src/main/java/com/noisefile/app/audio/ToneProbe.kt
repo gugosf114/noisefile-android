@@ -28,6 +28,23 @@ object ToneProbe {
         return (2.0 * power(samples, n, frequency, sampleRate) / (n * total)).coerceIn(0.0, 1.0)
     }
 
+    /**
+     * How far [frequency] stands above the sound right next to it, in dB. A tone in a noisy room
+     * is lost in the room's total sound long before it is lost among its own neighbours, so this
+     * finds a quiet tone that [share] would miss. Neighbours sit whole bins away (no leakage).
+     */
+    fun standoutDb(samples: ShortArray, count: Int, frequency: Double, sampleRate: Int): Double {
+        val n = count.coerceAtMost(samples.size)
+        if (n < 256) return 0.0
+        val tone = power(samples, n, frequency, sampleRate)
+        if (tone <= 0.0) return 0.0
+        val bin = sampleRate.toDouble() / n
+        val neighbours = listOf(-10, -5, 5, 10).map { power(samples, n, frequency + it * bin, sampleRate) }
+        val floor = neighbours.average()
+        if (floor <= 1e-9) return 60.0
+        return (10.0 * log10(tone / floor)).coerceIn(0.0, 60.0)
+    }
+
     /** Level of [frequency] in dB relative to a full-scale sine (which reads 0). */
     fun levelDbfs(samples: ShortArray, count: Int, frequency: Double, sampleRate: Int): Double {
         val n = count.coerceAtMost(samples.size)
