@@ -1,6 +1,8 @@
 package com.noisefile.app.data
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import com.noisefile.app.model.Incident
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.DashPathEffect
@@ -18,12 +20,12 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /** Draws a [ReportPlan] as a Letter-size PDF and returns the file (in the app's private cache). */
-fun writeIncidentPdf(context: Context, plan: ReportPlan): File {
+fun writeIncidentPdf(context: Context, plan: ReportPlan, fileFor: (Incident, String) -> File = { _, n -> File(n) }): File {
     val dir = File(context.cacheDir, "reports").apply { mkdirs() }
     val name = "NoiseFile-Report-" + DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US).format(LocalDate.now()) + ".pdf"
     val file = File(dir, name)
     val doc = PdfDocument()
-    val painter = ReportPainter(doc)
+    val painter = ReportPainter(doc, fileFor)
     painter.cover(plan)
     painter.summary(plan)
     painter.pattern(plan)
@@ -35,7 +37,7 @@ fun writeIncidentPdf(context: Context, plan: ReportPlan): File {
     return file
 }
 
-private class ReportPainter(private val doc: PdfDocument) {
+private class ReportPainter(private val doc: PdfDocument, private val fileFor: (Incident, String) -> File) {
     private val width = 612
     private val height = 792
     private val margin = 48f
@@ -135,7 +137,9 @@ private class ReportPainter(private val doc: PdfDocument) {
         h += heightOf("Impact: ${inc.impact}", body + 0.5f)
         h += heightOf("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
         inc.levelNote?.let { h += 2f + heightOf(it, body - 0.5f) }
+        if (inc.photoNames.isNotEmpty()) h += 6f + 14f + 150f + 6f
         h += 6f + 10f + 14f + heightOf("SHA-256 ${inc.evidenceHash ?: "unsealed (saved before sealing existed)"}", 8f) + 12f
+        h += (inc.photoNames.size + (if (inc.clipName != null) 1 else 0)) * 11f
         return h
     }
 
@@ -301,10 +305,29 @@ private class ReportPainter(private val doc: PdfDocument) {
         text("Impact: ${inc.impact}", body + 0.5f)
         text("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
         inc.levelNote?.let { gap(2f); text(it, body - 0.5f, muted, italic = true) }
+        if (inc.photoNames.isNotEmpty()) {
+            gap(6f); label("Photos")
+            need(150f)
+            var px = margin
+            inc.photoNames.forEach { name ->
+                val f = fileFor(inc, name)
+                val bmp = runCatching { BitmapFactory.decodeFile(f.path, BitmapFactory.Options().apply { inSampleSize = 2 }) }.getOrNull()
+                if (bmp != null) {
+                    val boxW = 240f; val boxH = 150f
+                    val scale = minOf(boxW / bmp.width, boxH / bmp.height)
+                    val w = bmp.width * scale; val hh = bmp.height * scale
+                    canvas!!.drawBitmap(bmp, null, RectF(px, y, px + w, y + hh), Paint(Paint.FILTER_BITMAP_FLAG))
+                    px += boxW + 16f
+                }
+            }
+            y += 150f + 6f
+        }
         gap(6f); rule()
         label("Evidence seal")
         text("SHA-256 ${inc.evidenceHash ?: "unsealed (saved before sealing existed)"}", 8f, muted)
         inc.previousHash?.let { text("links to previous ${EvidenceSeal.short(it)}", 8f, muted) }
+        inc.photoNames.forEachIndexed { i, n -> text("Photo ${i + 1}: $n · SHA-256 ${inc.photoHashes.getOrNull(i) ?: "?"}", 7.5f, muted) }
+        inc.clipName?.let { text("Sound clip: $it · ${inc.clipSeconds} s, loudest moment, kept on the phone · SHA-256 ${inc.clipHash ?: "?"}", 7.5f, muted) }
     }
 
     private fun chart(inc: com.noisefile.app.model.Incident, limit: Double?) {

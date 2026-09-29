@@ -108,6 +108,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import android.graphics.BitmapFactory
+import android.media.MediaPlayer
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import java.io.File
 import com.noisefile.app.data.EvidenceSeal
 import com.noisefile.app.data.IncidentPatterns
 import com.noisefile.app.data.buildReportPlan
@@ -242,6 +248,9 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onImpactChange = viewModel::setImpact,
                 onNotesChange = viewModel::setNotes,
                 onSave = { viewModel.saveIncident() },
+                onAddPhoto = viewModel::addDraftPhoto,
+                onRemovePhoto = viewModel::removeDraftPhoto,
+                onDropClip = viewModel::dropDraftClip,
                 onSaveAndPrepare = {
                     viewModel.saveIncident()?.let { incident ->
                         copyComplaintAndOpenDestination(context, incident, rule)
@@ -255,11 +264,12 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             cityName = viewModel.selectedJurisdiction().displayName,
             incidents = state.incidents,
             ruleForIncident = viewModel::ruleForIncident,
-            sealReport = remember(state.incidents) { EvidenceSeal.verify(state.incidents) },
+            sealReport = remember(state.incidents) { viewModel.verifyEvidence() },
+            fileFor = viewModel::incidentFile,
             onShowHome = viewModel::showHome,
             onShowHistory = viewModel::showHistory,
             onExport = { shareHistory(context, state.incidents) },
-            onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident) },
+            onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
                 copyComplaintAndOpenDestination(context, incident, rule)
@@ -1476,6 +1486,9 @@ private fun ReviewScreen(
     onSave: () -> Unit,
     onSaveAndPrepare: () -> Unit,
     onDiscard: () -> Unit,
+    onAddPhoto: (Uri) -> Unit = {},
+    onRemovePhoto: (File) -> Unit = {},
+    onDropClip: () -> Unit = {},
 ) {
     // The take is not saved yet. Back (arrow or phone key) must ask before dropping it.
     var confirmDiscard by remember { mutableStateOf(false) }
@@ -1633,6 +1646,17 @@ private fun ReviewScreen(
                     placeholder = { Text("Describe the sound, source, and anything you observed.") },
                     minLines = 3,
                     shape = RoundedCornerShape(18.dp),
+                )
+            }
+
+            item {
+                AttachmentsBlock(
+                    photos = state.draftPhotos,
+                    clip = state.draftClip,
+                    clipSeconds = state.draftClipSeconds,
+                    onAddPhoto = onAddPhoto,
+                    onRemovePhoto = onRemovePhoto,
+                    onDropClip = onDropClip,
                 )
             }
 
@@ -1942,6 +1966,7 @@ private fun HistoryScreen(
     incidents: List<Incident>,
     ruleForIncident: (String) -> RuleWorkflow?,
     sealReport: EvidenceSeal.Report,
+    fileFor: (Incident, String) -> File,
     onShowHome: () -> Unit,
     onShowHistory: () -> Unit,
     onExport: () -> Unit,
@@ -2007,6 +2032,7 @@ private fun HistoryScreen(
                     IncidentCard(
                         incident = incident,
                         rule = ruleForIncident(incident.ruleId),
+                        fileFor = fileFor,
                         onUpdateDetails = onUpdateDetails,
                         onPrepareComplaint = onPrepareComplaint,
                     )
@@ -2059,10 +2085,10 @@ private fun PatternCard(sentence: String, grid: Array<IntArray>) {
     }
 }
 
-private fun shareHistoryPdf(context: Context, incidents: List<Incident>, ruleFor: (String) -> RuleWorkflow?) {
+private fun shareHistoryPdf(context: Context, incidents: List<Incident>, ruleFor: (String) -> RuleWorkflow?, fileFor: (Incident, String) -> File) {
     val result = runCatching {
         val plan = buildReportPlan(incidents, ruleFor)
-        writeIncidentPdf(context, plan)
+        writeIncidentPdf(context, plan, fileFor)
     }
     val file = result.getOrElse {
         Toast.makeText(context, "Could not build the PDF: ${it.message}", Toast.LENGTH_LONG).show()
@@ -2122,6 +2148,7 @@ private fun IncidentCard(
     rule: RuleWorkflow?,
     onUpdateDetails: (Long, String, String) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
+    fileFor: (Incident, String) -> File = { _, name -> File(name) },
 ) {
     var isEditingDetails by remember(incident.id) { mutableStateOf(false) }
     var locationDraft by remember(incident.id, incident.location) { mutableStateOf(incident.location) }
@@ -2289,12 +2316,101 @@ private fun IncidentCard(
                 Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
                 Text("Average ${incident.averageDb.roundToInt()} dB", color = Muted)
             }
+            if (incident.photoNames.isNotEmpty() || incident.clipName != null) {
+                SavedAttachments(incident = incident, fileFor = fileFor)
+            }
             Text(
                 text = "Seal ${EvidenceSeal.short(incident.evidenceHash)}" +
                     if (incident.levelTrace.size >= 2) " · ${incident.levelTrace.size} trace points" else "",
                 color = Muted,
                 fontSize = 11.sp,
             )
+        }
+    }
+}
+
+@Composable
+private fun PhotoThumb(file: File, size: androidx.compose.ui.unit.Dp, onRemove: (() -> Unit)? = null) {
+    val bitmap = remember(file.path, file.lastModified()) {
+        runCatching { BitmapFactory.decodeFile(file.path, BitmapFactory.Options().apply { inSampleSize = 4 }) }.getOrNull()
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(size)) {
+            bitmap?.let { Image(bitmap = it.asImageBitmap(), contentDescription = "Photo", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize()) }
+        }
+        onRemove?.let { TextButton(onClick = it, contentPadding = PaddingValues(0.dp)) { Text("Remove", fontSize = 11.sp) } }
+    }
+}
+
+@Composable
+private fun AttachmentsBlock(
+    photos: List<File>,
+    clip: File?,
+    clipSeconds: Int,
+    onAddPhoto: (Uri) -> Unit,
+    onRemovePhoto: (File) -> Unit,
+    onDropClip: () -> Unit,
+) {
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let(onAddPhoto) }
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+    ) {
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("PHOTOS AND SOUND", color = Cobalt, fontSize = 11.sp, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = if (clip != null) "The loudest $clipSeconds seconds were kept as a sound clip. It stays on this phone."
+                else "No sound clip was kept for this incident.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (clip != null) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ClipPlayButton(clip)
+                    OutlinedButton(onClick = onDropClip, shape = RoundedCornerShape(14.dp)) { Text("Drop the clip") }
+                }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+                photos.forEach { PhotoThumb(it, 88.dp) { onRemovePhoto(it) } }
+                if (photos.size < 2) {
+                    OutlinedButton(
+                        onClick = { picker.launch(androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                        shape = RoundedCornerShape(14.dp),
+                    ) { Text(if (photos.isEmpty()) "Add a photo" else "Add another") }
+                }
+            }
+            Text("Up to two photos, shrunk and kept in the app's own folder. Both go on the PDF and under the seal.", color = Muted, fontSize = 11.sp)
+        }
+    }
+}
+
+@Composable
+private fun ClipPlayButton(file: File) {
+    var playing by remember(file.path) { mutableStateOf(false) }
+    val player = remember(file.path) { MediaPlayer() }
+    androidx.compose.runtime.DisposableEffect(file.path) { onDispose { runCatching { player.release() } } }
+    Button(
+        onClick = {
+            if (playing) { runCatching { player.stop() }; playing = false }
+            else runCatching {
+                player.reset(); player.setDataSource(file.path); player.prepare()
+                player.setOnCompletionListener { playing = false }
+                player.start(); playing = true
+            }
+        },
+        shape = RoundedCornerShape(14.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White),
+    ) { Text(if (playing) "Stop" else "Play the clip") }
+}
+
+@Composable
+private fun SavedAttachments(incident: Incident, fileFor: (Incident, String) -> File) {
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        incident.photoNames.forEach { name -> PhotoThumb(fileFor(incident, name), 64.dp) }
+        incident.clipName?.let { name ->
+            val f = fileFor(incident, name)
+            if (f.isFile) Column { ClipPlayButton(f); Text("${incident.clipSeconds} s · loudest moment", color = Muted, fontSize = 11.sp) }
         }
     }
 }

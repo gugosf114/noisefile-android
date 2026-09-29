@@ -73,6 +73,14 @@ class EvidenceSealTest {
     }
 
     @Test
+    fun aChangedClipOrPhotoChangesTheSeal() {
+        val base = take(1)
+        val h0 = EvidenceSeal.hash(base, EvidenceSeal.GENESIS)
+        assertNotEquals(h0, EvidenceSeal.hash(base.copy(clipHash = "abc", clipSeconds = 10), EvidenceSeal.GENESIS))
+        assertNotEquals(h0, EvidenceSeal.hash(base.copy(photoHashes = listOf("p1")), EvidenceSeal.GENESIS))
+    }
+
+    @Test
     fun differentTracesGiveDifferentSeals() {
         assertNotEquals(
             EvidenceSeal.hash(take(1), EvidenceSeal.GENESIS),

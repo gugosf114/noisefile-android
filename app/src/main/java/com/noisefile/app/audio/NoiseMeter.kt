@@ -91,10 +91,21 @@ class NoiseMeter(private val context: Context) {
 
     fun clearCalibration(micKey: String) = profiles.clear(micKey)
 
+    private var clipKeeper: PeakClipKeeper? = null
+
+    /** The loudest 10 seconds of the last measurement started with keepClip = true, as WAV bytes. */
+    fun takeClip(): Pair<ByteArray, Int>? {
+        val keeper = clipKeeper ?: return null
+        val samples = keeper.snapshot() ?: return null
+        clipKeeper = null
+        return WavWriter.bytes(samples, keeper.sampleRate) to (samples.size / keeper.sampleRate)
+    }
+
     @SuppressLint("MissingPermission")
     fun start(
         onReading: (MeterReading) -> Unit,
         onError: (String) -> Unit,
+        keepClip: Boolean = false,
     ) {
         stop()
 
@@ -172,6 +183,7 @@ class NoiseMeter(private val context: Context) {
         }
 
         audioRecord = record
+        val keeper = if (keepClip) PeakClipKeeper(sampleRate).also { clipKeeper = it } else null
         recordingJob = scope.launch {
             val samples = ShortArray(bufferSize / 2)
             val startedAt = SystemClock.elapsedRealtime()
@@ -207,6 +219,7 @@ class NoiseMeter(private val context: Context) {
 
                     val filteredSamples = filter.process(samples, count)
                     val current = NoiseMath.rmsToEstimatedDbA(filteredSamples, count, offsetDb)
+                    keeper?.add(samples, count, current)
                     // A window of pure digital silence (0 dB) is the mic warming up, not the room.
                     // It must not pin MIN to 0 for the whole take.
                     if (current > 0.0) minimum = min(minimum, current)

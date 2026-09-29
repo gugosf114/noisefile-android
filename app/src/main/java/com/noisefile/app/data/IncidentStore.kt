@@ -27,8 +27,16 @@ class IncidentStore(context: Context) {
         return incidents
     }
 
-    /** Re-check every seal in the chain. */
-    fun verify(): EvidenceSeal.Report = EvidenceSeal.verify(load())
+    /** Re-check every seal in the chain, and that every photo and clip file still matches its hash. */
+    fun verify(files: IncidentFiles? = null): EvidenceSeal.Report {
+        val incidents = load()
+        val report = EvidenceSeal.verify(incidents)
+        if (!report.intact || files == null) return report
+        val broken = incidents.sortedBy { it.id }.firstOrNull { inc ->
+            inc.evidenceHash != null && !files.filesIntact(inc.id, inc.photoNames, inc.photoHashes, inc.clipName, inc.clipHash)
+        }
+        return if (broken == null) report else report.copy(brokenAtId = broken.id)
+    }
 
     @Synchronized
     fun updateDetails(
@@ -75,6 +83,11 @@ class IncidentStore(context: Context) {
         .put("traceSecondsPerSample", traceSecondsPerSample)
         .put("evidenceHash", evidenceHash ?: JSONObject.NULL)
         .put("previousHash", previousHash ?: JSONObject.NULL)
+        .put("photoNames", JSONArray().also { a -> photoNames.forEach { a.put(it) } })
+        .put("photoHashes", JSONArray().also { a -> photoHashes.forEach { a.put(it) } })
+        .put("clipName", clipName ?: JSONObject.NULL)
+        .put("clipHash", clipHash ?: JSONObject.NULL)
+        .put("clipSeconds", clipSeconds)
 
     private companion object {
         const val PREFERENCES_NAME = "noisefile_incidents"
@@ -113,4 +126,9 @@ private fun JSONObject.toIncident(): Incident = Incident(
     traceSecondsPerSample = optInt("traceSecondsPerSample", 1),
     evidenceHash = if (has("evidenceHash") && !isNull("evidenceHash")) getString("evidenceHash") else null,
     previousHash = if (has("previousHash") && !isNull("previousHash")) getString("previousHash") else null,
+    photoNames = optJSONArray("photoNames")?.let { a -> List(a.length()) { a.getString(it) } } ?: emptyList(),
+    photoHashes = optJSONArray("photoHashes")?.let { a -> List(a.length()) { a.getString(it) } } ?: emptyList(),
+    clipName = if (has("clipName") && !isNull("clipName")) getString("clipName") else null,
+    clipHash = if (has("clipHash") && !isNull("clipHash")) getString("clipHash") else null,
+    clipSeconds = optInt("clipSeconds", 0),
 )

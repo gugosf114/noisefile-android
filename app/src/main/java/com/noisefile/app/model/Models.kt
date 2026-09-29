@@ -113,6 +113,13 @@ data class Incident(
     /** SHA-256 evidence seal over the measured facts and the previous seal. Null for takes saved before sealing existed. */
     val evidenceHash: String? = null,
     val previousHash: String? = null,
+    /** Photo file names under the app's private incidents/<id>/ folder, with their SHA-256. */
+    val photoNames: List<String> = emptyList(),
+    val photoHashes: List<String> = emptyList(),
+    /** The loudest 10 seconds of the incident as a WAV in the same folder, with its SHA-256. */
+    val clipName: String? = null,
+    val clipHash: String? = null,
+    val clipSeconds: Int = 0,
 )
 
 /** How a published schedule reads: the windows are when noise is allowed, or when it is restricted. */
