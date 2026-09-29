@@ -1881,46 +1881,60 @@ private fun SelfTestDialog(
     onClose: () -> Unit,
     onAgain: () -> Unit,
 ) {
+    var showDetails by remember(result) { mutableStateOf(false) }
+    val passed = result?.outcome == SelfTestOutcome.READS_STRAIGHT
     val steps = result?.measuredDropsDb.orEmpty().map { "${it.roundToInt()}" }
     val stepWords = when (steps.size) {
-        0 -> ""
+        0 -> "none"
         1 -> "${steps[0]} dB"
         else -> steps.dropLast(1).joinToString(", ") + " and ${steps.last()} dB"
     }
-    val squeezedWords = when (result?.squeezedLoudSteps ?: 0) {
-        0 -> ""
-        1 -> " The loudest tone came out squeezed, so it was left out. The test cannot tell if the speaker or the microphone did that."
-        else -> " The loudest tones came out squeezed, so they were left out. The test cannot tell if the speaker or the microphone did that."
+    val today = DateTimeFormatter.ofPattern("MMM d", Locale.US).format(Instant.now().atZone(ZoneId.systemDefault()))
+    val details = if (result == null) "" else buildString {
+        append("Six tones, each 10 dB quieter than the last. ")
+        append("Tones heard: ${result.stepsHeard} of ${SelfTestMath.TONES}. ")
+        append("Steps heard: $stepWords. ")
+        append("Checked range: ${result.rangeDb} dB.")
+        when (result.squeezedLoudSteps) {
+            0 -> Unit
+            1 -> append(" The loudest tone came out squeezed and was left out.")
+            else -> append(" The loudest tones came out squeezed and were left out.")
+        }
     }
     AlertDialog(
         onDismissRequest = { if (!running) onClose() },
         title = {
             Text(
                 when {
-                    running -> "Calibrating your microphone"
-                    result?.outcome == SelfTestOutcome.READS_STRAIGHT -> "Your microphone reads straight"
-                    result?.outcome == SelfTestOutcome.TONE_NOT_HEARD -> "The microphone did not hear the tone"
-                    else -> "Could not confirm"
+                    running -> "Checking your microphone"
+                    passed -> "Microphone check passed"
+                    result?.outcome == SelfTestOutcome.TONE_NOT_HEARD -> "The microphone did not hear the tones"
+                    else -> "Microphone check did not pass"
                 },
             )
         },
         text = {
-            Text(
-                when {
-                    running -> "Tone $step of ${SelfTestMath.TONES}. The tones play from the phone's own speaker, even with headphones on. " +
-                        "The volume is set for the test and put back after. Put the phone on a table and keep the room quiet."
-                    result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
-                        "The phone played six tones, each 10 dB quieter than the last. The microphone heard steps of $stepWords." +
-                            squeezedWords +
-                            " Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
-                    result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
-                        "Uncover the speaker and the microphone, take the phone out of its case if it has one, then try again."
-                    result != null && result.stepsHeard >= 3 ->
-                        "The tones dropped by 10 dB each. The microphone heard steps of $stepWords. " +
-                            "They do not match, so nothing is claimed. Your numbers stay labeled estimates."
-                    else -> "Only ${result?.stepsHeard ?: 0} of the six tones were heard. Find a quieter room, then try again."
-                },
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    when {
+                        running -> "Tone $step of ${SelfTestMath.TONES}. The tones play from the phone's own speaker, even with headphones on. " +
+                            "The volume is set for the test and put back after. Put the phone on a table and keep the room quiet."
+                        passed -> "Your microphone hears changes in loudness correctly. Checked $today."
+                        result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
+                            "Uncover the speaker and the microphone, take the phone out of its case if it has one, then try again."
+                        result != null && result.stepsHeard >= 3 ->
+                            "The microphone did not hear the steps correctly this time. " +
+                                "Put the phone on a table in a quiet room, then try again."
+                        else -> "Only ${result?.stepsHeard ?: 0} of the six tones were heard. Find a quieter room, then try again."
+                    },
+                )
+                if (!running && result != null && result.outcome != SelfTestOutcome.TONE_NOT_HEARD) {
+                    TextButton(onClick = { showDetails = !showDetails }, contentPadding = PaddingValues(0.dp)) {
+                        Text(if (showDetails) "Hide details" else "Details")
+                    }
+                    if (showDetails) Text(details, color = Muted, style = MaterialTheme.typography.bodySmall)
+                }
+            }
         },
         confirmButton = {
             if (running) {
@@ -1930,7 +1944,7 @@ private fun SelfTestDialog(
             }
         },
         dismissButton = {
-            if (!running && result?.outcome != SelfTestOutcome.READS_STRAIGHT) {
+            if (!running && !passed) {
                 TextButton(onClick = onAgain) { Text("Try again") }
             }
         },
@@ -1948,7 +1962,7 @@ private fun MicrophoneCard(
     val selfTestLine = status.selfTest?.takeIf { it.passed }?.let { test ->
         val day = DateTimeFormatter.ofPattern("MMM d", Locale.US)
             .format(Instant.ofEpochMilli(test.atEpochMillis).atZone(ZoneId.systemDefault()))
-        " Self-test passed $day: level changes read correctly over ${test.rangeDb} dB."
+        " Microphone check passed $day."
     }.orEmpty()
     Surface(
         modifier = Modifier.fillMaxWidth(),
