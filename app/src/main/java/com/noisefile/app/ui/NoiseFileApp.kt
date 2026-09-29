@@ -15,7 +15,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -102,7 +107,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -500,10 +508,16 @@ private fun MeterScreen(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val breath by rememberInfiniteTransition(label = "Recording").animateFloat(
+                        initialValue = 1f,
+                        targetValue = 0.25f,
+                        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+                        label = "RecordingLight",
+                    )
                     Box(
                         modifier = Modifier
-                            .size(8.dp)
-                            .background(White, CircleShape),
+                            .size(9.dp)
+                            .background(White.copy(alpha = breath), CircleShape),
                     )
                     Spacer(Modifier.width(7.dp))
                     Text(
@@ -647,9 +661,9 @@ private fun MeterScreen(
         ) {
             Column(Modifier.padding(18.dp)) {
                 Text(
-                    text = "Capture coach",
+                    text = "While you record",
                     color = Signal,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.titleSmall,
                 )
                 Spacer(Modifier.height(7.dp))
                 
@@ -668,10 +682,10 @@ private fun MeterScreen(
                             "• Keep still and quiet for the whole ${ambientTargetSeconds / 60} minutes; the capture ends on its own."
                     } else {
                         "• Hold the phone steady with its microphone uncovered.\n" +
-                            "• Stay quiet while measuring.\n\n${rule.captureInstruction}"
+                            "• Stay quiet while measuring."
                     },
-                    color = White,
-                    style = MaterialTheme.typography.bodyLarge,
+                    color = Chalk,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -806,11 +820,18 @@ private fun RuleAssessmentCard(
                 }
                 val preview = conditionPreview(condition.text)
                 var expanded by remember(condition.text) { mutableStateOf(false) }
+                val shown = if (expanded || preview == null) condition.text else preview
+                val head = shown.substringBefore(": ", "")
                 Text(
-                    text = "$marker ${if (expanded || preview == null) condition.text else preview}",
-                    color = conditionColor,
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(color = conditionColor, fontWeight = FontWeight.Bold)) {
+                            append("$marker ")
+                            if (head.isNotEmpty() && head.length <= 18) append("$head. ")
+                        }
+                        append(if (head.isNotEmpty() && head.length <= 18) shown.substringAfter(": ") else shown)
+                    },
+                    color = Ink,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
                 )
                 if (preview != null) {
                     TextButton(
@@ -1463,7 +1484,7 @@ private fun PatternCard(sentence: String, grid: Array<IntArray>) {
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("When it happens", color = Sky, style = MaterialTheme.typography.bodySmall, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text("When it happens", color = Sky, style = MaterialTheme.typography.labelLarge)
             Text(sentence, style = MaterialTheme.typography.bodyLarge)
             val maxCount = grid.maxOf { it.max() }.coerceAtLeast(1)
             val days = listOf("M", "T", "W", "T", "F", "S", "S")
@@ -1482,7 +1503,7 @@ private fun PatternCard(sentence: String, grid: Array<IntArray>) {
                     )
                 }
             }
-            Text("Rows are Monday to Sunday. Columns are midnight to 11 PM. Darker means more incidents.", color = Muted, fontSize = 11.sp)
+            Text("Rows are Monday to Sunday. Columns are midnight to 11 PM. Darker means more incidents.", color = Muted, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -1561,16 +1582,12 @@ private fun IncidentCard(
             Instant.ofEpochMilli(incident.startedAtEpochMillis)
                 .atZone(ZoneId.systemDefault()),
         )
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
+    val limit = rule?.let {
+        limitAt(it, Instant.ofEpochMilli(incident.startedAtEpochMillis).atZone(ZoneId.systemDefault()).hour)
+    }
+    val overLimit = limit != null && incident.maximumDb >= limit
+    PaperCard(edge = if (overLimit) PaperRed else Line, edgeWidth = if (overLimit) 2.dp else 1.dp) {
+        run {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -1581,22 +1598,27 @@ private fun IncidentCard(
                         text = incident.noiseType.displayName,
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    Text(date, color = Muted, style = MaterialTheme.typography.bodyMedium)
+                    Text(date, color = PaperMuted, style = MaterialTheme.typography.bodyMedium)
                 }
-                Surface(
-                    shape = CircleShape,
-                    color = DeckHigh,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Brass.copy(alpha = 0.6f)),
-                ) {
+                Column(horizontalAlignment = Alignment.End) {
                     Text(
                         text = "${incident.maximumDb.roundToInt()} dB max",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                        color = Brass,
-                        style = MaterialTheme.typography.labelLarge,
+                        color = if (overLimit) PaperRed else Ink,
+                        style = MaterialTheme.typography.headlineSmall,
                     )
+                    if (limit != null) {
+                        Text(
+                            text = if (overLimit) "at or above the ${limit.roundToInt()} dB limit" else "below the ${limit.roundToInt()} dB limit",
+                            color = if (overLimit) PaperRed else PaperMuted,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
                 }
             }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            if (incident.levelTrace.size >= 2) {
+                TraceStrip(trace = incident.levelTrace, limitDb = limit)
+            }
+            HorizontalDivider(color = Line)
             Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
             if (isEditingDetails) {
                 OutlinedTextField(
@@ -1644,23 +1666,23 @@ private fun IncidentCard(
                 Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(
                         text = "Location",
-                        color = Sky,
+                        color = PaperMuted,
                         style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = incident.location.ifBlank { "No location added." },
-                        color = if (incident.location.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
+                        color = if (incident.location.isBlank()) PaperMuted else Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(
                         text = "Notes",
-                        color = Sky,
+                        color = PaperMuted,
                         style = MaterialTheme.typography.labelMedium,
                     )
                     Text(
                         text = incident.notes.ifBlank { "No notes added." },
-                        color = if (incident.notes.isBlank()) Muted else MaterialTheme.colorScheme.onSurface,
+                        color = if (incident.notes.isBlank()) PaperMuted else Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                     TextButton(
@@ -1697,14 +1719,14 @@ private fun IncidentCard(
                 if (incident.location.isBlank()) {
                     Text(
                         text = "Add the incident location before preparing the complaint.",
-                        color = Danger,
+                        color = PaperRed,
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             } else {
                 Text(
                     text = "This incident's city rule is no longer available.",
-                    color = Danger,
+                    color = PaperRed,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -1712,8 +1734,8 @@ private fun IncidentCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(formatElapsed(incident.durationSeconds * 1_000), color = Muted)
-                Text("Average ${incident.averageDb.roundToInt()} dB", color = Muted)
+                Text("Length ${formatElapsed(incident.durationSeconds * 1_000)}", color = PaperMuted, style = MaterialTheme.typography.bodySmall)
+                Text("Average ${incident.averageDb.roundToInt()} dB", color = PaperMuted, style = MaterialTheme.typography.bodySmall)
             }
             if (incident.photoNames.isNotEmpty() || incident.clipName != null) {
                 SavedAttachments(incident = incident, fileFor = fileFor)
@@ -1721,12 +1743,36 @@ private fun IncidentCard(
             Text(
                 text = "Seal ${EvidenceSeal.short(incident.evidenceHash)}" +
                     if (incident.levelTrace.size >= 2) ", ${incident.levelTrace.size} trace points" else "",
-                color = Muted,
+                color = PaperMuted,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
     }
 }
+
+/** The sound of one incident, second by second, with the city's limit as a red line. */
+@Composable
+private fun TraceStrip(trace: List<Int>, limitDb: Double?) {
+    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(54.dp)) {
+        val low = 20f; val high = 100f
+        fun y(db: Float) = size.height - ((db - low) / (high - low)).coerceIn(0f, 1f) * size.height
+        drawLine(Line, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = 1.dp.toPx())
+        val step = size.width / (trace.size - 1).coerceAtLeast(1)
+        val path = androidx.compose.ui.graphics.Path()
+        trace.forEachIndexed { i, v -> if (i == 0) path.moveTo(0f, y(v.toFloat())) else path.lineTo(i * step, y(v.toFloat())) }
+        drawPath(path, PaperBlue, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), join = androidx.compose.ui.graphics.StrokeJoin.Round))
+        if (limitDb != null) {
+            drawLine(
+                PaperRed,
+                Offset(0f, y(limitDb.toFloat())),
+                Offset(size.width, y(limitDb.toFloat())),
+                strokeWidth = 1.5.dp.toPx(),
+                pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(10f, 8f)),
+            )
+        }
+    }
+}
+
 
 @Composable
 private fun PhotoThumb(file: File, size: androidx.compose.ui.unit.Dp, onRemove: (() -> Unit)? = null) {
@@ -1737,7 +1783,7 @@ private fun PhotoThumb(file: File, size: androidx.compose.ui.unit.Dp, onRemove: 
         Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.size(size)) {
             bitmap?.let { Image(bitmap = it.asImageBitmap(), contentDescription = "Photo", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize()) }
         }
-        onRemove?.let { TextButton(onClick = it, contentPadding = PaddingValues(0.dp)) { Text("Remove", fontSize = 11.sp) } }
+        onRemove?.let { TextButton(onClick = it, contentPadding = PaddingValues(0.dp)) { Text("Remove", style = MaterialTheme.typography.labelMedium) } }
     }
 }
 
@@ -1758,7 +1804,7 @@ private fun AttachmentsBlock(
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Photos and sound", color = Sky, style = MaterialTheme.typography.bodySmall, letterSpacing = 1.sp, fontWeight = FontWeight.Bold)
+            Text("Photos and sound", style = MaterialTheme.typography.titleMedium)
             Text(
                 text = if (clip != null) "The loudest $clipSeconds seconds were kept as a sound clip. It stays on this phone."
                 else "No sound clip was kept for this incident.",
@@ -1779,7 +1825,7 @@ private fun AttachmentsBlock(
                     ) { Text(if (photos.isEmpty()) "Add a photo" else "Add another") }
                 }
             }
-            Text("Up to two photos, shrunk and kept in the app's own folder. Both go on the PDF and under the seal.", color = Muted, fontSize = 11.sp)
+            Text("Up to two photos. They stay on this phone, go on the PDF, and sit under the seal.", color = Muted, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -1809,7 +1855,7 @@ private fun SavedAttachments(incident: Incident, fileFor: (Incident, String) -> 
         incident.photoNames.forEach { name -> PhotoThumb(fileFor(incident, name), 64.dp) }
         incident.clipName?.let { name ->
             val f = fileFor(incident, name)
-            if (f.isFile) Column { ClipPlayButton(f); Text("${incident.clipSeconds} s, loudest moment", color = Muted, fontSize = 11.sp) }
+            if (f.isFile) Column { ClipPlayButton(f); Text("${incident.clipSeconds} s, loudest moment", color = PaperMuted, style = MaterialTheme.typography.bodySmall) }
         }
     }
 }

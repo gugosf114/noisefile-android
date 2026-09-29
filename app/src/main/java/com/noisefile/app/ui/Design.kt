@@ -360,18 +360,19 @@ fun InstrumentDial(
             )
             drawCircle(grain, radius = r - 8.dp.toPx(), center = c)
 
-            // the zone above the city's limit
-            val tickOuter = r - 22.dp.toPx()
+            // the zone above the city's limit: a red band behind the ticks
+            val tickOuter = r - 30.dp.toPx()
             if (limitDb != null && limitDb in 20.0..100.0) {
                 val from = angle(limitDb.toFloat())
+                val band = tickOuter - 8.dp.toPx()
                 drawArc(
-                    color = Danger.copy(alpha = 0.30f),
+                    color = Danger.copy(alpha = 0.26f),
                     startAngle = from,
                     sweepAngle = 45f + 360f - from,
                     useCenter = false,
-                    topLeft = Offset(c.x - tickOuter, c.y - tickOuter),
-                    size = Size(tickOuter * 2, tickOuter * 2),
-                    style = Stroke(width = 7.dp.toPx()),
+                    topLeft = Offset(c.x - band, c.y - band),
+                    size = Size(band * 2, band * 2),
+                    style = Stroke(width = 16.dp.toPx()),
                 )
             }
 
@@ -390,7 +391,7 @@ fun InstrumentDial(
                 )
                 if (db % 20 == 0) {
                     val layout = measurer.measure(db.toString(), numeral)
-                    val p = at(a, tickOuter - 34.dp.toPx())
+                    val p = at(a, tickOuter - 32.dp.toPx())
                     drawText(layout, topLeft = Offset(p.x - layout.size.width / 2f, p.y - layout.size.height / 2f))
                 }
                 db += 2
@@ -399,19 +400,19 @@ fun InstrumentDial(
             // the city's limit: one red mark
             if (limitDb != null && limitDb in 20.0..100.0) {
                 val a = angle(limitDb.toFloat())
-                drawLine(Danger, at(a, tickOuter + 6.dp.toPx()), at(a, tickOuter - 22.dp.toPx()), strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round)
+                drawLine(Danger, at(a, tickOuter + 3.dp.toPx()), at(a, tickOuter - 20.dp.toPx()), strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round)
             }
 
             // the sound: a brass sweep with its own light
             if (valueDb != null) {
-                val sweepRadius = r - 58.dp.toPx()
+                val sweepRadius = r - 18.dp.toPx()
                 val sweepColor = if (over) Danger else Brass
                 val box = Offset(c.x - sweepRadius, c.y - sweepRadius)
                 val boxSize = Size(sweepRadius * 2, sweepRadius * 2)
-                drawArc(Chalk.copy(alpha = 0.07f), 135f, 270f, false, box, boxSize, style = Stroke(9.dp.toPx(), cap = StrokeCap.Round))
-                val sweep = (shown - 20f) / 80f * 270f
-                drawArc(sweepColor.copy(alpha = 0.22f), 135f, sweep, false, box, boxSize, style = Stroke(22.dp.toPx(), cap = StrokeCap.Round))
-                drawArc(sweepColor, 135f, sweep, false, box, boxSize, style = Stroke(9.dp.toPx(), cap = StrokeCap.Round))
+                drawArc(Chalk.copy(alpha = 0.08f), 135f, 270f, false, box, boxSize, style = Stroke(8.dp.toPx(), cap = StrokeCap.Round))
+                val sweep = ((shown - 20f) / 80f * 270f).coerceAtLeast(0.5f)
+                drawArc(sweepColor.copy(alpha = 0.20f), 135f, sweep, false, box, boxSize, style = Stroke(16.dp.toPx(), cap = StrokeCap.Round))
+                drawArc(sweepColor, 135f, sweep, false, box, boxSize, style = Stroke(8.dp.toPx(), cap = StrokeCap.Round))
                 drawCircle(Color.White, radius = 3.dp.toPx(), center = at(135f + sweep, sweepRadius))
             }
         }
