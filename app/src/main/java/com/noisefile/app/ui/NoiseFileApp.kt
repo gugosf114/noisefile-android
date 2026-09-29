@@ -1898,8 +1898,12 @@ private fun SelfTestDialog(
                 when {
                     running -> "Tone $step of 3. The tones play from the phone's own speaker, even with headphones on. " +
                         "The volume is set for the test and put back after. Put the phone on a table and keep the room quiet."
-                    result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
+                    result?.outcome == SelfTestOutcome.READS_STRAIGHT && result.stepsHeard >= 3 ->
                         "The phone played three tones, each 10 dB quieter than the last. The microphone heard drops of $drops. " +
+                            "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
+                    result?.outcome == SelfTestOutcome.READS_STRAIGHT ->
+                        "The phone played three tones, each 10 dB quieter than the last. The microphone heard the first two: " +
+                            "a drop of $drops. The third was too quiet for this room. " +
                             "Level changes are read correctly over ${result.rangeDb} dB. Your numbers stay labeled estimates."
                     result?.outcome == SelfTestOutcome.TONE_NOT_HEARD ->
                         "Uncover the speaker and the microphone, take the phone out of its case if it has one, then try again."

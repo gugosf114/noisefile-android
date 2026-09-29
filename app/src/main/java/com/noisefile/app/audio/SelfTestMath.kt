@@ -7,7 +7,12 @@ import kotlin.math.pow
 import kotlin.math.sin
 
 /** One 0.1-second window heard during the self-test. */
-data class ToneWindow(val share: Double, val levelDb: Double)
+data class ToneWindow(
+    val share: Double,
+    val levelDb: Double,
+    /** How far the test pitch stands above its neighbours, in dB. */
+    val standoutDb: Double = 0.0,
+)
 
 enum class SelfTestOutcome {
     /** The microphone heard the steps the speaker played, within tolerance. */
@@ -47,6 +52,8 @@ object SelfTestMath {
     val STEP_DROPS_DB = listOf(0.0, 10.0, 20.0)
     const val TOLERANCE_DB = 2.5
     const val MIN_SHARE = 0.5
+    /** A window counts as "tone heard" when the pitch stands this far above the sound next to it. */
+    const val MIN_STANDOUT_DB = 12.0
     private const val MIN_RUN_WINDOWS = 6
     private const val TRIM_WINDOWS = 2
 
@@ -93,7 +100,7 @@ object SelfTestMath {
             }
             run = ArrayList()
         }
-        windows.forEach { w -> if (w.share >= MIN_SHARE) run.add(w.levelDb) else close() }
+        windows.forEach { w -> if (w.standoutDb >= MIN_STANDOUT_DB) run.add(w.levelDb) else close() }
         close()
         return out
     }

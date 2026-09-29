@@ -378,6 +378,7 @@ class NoiseMeter(private val context: Context) {
                         ToneWindow(
                             share = ToneProbe.share(buffer, got, SelfTestMath.TONE_HZ, sampleRate),
                             levelDb = ToneProbe.levelDbfs(buffer, got, SelfTestMath.TONE_HZ, sampleRate),
+                            standoutDb = ToneProbe.standoutDb(buffer, got, SelfTestMath.TONE_HZ, sampleRate),
                         ),
                     )
                     onProgress(SelfTestMath.stepAt(windows.size, sampleRate))

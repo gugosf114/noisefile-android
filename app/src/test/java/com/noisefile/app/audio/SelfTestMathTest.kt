@@ -27,7 +27,11 @@ class SelfTestMathTest {
         val n = SelfTestMath.WINDOW_SAMPLES
         return (0 until heard.size / n).map { w ->
             val window = heard.copyOfRange(w * n, (w + 1) * n)
-            ToneWindow(ToneProbe.share(window, n, SelfTestMath.TONE_HZ, rate), ToneProbe.levelDbfs(window, n, SelfTestMath.TONE_HZ, rate))
+            ToneWindow(
+                share = ToneProbe.share(window, n, SelfTestMath.TONE_HZ, rate),
+                levelDb = ToneProbe.levelDbfs(window, n, SelfTestMath.TONE_HZ, rate),
+                standoutDb = ToneProbe.standoutDb(window, n, SelfTestMath.TONE_HZ, rate),
+            )
         }
     }
 
@@ -61,9 +65,18 @@ class SelfTestMathTest {
     }
 
     @Test
-    fun aLoudRoomThatBuriesTheQuietToneCoversOnlyTheRangeItHeard() {
-        // noise strong enough to bury the -20 dB tone but not the first two
+    fun aQuietToneInANoisyRoomIsStillFoundAmongItsNeighbours() {
+        // The room's total sound is far louder than the third tone, but not right at the tone's pitch.
         val result = SelfTestMath.evaluate(hear(gainDb = -20.0, noise = 400.0))
+        assertEquals(3, result.stepsHeard)
+        assertEquals(SelfTestOutcome.READS_STRAIGHT, result.outcome)
+        assertEquals(20, result.rangeDb)
+    }
+
+    @Test
+    fun aLoudRoomThatBuriesTheQuietToneCoversOnlyTheRangeItHeard() {
+        // noise strong enough to bury the quietest tone even among its neighbours
+        val result = SelfTestMath.evaluate(hear(gainDb = -20.0, noise = 6_000.0))
         assertTrue(result.stepsHeard in 1..2)
         if (result.stepsHeard == 2) {
             assertEquals(10, result.rangeDb)
