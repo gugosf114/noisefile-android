@@ -158,8 +158,14 @@ class HoursRuleTest {
         val sundayThreeAm = LocalDateTime.of(2026, 9, 13, 3, 0)
         catalog.rules.filter { it.hoursRule != null }.forEach { rule ->
             val assessment = assessMeterReading(rule = rule, reading = reading(), localDateTime = sundayThreeAm)
-            assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
-            assertTrue(rule.id, assessment.conditions.any { it.text.startsWith("Time:") })
+            val clockLine = assessment.conditions.first { it.text.startsWith("Time:") }
+            assertEquals(rule.id, RuleConditionOutcome.NEEDS_INFORMATION, clockLine.outcome)
+            if (rule.meterLimit == null) {
+                assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
+            } else {
+                // only the separate Limit line may move the status (Hayward + San Mateo construction caps)
+                assertTrue(rule.id, assessment.conditions.any { it.text.startsWith("Limit:") })
+            }
             assertTrue(rule.id, assessment.conditions.any { it.text.startsWith("Ordinance test:") })
         }
     }

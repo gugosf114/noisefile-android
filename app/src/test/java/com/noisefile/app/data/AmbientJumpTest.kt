@@ -57,11 +57,16 @@ class AmbientJumpTest {
         val soundLine = assessment.conditions.first { it.text.startsWith("Sound:") }
         assertTrue(soundLine.sourceQuote!!, soundLine.sourceQuote!!.startsWith("\"Ambient\" means the average sound level during a six-minute period"))
         assertEquals("Municipal Code Chapter 7.30, Definitions", soundLine.sourceCitation)
-        // information, not a verdict
-        assertEquals(MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
+        // the jump line is information, not a verdict
         assertEquals(
             RuleConditionOutcome.NEEDS_INFORMATION,
             assessment.conditions.first { it.text.startsWith("Sound:") }.outcome,
+        )
+        // the status comes from the separate Limit line: 61 dB at 3 pm meets San Mateo's 60 dB daytime base
+        assertEquals(MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+        assertEquals(
+            RuleConditionOutcome.REACHED,
+            assessment.conditions.first { it.text.startsWith("Limit:") }.outcome,
         )
     }
 

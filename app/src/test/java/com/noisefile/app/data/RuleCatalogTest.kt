@@ -66,8 +66,22 @@ class RuleCatalogTest {
             )
         }
 
+        val limitedRules = catalog.rules.filter { it.meterLimit != null }.map { it.id }.toSet()
+        assertEquals(
+            setOf(
+                "berkeley-party_music", "hayward-party_music", "santa-clara-party_music",
+                "sunnyvale-party_music", "san-mateo-party_music", "richmond-party_music",
+                "hayward-construction", "san-mateo-construction",
+            ),
+            limitedRules,
+        )
         catalog.rules.forEach { rule ->
-            assertNull("${rule.id} must not use a phone reading as a legal cutoff", rule.meterLimit)
+            rule.meterLimit?.let { limit ->
+                assertTrue(
+                    "${rule.id} limit must say the phone number is an estimate",
+                    limit.comparisonContext.contains("Phone estimate"),
+                )
+            }
             if (rule.noiseType == NoiseType.BARKING_DOG) {
                 assertTrue(
                     "${rule.id} must state whether a dB threshold exists",
@@ -111,7 +125,7 @@ class RuleCatalogTest {
         assertTrue(music.summary.contains("six-minute ambient"))
         assertTrue(construction.summary.contains("Sundays and holidays noon\u20134:00 p.m."))
         assertTrue(construction.summary.contains("90 dB"))
-        assertNull(construction.meterLimit)
+        assertEquals(90.0, construction.meterLimit?.fixedMaximumDb)
     }
 
     @Test
@@ -292,7 +306,8 @@ class RuleCatalogTest {
         assertTrue(noise.summary.contains("60 dBA"))
         assertTrue(noise.summary.contains("17 factors"))
         assertTrue(noise.summary.contains("within 72 hours"))
-        assertNull(noise.meterLimit)
+        assertEquals(70.0, noise.meterLimit?.daytimeMaximumDb)
+        assertEquals(60.0, noise.meterLimit?.nighttimeMaximumDb)
         assertEquals("tel:5102937000", noise.actionUri)
         assertTrue(noise.secondaryActionUri?.endsWith("classificationId=12610") == true)
 
@@ -449,7 +464,8 @@ class RuleCatalogTest {
         assertTrue(noise.summary.contains("recurs within 90 days"))
         assertTrue(noise.summary.contains("sole test for that incident"))
         assertTrue(noise.summary.contains("50 dBA or ambient"))
-        assertNull(noise.meterLimit)
+        assertEquals(50.0, noise.meterLimit?.daytimeMaximumDb)
+        assertEquals(40.0, noise.meterLimit?.nighttimeMaximumDb)
         assertEquals("tel:5102331214", noise.actionUri)
         assertEquals("https://ims.ci.richmond.ca.us/ims/Account/Login", noise.secondaryActionUri)
 
