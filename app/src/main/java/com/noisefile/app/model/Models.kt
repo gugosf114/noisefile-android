@@ -88,6 +88,8 @@ data class MeterReading(
     val micKey: String = "",
     /** The user's saved offset already included in the dB numbers above. */
     val userOffsetDb: Double = 0.0,
+    /** Loudest window in which a smoke-alarm tone was heard; 0 until enough tone windows exist. */
+    val alarmToneDb: Double = 0.0,
 )
 
 data class Incident(

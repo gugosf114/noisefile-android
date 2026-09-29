@@ -113,6 +113,7 @@ class NoiseMeter(private val context: Context) {
         onReading: (MeterReading) -> Unit,
         onError: (String) -> Unit,
         keepClip: Boolean = false,
+        listenForAlarm: Boolean = false,
     ) {
         stop()
 
@@ -207,6 +208,8 @@ class NoiseMeter(private val context: Context) {
             var maximum = 0.0
             var energyTotal = 0.0
             var windows = 0
+            var toneWindows = 0
+            var toneMaximum = 0.0
 
             try {
                 val filter = AWeightingFilter()
@@ -236,6 +239,10 @@ class NoiseMeter(private val context: Context) {
                     val filteredSamples = filter.process(samples, count)
                     val current = NoiseMath.rmsToEstimatedDbA(filteredSamples, count, offsetDb)
                     keeper?.add(samples, count, current)
+                    if (listenForAlarm && AlarmTone.toneShare(samples, count, sampleRate) >= AlarmTone.MIN_TONE_SHARE) {
+                        toneWindows += 1
+                        toneMaximum = max(toneMaximum, current)
+                    }
                     // A window of pure digital silence (0 dB) is the mic warming up, not the room.
                     // It must not pin MIN to 0 for the whole take.
                     if (current > 0.0) minimum = min(minimum, current)
@@ -256,6 +263,7 @@ class NoiseMeter(private val context: Context) {
                             micLabel = micLabel,
                             micKey = micKey,
                             userOffsetDb = userOffset,
+                            alarmToneDb = if (toneWindows >= AlarmTone.MIN_TONE_WINDOWS) toneMaximum else 0.0,
                         ),
                     )
                 }
