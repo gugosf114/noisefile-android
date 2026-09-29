@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-07.1",
+  "catalogVersion": "2026-09-28.1",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -373,6 +373,13 @@
         "note": "San Mateo Municipal Code 7.30 measures ambient as the average over six minutes with a precision meter, slow response, A-weighted, source silent, same spot. The standard is the table level, or the ambient when it is higher, plus 5, 10, 15 or 20 dB depending on how many minutes per hour the noise lasts.",
         "sourceCitation": "Municipal Code Chapter 7.30, Definitions",
         "sourceQuote": "\"Ambient\" means the average sound level during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The sound level shall be determined with the noise source at issue silent and in the same location as the measurement of the noise level of the source or sources at issue."
+      },
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "San Mateo Table 7.30.040 Noise Zone 1 base (single-family), measured on the affected property; the base may be exceeded by 5 dB for 15 cumulative minutes an hour, 10 dB for 5 minutes, 15 dB for 1 minute, and never by 20 dB; a higher six-minute ambient replaces it. Phone estimate at your spot, not the officer's meter at the code's measurement point."
       }
     },
     {
@@ -412,6 +419,10 @@
         "context": "Municipal Code Chapter 7.30 for construction under a city permit, and only while equipment stays under 90 dB at 25 feet or 90 dB at the property plane; the permit can set other hours. Holidays use the Sunday hours.",
         "sourceCitation": "Municipal Code Chapter 7.30, Construction",
         "sourceQuote": "Construction, alteration, repair or land development activities which are authorized by a valid city permit shall be allowed on weekdays between the hours of seven a.m. and seven p.m., on Saturdays between the hours of nine a.m. and five p.m., and on Sundays and holidays between the hours of noon and four p.m., or at such other hours as may be authorized or restricted by the permit, if they meet at least one of the following noise limitations: (1) No individual piece of equipment shall produce a noise level exceeding 90 dB at a distance of 25 feet."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 90,
+        "comparisonContext": "San Mateo: during allowed hours, no project noise above 90 dB outside the project property plane, or no equipment above 90 dB at 25 feet. Phone estimate at your spot, not the officer's meter at the code's measurement point."
       }
     },
     {
@@ -448,7 +459,14 @@
       "officialSourceUrl": "https://library.municode.com/ca/hayward/codes/municipal_code?nodeId=HAYWARD_MUNICIPAL_CODE_CH4PUWEMOCO_ART1PUNU",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://user.govoutreach.com/hayward/support.php?classificationId=12610",
-      "secondaryActionLabel": "File Private-Property Code Issue"
+      "secondaryActionLabel": "File Private-Property Code Issue",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 60,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 21,
+        "comparisonContext": "Hayward 4-1.03.1(a): noise from residential property may not exceed this level at any point outside that property's plane. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
     },
     {
       "id": "hayward-construction",
@@ -489,6 +507,10 @@
         "context": "Municipal Code 4-1.03.4: inside these hours construction is held to 83 dBA per device at 25 feet and 86 dBA at the property plane; outside them the general residential limits of 4-1.03.1 apply instead of a ban. Holidays use the Sunday hours; a permit or condition of approval can set other hours.",
         "sourceCitation": "Municipal Code 4-1.03.4",
         "sourceQuote": "Unless otherwise provided pursuant to a duly-issued permit or a condition of approval of a land use entitlement, the construction, alteration, or repair of structures and any landscaping activities, occurring between the hours of 10:00 a.m. and 6:00 p.m. on Sundays and holidays, and 7:00 a.m. and 7:00 p.m. on other days, shall be subject to the following: (a) No individual device or piece of equipment shall produce a noise level exceeding eighty-three (83) dBA at a distance of twenty-five (25) feet from the source. (b) The noise level at any point outside of the property plane shall not exceed eighty-six (86) dBA. (c) During all other times, the decibel levels set forth in Section 4-1.03.1 shall control."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 86,
+        "comparisonContext": "Hayward: during allowed hours, project noise may not exceed 86 dBA anywhere outside the project's property plane (and 83 dBA per device at 25 feet). Phone estimate at your spot, not the officer's meter at the code's measurement point."
       }
     },
     {
@@ -588,7 +610,14 @@
       "officialSourceUrl": "https://berkeley.municipal.codes/BMC/13.40.070",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "tel:5109815900",
-      "secondaryActionLabel": "Call Police Non-Emergency"
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 45,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Berkeley Table 13.40-1 base level for R-1/R-2 zones, measured on the receiving property; the base may be exceeded by 5 dBA for 15 cumulative minutes an hour, 10 dBA for 5 minutes, 15 dBA for 1 minute, and never by 20 dBA; a higher measured ambient replaces it. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
     },
     {
       "id": "berkeley-construction",
@@ -732,7 +761,14 @@
       "officialSourceUrl": "https://library.municode.com/ca/richmond/codes/code_of_ordinances?nodeId=ARTIXHE_CH9.52CONOOR",
       "verifiedDate": "2026-09-06",
       "secondaryActionUri": "https://ims.ci.richmond.ca.us/ims/Account/Login",
-      "secondaryActionLabel": "File Ongoing Code Complaint"
+      "secondaryActionLabel": "File Ongoing Code Complaint",
+      "meterLimit": {
+        "daytimeMaximumDb": 50,
+        "nighttimeMaximumDb": 40,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Richmond 9.52.100 30-minute-per-hour source-boundary level for single-family residential (55 dBA) less the 5 dBA reduction for music or speech, and 10 dBA lower from 10 p.m. to 7 a.m.; the officer chooses whether this dBA test applies. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
     },
     {
       "id": "richmond-construction",
@@ -807,7 +843,14 @@
       "officialSourceUrl": "https://ecode360.com/42730931",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale",
-      "secondaryActionLabel": "File Written Complaint Online"
+      "secondaryActionLabel": "File Written Complaint Online",
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Sunnyvale 19.42.030(a)(1) limit at a single-family or duplex property line; multifamily open space is 65/55 and corridor or mixed-use residential 70/60. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
     },
     {
       "id": "sunnyvale-construction",
@@ -1173,7 +1216,14 @@
       "officialSourceUrl": "https://ecode360.com/47548749",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://www.santaclaraca.gov/services/make-a-service-request/submit-a-request-online",
-      "secondaryActionLabel": "File Written Complaint Online"
+      "secondaryActionLabel": "File Written Complaint Online",
+      "meterLimit": {
+        "daytimeMaximumDb": 50,
+        "nighttimeMaximumDb": 45,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Santa Clara Schedule A residential receiving level (55 dBA day, 50 night) less the 5 dBA reduction the chapter applies to music or speech, measured on the affected property; fixed sources only. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
     },
     {
       "id": "santa-clara-construction",

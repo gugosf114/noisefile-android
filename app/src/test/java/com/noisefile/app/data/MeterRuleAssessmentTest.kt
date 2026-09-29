@@ -20,7 +20,7 @@ class MeterRuleAssessmentTest {
     }
 
     @Test
-    fun sanMateoPhoneReadingDoesNotPretendToBeTheRequiredPrecisionMeasurement() {
+    fun sanMateoPhoneReadingFlagsTheListedLimitAndStillCallsItselfAnEstimate() {
         val rules = listOf(
             catalog().retrieve("san-mateo", NoiseType.BARKING_DOG)
                 ?: error("Missing San Mateo barking rule"),
@@ -30,16 +30,34 @@ class MeterRuleAssessmentTest {
                 ?: error("Missing San Mateo construction rule"),
         )
 
-        rules.forEach { rule ->
-            val assessment = assessMeterReading(
+        val barking = assessMeterReading(
+            rule = rules[0],
+            reading = reading(maximumDb = 95.0),
+            localDateTime = LocalDateTime.of(2026, 7, 29, 23, 0),
+        )
+        assertEquals(MeterAssessmentStatus.NEEDS_INFORMATION, barking.status)
+        assertTrue(barking.headline.contains("cannot pass or fail the San Mateo rule"))
+
+        // 95 dB at 11 pm: above the 50 dB night base for general noise, above the 90 dB construction cap.
+        rules.drop(1).forEach { rule ->
+            val loud = assessMeterReading(
                 rule = rule,
                 reading = reading(maximumDb = 95.0),
                 localDateTime = LocalDateTime.of(2026, 7, 29, 23, 0),
             )
-
-            assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
-            assertTrue(rule.id, assessment.headline.contains("cannot pass or fail the San Mateo rule"))
+            assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, loud.status)
+            val limitLine = loud.conditions.first { it.text.startsWith("Limit:") }
+            assertEquals(rule.id, RuleConditionOutcome.REACHED, limitLine.outcome)
+            assertTrue(rule.id, limitLine.text.contains("at or above the city's listed"))
+            assertTrue(rule.id, limitLine.text.contains("Phone estimate"))
         }
+        val quiet = assessMeterReading(
+            rule = rules[1],
+            reading = reading(maximumDb = 42.0),
+            localDateTime = LocalDateTime.of(2026, 7, 29, 23, 0),
+        )
+        assertEquals(MeterAssessmentStatus.DOES_NOT_REACH_LISTED_CONDITION, quiet.status)
+        assertTrue(quiet.conditions.first { it.text.startsWith("Limit:") }.text.contains("8 dB below the city's listed nighttime 50 dB limit"))
 
         rules.drop(1).forEach { rule ->
             assertTrue(rule.id, rule.captureInstruction.contains("Type 1 precision meter"))
@@ -143,6 +161,9 @@ class MeterRuleAssessmentTest {
                     rule.id,
                     assessment.conditionText().contains("1 of 5 including this recording; 4 more needed"),
                 )
+            } else if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 120 dB highest estimate is"))
             } else {
                 assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
                 assertTrue(
@@ -158,8 +179,12 @@ class MeterRuleAssessmentTest {
         }
 
         assertEquals(
-            44,
+            36,
             assessments.count { it.status == MeterAssessmentStatus.NEEDS_INFORMATION },
+        )
+        assertEquals(
+            8,
+            assessments.count { it.status == MeterAssessmentStatus.REACHES_LISTED_CONDITION },
         )
         assertEquals(
             1,
@@ -223,6 +248,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 12, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -253,6 +283,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -285,6 +320,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -313,6 +353,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -340,6 +385,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -367,6 +417,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -398,6 +453,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -429,6 +489,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
@@ -460,6 +525,11 @@ class MeterRuleAssessmentTest {
                 localDateTime = LocalDateTime.of(2026, 8, 2, 3, 0),
             )
 
+            if (rule.meterLimit != null) {
+                assertEquals(rule.id, MeterAssessmentStatus.REACHES_LISTED_CONDITION, assessment.status)
+                assertTrue(rule.id, assessment.conditionText().contains("Limit: 95 dB highest estimate is"))
+                return@forEach
+            }
             assertEquals(rule.id, MeterAssessmentStatus.NEEDS_INFORMATION, assessment.status)
             assertTrue(
                 rule.id,
