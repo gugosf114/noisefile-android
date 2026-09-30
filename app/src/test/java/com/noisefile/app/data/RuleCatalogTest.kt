@@ -667,7 +667,7 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theSixEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theSevenEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
@@ -680,6 +680,7 @@ class RuleCatalogTest {
                 "san-mateo-party_music" to "mailto:police@cityofsanmateo.org",
                 "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
                 "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
+                "san-leandro-construction" to "mailto:BuildingInspections@SanLeandro.org",
             ),
             emails,
         )

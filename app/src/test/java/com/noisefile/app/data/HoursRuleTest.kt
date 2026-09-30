@@ -132,10 +132,10 @@ class HoursRuleTest {
     }
 
     @Test
-    fun fourteenConstructionSchedulesAndFourQuietHourRulesShipWithReceipts() {
+    fun seventeenConstructionSchedulesAndSevenQuietHourRulesShipWithReceipts() {
         val scheduled = catalog.rules.filter { it.hoursRule != null }
-        assertEquals(14, scheduled.count { it.hoursRule!!.kind == HoursKind.ALLOWED })
-        assertEquals(4, scheduled.count { it.hoursRule!!.kind == HoursKind.QUIET })
+        assertEquals(17, scheduled.count { it.hoursRule!!.kind == HoursKind.ALLOWED })
+        assertEquals(7, scheduled.count { it.hoursRule!!.kind == HoursKind.QUIET })
         assertTrue(scheduled.filter { it.hoursRule!!.kind == HoursKind.ALLOWED }.all { it.noiseType == NoiseType.CONSTRUCTION })
         assertTrue(scheduled.filter { it.hoursRule!!.kind == HoursKind.QUIET }.all { it.noiseType == NoiseType.PARTY_MUSIC })
         scheduled.forEach { rule ->
