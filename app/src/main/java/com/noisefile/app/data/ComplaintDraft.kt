@@ -88,11 +88,7 @@ fun buildComplaintDraft(
     val date = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.US).format(start)
     val clock = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
     val minutes = (incident.durationSeconds / 60).coerceAtLeast(if (incident.durationSeconds > 0) 1 else 0)
-    val kind = when (rule.noiseType) {
-        com.noisefile.app.model.NoiseType.BARKING_DOG -> "Animal noise"
-        com.noisefile.app.model.NoiseType.PARTY_MUSIC -> "Loud noise"
-        com.noisefile.app.model.NoiseType.CONSTRUCTION -> "Construction or mechanical noise"
-    }
+    val kind = incident.soundKind ?: com.noisefile.app.model.NoiseKinds.defaultKind(rule.noiseType)
     val baseline = incident.ambientDb?.let { quiet ->
         " Quiet at the same spot with the source silent: ${quiet.toInt()} dB, so the noise peaked " +
             "${(incident.maximumDb - quiet).toInt()} dB above quiet."
@@ -134,7 +130,7 @@ fun buildComplaintDraft(
 /** One line for a "title" box. */
 fun buildComplaintTitle(incident: Incident, rule: RuleWorkflow, zoneId: ZoneId = ZoneId.systemDefault()): String {
     val start = Instant.ofEpochMilli(incident.startedAtEpochMillis).atZone(zoneId)
-    val kind = when (rule.noiseType) {
+    val kind = incident.soundKind ?: when (rule.noiseType) {
         com.noisefile.app.model.NoiseType.BARKING_DOG -> "Barking / animal noise"
         com.noisefile.app.model.NoiseType.PARTY_MUSIC -> "Loud noise"
         com.noisefile.app.model.NoiseType.CONSTRUCTION -> "Construction noise"

@@ -83,6 +83,8 @@ data class NoiseFileUiState(
     val selfTestResult: SelfTestResult? = null,
     val draftLocation: String = "",
     val draftImpact: String = "Interrupted rest or quiet use",
+    /** What exactly was heard, one optional tap. */
+    val draftSoundKind: String? = null,
     val draftNotes: String = "",
     val message: String? = null,
     val error: String? = null,
@@ -534,6 +536,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             it.copy(
                 screen = AppScreen.REVIEW,
                 draftImpact = "Interrupted rest or quiet use",
+                draftSoundKind = null,
                 draftNotes = "",
                 draftClip = clip?.first,
                 draftClipSeconds = clip?.second ?: 0,
@@ -568,6 +571,11 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setImpact(impact: String) {
         _uiState.update { it.copy(draftImpact = impact) }
+    }
+
+    /** Tap a kind to pick it; tap it again to clear. */
+    fun setSoundKind(kind: String?) {
+        _uiState.update { it.copy(draftSoundKind = if (it.draftSoundKind == kind) null else kind) }
     }
 
     fun setLocation(location: String) {
@@ -617,6 +625,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             location = location,
             impact = state.draftImpact,
             notes = state.draftNotes.trim(),
+            soundKind = state.draftSoundKind,
             ambientDb = state.ambient?.db,
             ambientSeconds = state.ambient?.seconds,
             levelNote = levelNoteFor(reading),

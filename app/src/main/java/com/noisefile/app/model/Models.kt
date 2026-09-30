@@ -6,6 +6,51 @@ enum class NoiseType(val displayName: String) {
     CONSTRUCTION("Mechanical or Construction"),
 }
 
+/**
+ * What exactly was heard, one tap on the review screen. Optional. The words go
+ * into the complaint, the title and the report ("Hammering from 440 Price Avenue"
+ * reads better to an officer than "Construction noise"), and several codes name
+ * the tool itself (Petaluma lists hammers, saws and generators; Fairfield names
+ * horns, racing engines and loudspeakers).
+ */
+object NoiseKinds {
+    private val byType: Map<NoiseType, List<String>> = mapOf(
+        NoiseType.BARKING_DOG to listOf(
+            "Dog barking",
+            "Dog howling or whining",
+            "Rooster or other fowl",
+            "Other animal noise",
+        ),
+        NoiseType.PARTY_MUSIC to listOf(
+            "Amplified music",
+            "Bass through the wall",
+            "Loud voices or shouting",
+            "Loudspeaker or PA system",
+            "Car stereo",
+            "Engine idling or revving",
+            "Other loud noise",
+        ),
+        NoiseType.CONSTRUCTION to listOf(
+            "Hammering or banging",
+            "Drilling or sawing",
+            "Heavy equipment",
+            "Generator or pump",
+            "Leaf blower or mower",
+            "Truck loading or deliveries",
+            "Other mechanical noise",
+        ),
+    )
+
+    fun forType(type: NoiseType): List<String> = byType.getValue(type)
+
+    /** The words for the complaint when no kind was picked. */
+    fun defaultKind(type: NoiseType): String = when (type) {
+        NoiseType.BARKING_DOG -> "Animal noise"
+        NoiseType.PARTY_MUSIC -> "Loud noise"
+        NoiseType.CONSTRUCTION -> "Construction or mechanical noise"
+    }
+}
+
 data class Jurisdiction(
     val id: String,
     val displayName: String,
@@ -187,6 +232,8 @@ data class Incident(
     val location: String,
     val impact: String,
     val notes: String,
+    /** What exactly was heard, from [NoiseKinds], or null when the person did not pick. Their own words, outside the seal. */
+    val soundKind: String? = null,
     val ambientDb: Double? = null,
     val ambientSeconds: Long? = null,
     /** Where the dB numbers came from, for the complaint: mic and calibration, in words. */

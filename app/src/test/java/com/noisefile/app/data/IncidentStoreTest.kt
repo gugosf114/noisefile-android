@@ -40,6 +40,16 @@ class IncidentStoreTest {
         assertEquals(null, incidents[1].evidenceHash)
     }
 
+    @Test
+    fun soundKindRoundTripsAndOldEntriesHaveNone() {
+        val withKind = incidentJson(id = 5L, startedAt = 500L).put("soundKind", "Hammering or banging")
+        val incidents = parseIncidents(JSONArray().put(withKind).put(incidentJson(id = 1L, startedAt = 100L)).toString())
+        assertEquals("Hammering or banging", incidents[0].soundKind)
+        assertEquals(null, incidents[1].soundKind)
+        val back = parseIncidents(JSONArray().put(incidents[0].toJson()).toString())
+        assertEquals("Hammering or banging", back[0].soundKind)
+    }
+
     private fun incidentJson(id: Long, startedAt: Long): JSONObject = JSONObject()
         .put("id", id)
         .put("ruleId", "san-jose-party_music")

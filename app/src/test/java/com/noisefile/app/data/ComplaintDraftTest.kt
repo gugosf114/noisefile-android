@@ -4,6 +4,7 @@ import com.noisefile.app.model.FormAnswer
 import com.noisefile.app.model.FormField
 import com.noisefile.app.model.FormGuide
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.NoiseKinds
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
 import org.junit.Assert.assertEquals
@@ -33,6 +34,27 @@ class ComplaintDraftTest {
         assertFalse(draft.contains("https://"))
         assertFalse(draft.contains("violation occurred", ignoreCase = true))
         assertTrue(draft, draft.length < 500)
+    }
+
+    @Test
+    fun aPickedSoundKindLeadsTheComplaintAndTheTitle() {
+        val bass = incident().copy(soundKind = "Bass through the wall")
+        val draft = buildComplaintDraft(bass, rule(), ZoneOffset.UTC)
+        assertTrue(draft, draft.startsWith("Bass through the wall from 440 Price Avenue."))
+        assertEquals("Bass through the wall at 440 Price Avenue, Jan 1, 12:00 AM", buildComplaintTitle(bass, rule(), ZoneOffset.UTC))
+        // No pick: the old generic words stay.
+        assertTrue(buildComplaintDraft(incident(), rule(), ZoneOffset.UTC).startsWith("Loud noise from"))
+    }
+
+    @Test
+    fun everyNoiseTypeOffersAShortListOfKindsWithAnOther() {
+        NoiseType.entries.forEach { type ->
+            val kinds = NoiseKinds.forType(type)
+            assertTrue(type.name, kinds.size in 4..7)
+            assertTrue(type.name, kinds.last().startsWith("Other"))
+            assertTrue(type.name, kinds.all { it.length <= 28 })
+            assertEquals(type.name, kinds.size, kinds.toSet().size)
+        }
     }
 
     @Test
