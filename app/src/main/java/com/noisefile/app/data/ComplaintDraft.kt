@@ -14,6 +14,8 @@ data class ComplaintDestination(
     val label: String,
     val isOnlineForm: Boolean,
     val isDocumentPacket: Boolean,
+    /** A city mailbox: the complaint goes in the email body, filled in. */
+    val isEmail: Boolean = false,
 )
 
 fun complaintDestination(rule: RuleWorkflow): ComplaintDestination {
@@ -25,12 +27,14 @@ fun complaintDestination(rule: RuleWorkflow): ComplaintDestination {
     }
     val selected = actions.firstOrNull { it.isOnlineForm }
         ?: actions.firstOrNull { it.isDocumentPacket }
+        ?: actions.firstOrNull { it.isEmail }
         ?: actions.first()
     return ComplaintDestination(
         uri = selected.uri,
         label = selected.label,
         isOnlineForm = selected.isOnlineForm,
         isDocumentPacket = selected.isDocumentPacket,
+        isEmail = selected.isEmail,
     )
 }
 
@@ -47,6 +51,26 @@ private data class ComplaintAction(
         uri.startsWith("https://") &&
             !isDocumentPacket &&
             !label.contains("procedure", ignoreCase = true)
+
+    val isEmail: Boolean = uri.startsWith("mailto:")
+}
+
+/**
+ * A mailto link with the subject and the short complaint already in the body,
+ * ending with lines for the user's own name, phone and address.
+ */
+fun buildComplaintEmailUri(
+    incident: Incident,
+    rule: RuleWorkflow,
+    mailto: String,
+    zoneId: ZoneId = ZoneId.systemDefault(),
+): String {
+    val address = mailto.removePrefix("mailto:").substringBefore('?')
+    val subject = buildComplaintTitle(incident, rule, zoneId)
+    val body = buildComplaintDraft(incident, rule, zoneId, maxChars = 2_000) +
+        "\n\nMy name:\nMy phone:\nMy address:\n"
+    fun enc(text: String) = java.net.URLEncoder.encode(text, "UTF-8").replace("+", "%20")
+    return "mailto:$address?subject=${enc(subject)}&body=${enc(body)}"
 }
 
 /**

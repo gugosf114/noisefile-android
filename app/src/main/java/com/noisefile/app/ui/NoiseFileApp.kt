@@ -134,6 +134,7 @@ import com.noisefile.app.data.MeterAssessmentStatus
 import com.noisefile.app.data.RuleConditionOutcome
 import com.noisefile.app.data.assessMeterReading
 import com.noisefile.app.data.buildComplaintDraft
+import com.noisefile.app.data.buildComplaintEmailUri
 import com.noisefile.app.data.buildIncidentHistoryReport
 import com.noisefile.app.data.complaintDestination
 import com.noisefile.app.model.Incident
@@ -1083,6 +1084,7 @@ internal fun ReviewScreen(
                             rule.formGuide != null -> "Save & fill the city form"
                             destination.isOnlineForm -> "Save, copy & open city form"
                             destination.isDocumentPacket -> "Save, copy & open city packet"
+                            destination.isEmail -> "Save & email the city"
                             else -> "Save, copy & open city contact"
                         },
                         style = MaterialTheme.typography.titleMedium,
@@ -1731,6 +1733,7 @@ private fun IncidentCard(
                             rule.formGuide != null -> "Fill the city form"
                             destination.isOnlineForm -> "Copy complaint & open city form"
                             destination.isDocumentPacket -> "Copy complaint & open city packet"
+                            destination.isEmail -> "Email the city"
                             else -> "Copy complaint & open city contact"
                         },
                         style = MaterialTheme.typography.titleSmall,
@@ -1944,11 +1947,16 @@ private fun copyComplaintAndOpenDestination(
             destination.isOnlineForm -> "Complaint copied. Paste it into the city form."
             destination.isDocumentPacket ->
                 "Incident summary copied. Complete and sign the city packet."
+            destination.isEmail -> "Email opened with your complaint filled in. Add your name at the bottom."
             else -> "Complaint copied. The city contact is opening."
         },
         Toast.LENGTH_LONG,
     ).show()
-    openUri(context, destination.uri)
+    if (destination.isEmail) {
+        openUri(context, buildComplaintEmailUri(incident, rule, destination.uri))
+    } else {
+        openUri(context, destination.uri)
+    }
 }
 
 private fun openUri(context: Context, uri: String) {

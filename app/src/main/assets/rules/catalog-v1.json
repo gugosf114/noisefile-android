@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-29.2",
+  "catalogVersion": "2026-09-29.3",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -710,7 +710,7 @@
       "summary": "San Mateo measures noise on affected property. Base limits are: single-family Zone 1, 60 dB day/50 night; mixed or multifamily Zone 2, 60/55; commercial Zone 3, 65/60; industrial Zone 4, 70 at any time. Day is 7:00 a.m.–10:00 p.m. A source may exceed the applicable base by 5 dB for up to 15 cumulative minutes per hour, 10 dB for up to five minutes, 15 dB for up to one minute, but may never exceed base or measured ambient plus 20 dB. A higher six-minute ambient level replaces the base. Independently of dB, willful loud, unnecessary, or unusual noise disturbing a reasonable person in an adjacent home or business is a nuisance at any hour; additional nighttime music and gathering rules apply 11:00 p.m.–7:00 a.m. Amplified-sound equipment is generally limited to 7:00 a.m.–11:00 p.m. Monday–Saturday and 10:00 a.m.–8:00 p.m. Sundays and legal holidays.",
       "captureInstruction": "Record the source and affected addresses, affected property's noise zone, exact times, and cumulative duration within one hour. The code measurement uses a Type 1 precision meter, A-weighted slow maximum, five feet above ground. Ambient is a separate six-minute average at the same location with the source silent. A phone estimate is supporting evidence, not that prescribed measurement. Also document how the noise disturbed an adjacent residence or business and any special-event or exception permit.",
       "requiredIncidentCount": null,
-      "nextAction": "For an active nuisance noise complaint, call San Mateo Police non-emergency.",
+      "nextAction": "For an active nuisance noise complaint, call San Mateo Police non-emergency. The City's Who to Call page lists police@cityofsanmateo.org next to the non-emergency line for written, non-urgent reports.",
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:6505227700",
       "officialSourceLabel": "San Mateo Municipal Code §§7.30.040, 7.30.090, and 7.30.100",
@@ -741,7 +741,9 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 22,
         "comparisonContext": "San Mateo Table 7.30.040 Noise Zone 1 base (single-family), measured on the affected property; the base may be exceeded by 5 dB for 15 cumulative minutes an hour, 10 dB for 5 minutes, 15 dB for 1 minute, and never by 20 dB; a higher six-minute ambient replaces it. Phone estimate at your spot, not the officer's meter at the code's measurement point."
-      }
+      },
+      "secondaryActionLabel": "Email Police Non-Emergency",
+      "secondaryActionUri": "mailto:police@cityofsanmateo.org"
     },
     {
       "id": "san-mateo-construction",
@@ -752,7 +754,7 @@
       "summary": "Construction, alteration, repair, or land development authorized by a valid San Mateo permit is generally allowed weekdays 7:00 a.m.–7:00 p.m., Saturdays 9:00 a.m.–5:00 p.m., and Sundays and holidays noon–4:00 p.m.; the permit may authorize or restrict different hours. During allowed work, the ordinance requires at least one of two 90 dB conditions: no individual equipment above 90 dB at 25 feet, or no project noise above 90 dB outside the project property plane. Pile drivers, steam shovels, pneumatic hammers, derricks, hoists, and similar loud equipment are separately prohibited 7:00 p.m.–7:00 a.m. Utilities, street repairs, street sweepers, garbage service, emergencies, and approved exception permits have separate treatment.",
       "captureInstruction": "Record the project address, permit number and posted hours, equipment, exact start and stop times, day or holiday, and whether an exception applies. The code requires a Type 1 precision meter using A-weighted slow maximum, five feet above ground. If safe, document whether a reading was about 25 feet from one machine or outside the project property plane. A phone estimate is supporting evidence, not that prescribed measurement.",
       "requiredIncidentCount": null,
-      "nextAction": "For active construction or landscape noise, San Mateo directs nuisance calls to Police non-emergency at 650-522-7700. Give the site, permit information, exact time, equipment, measurement position, and any apparent exception.",
+      "nextAction": "For active construction or landscape noise, San Mateo directs nuisance calls to Police non-emergency at 650-522-7700. Give the site, permit information, exact time, equipment, measurement position, and any apparent exception. The City's Who to Call page lists police@cityofsanmateo.org next to the non-emergency line for written, non-urgent reports.",
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:6505227700",
       "officialSourceLabel": "San Mateo Municipal Code §7.30.060(e)",
@@ -784,7 +786,9 @@
       "meterLimit": {
         "fixedMaximumDb": 90,
         "comparisonContext": "San Mateo: during allowed hours, no project noise above 90 dB outside the project property plane, or no equipment above 90 dB at 25 feet. Phone estimate at your spot, not the officer's meter at the code's measurement point."
-      }
+      },
+      "secondaryActionLabel": "Email Police Non-Emergency",
+      "secondaryActionUri": "mailto:police@cityofsanmateo.org"
     },
     {
       "id": "hayward-barking_dog",
@@ -1173,12 +1177,14 @@
       "summary": "Berkeley prohibits frequent or long-continued animal noise that causes annoyance or discomfort to two or more reasonable people of normal sensitivity living in separate residences. The City may proceed on one person's complaint when the circumstances show that only one individual is affected. Noise audible continuously for 10 minutes or intermittently for 30 minutes is prima facie evidence, meaning sufficient initial evidence rather than the only possible proof; pitch, pattern, and frequency also matter. There is no dB threshold. A City Noise Control Officer or Animal Control Officer must first issue a warning. A violation arises if the noise persists after that warning or recurs within eight hours.",
       "captureInstruction": "Record the animal and source address, every start and stop time, continuous and intermittent totals, pitch, pattern, frequency, and how each affected household was disturbed. Identify complainants by separate residence. Record when the City issued its warning and whether the noise persisted or recurred within eight hours.",
       "requiredIncidentCount": null,
-      "nextAction": "Berkeley directs excessive animal noise to Animal Care Services at 510-981-6600. Ask that the complaint and required warning be documented.",
+      "nextAction": "Berkeley directs excessive animal noise to Animal Care Services at 510-981-6600. Ask that the complaint and required warning be documented. Written complaints go to animalservices@berkeleyca.gov (the City's Contact Us page lists it for Animal Care Services).",
       "actionLabel": "Call Animal Care Services",
       "actionUri": "tel:5109816600",
       "officialSourceLabel": "Berkeley Municipal Code §13.40.070(B)(5)",
       "officialSourceUrl": "https://berkeley.municipal.codes/BMC/13.40.070",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "secondaryActionLabel": "Email Animal Care Services",
+      "secondaryActionUri": "mailto:animalservices@berkeleyca.gov"
     },
     {
       "id": "berkeley-party_music",
@@ -1379,14 +1385,14 @@
       "summary": "Vallejo prohibits allowing an animal or bird to howl, bark, meow, squawk, or make other annoying noise continuously or incessantly for an unreasonable period so as to create a noise disturbance across a residential real-property line. The ordinance supplies no fixed minute or dB threshold. Noise caused by trespass, threatened trespass, teasing, or provocation is excluded, and zoos and animal theme parks are exempt. Enforcement may proceed without a warning. If an officer instead gives a written or verbal warning, persistence for more than five minutes afterward or recurrence within one week may lead to a citation. The City's current Animal Control instructions require a two-week barking journal recording the days, times, and description of the dog.",
       "captureInstruction": "For two full weeks, record the animal and source address, dog description, every date, exact start and stop time, duration, pattern, and whether the noise crossed a residential property line. Describe the disturbance to a reasonable person and note any trespass, threat, teasing, or provocation. Preserve recordings from the affected property. Record any official warning and any persistence beyond five minutes or recurrence within one week. A phone dB estimate does not determine this no-fixed-dB rule.",
       "requiredIncidentCount": null,
-      "nextAction": "After preparing the two-week journal, call Solano County Sheriff's Animal Control Dispatch. On weekdays call 707-784-4733 and select option 2; on weekends call 707-421-7090. Routine non-emergency information may also be emailed to SheriffACO@solanocounty.com. Give the animal description, address, complete journal, property-line impact, and any warning.",
+      "nextAction": "After preparing the two-week journal, call Solano County Sheriff's Animal Control Dispatch. On weekdays call 707-784-4733 and select option 2; on weekends call 707-421-7090. Routine non-emergency information may also be emailed to SheriffACO@solanocounty.com. Give the animal description, address, complete journal, property-line impact, and any warning. Vallejo's Animal Control page: routine and non-emergency communications can be e-mailed directly to the Animal Control Officers at SheriffACO@solanocounty.com. Weekend dispatch stays 707-421-7090.",
       "actionLabel": "Call Weekday Animal Control",
       "actionUri": "tel:7077844733",
       "officialSourceLabel": "Vallejo Municipal Code §§7.84.020(C) and 7.84.030",
       "officialSourceUrl": "https://library.municode.com/ca/vallejo/codes/municipal_code?nodeId=TIT7PUHESAWE_VIOFAGPUPE_CH7.84RENODI",
       "verifiedDate": "2026-07-29",
-      "secondaryActionLabel": "Call Weekend Dispatch",
-      "secondaryActionUri": "tel:7074217090"
+      "secondaryActionLabel": "Email Animal Control Officers",
+      "secondaryActionUri": "mailto:SheriffACO@solanocounty.com"
     },
     {
       "id": "vallejo-party_music",
@@ -2059,14 +2065,14 @@
       "summary": "Santa Rosa City Code § 17-16.110 prohibits keeping or permitting an otherwise lawful animal or fowl whose sound, cry, or behavior causes annoyance or discomfort to a reasonable person of normal sensitiveness in a residential neighborhood. It sets no fixed minute or dB threshold and does not make a preliminary warning part of the violation. Sonoma County Animal Services enforces animal-noise rules for Santa Rosa. Its current process requires the animal's exact street address plus the complainant's name and address; Animal Services then sends the owner a letter stating that allowing an animal to disturb the peace is illegal, offering guidance, and identifying possible consequences. That letter is the agency's initial complaint procedure, not the legal definition of qualifying animal noise. Animal Services says it will not give the complainant's name or contact information to the animal owner, while also warning that public-records law prevents a guarantee that the information will never be disclosed in records.",
       "captureInstruction": "Record the animal's exact address, each date, start and stop time, frequency and duration, the sound or behavior, and how it annoyed or caused discomfort to a reasonable person in the residential neighborhood. Preserve audio, video, your Animal Services case information, and any known warning-letter history.",
       "requiredIncidentCount": null,
-      "nextAction": "Call Sonoma County Animal Services with the animal's exact address and your name and address to start the warning-letter process. Use the official issue page to review the current process and service hours.",
+      "nextAction": "Call Sonoma County Animal Services with the animal's exact address and your name and address to start the warning-letter process. Use the official issue page to review the current process and service hours. Sonoma County Animal Services also takes the report by email at theanimalshelter@sonomacounty.gov; include the animal's exact address and your name and address.",
       "actionLabel": "Call Animal Services",
       "actionUri": "tel:7075657100",
       "officialSourceLabel": "Santa Rosa City Code § 17-16.110",
       "officialSourceUrl": "https://ecode360.com/42965677",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://sonomacounty.gov/health-and-human-services/health-services/divisions/public-health/animal-services/services-and-information/report-an-issue-to-animal-services",
-      "secondaryActionLabel": "Open Official Barking Procedure"
+      "secondaryActionUri": "mailto:theanimalshelter@sonomacounty.gov",
+      "secondaryActionLabel": "Email Animal Services"
     },
     {
       "id": "santa-rosa-party_music",
@@ -2850,12 +2856,14 @@
       "summary": "Santa Clara prohibits keeping a dog whose loud barking or unusual noises disturb the peace and quiet of one or more people in the immediate neighborhood. Loud barking means barking, howling, or baying by day or night for frequent and/or extended periods that becomes a nuisance and prevents comfortable enjoyment of a home. The rule sets no fixed minute or dB threshold. Barking while the dog is protecting against or resisting a trespasser is excluded; the owner bears the burden of proving that exception.",
       "captureInstruction": "Record each date, start and stop time, frequency, duration, source address, and how the noise prevented comfortable enjoyment of your home. Note any apparent trespass or protective response.",
       "requiredIncidentCount": null,
-      "nextAction": "First try a neighborly request when safe. If habitual barking continues, report it while it is happening to Santa Clara Police/Public Safety Dispatch at 408-615-5580.",
+      "nextAction": "First try a neighborly request when safe. If habitual barking continues, report it while it is happening to Santa Clara Police/Public Safety Dispatch at 408-615-5580. The Police Department page lists police@santaclaraca.gov under Contact Us; use it for the written log after a live report.",
       "actionLabel": "Call Police Non-Emergency",
       "actionUri": "tel:4086155580",
       "officialSourceLabel": "Santa Clara City Code § 6.30.130",
       "officialSourceUrl": "https://ecode360.com/47547424",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "secondaryActionLabel": "Email Police Department",
+      "secondaryActionUri": "mailto:police@santaclaraca.gov"
     },
     {
       "id": "santa-clara-party_music",
