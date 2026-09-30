@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-29.3",
+  "catalogVersion": "2026-09-29.4",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -89,6 +89,24 @@
     {
       "id": "vallejo",
       "displayName": "Vallejo",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "san-leandro",
+      "displayName": "San Leandro",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "livermore",
+      "displayName": "Livermore",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "redwood-city",
+      "displayName": "Redwood City",
       "region": "Bay Area",
       "available": true
     }
@@ -2998,6 +3016,530 @@
           },
           {
             "label": "Photo",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
+    },
+    {
+      "id": "san-leandro-barking_dog",
+      "jurisdictionId": "san-leandro",
+      "jurisdiction": "San Leandro, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document frequent or long-continued animal noise and the officer's notice",
+      "summary": "San Leandro has two animal-noise rules and neither sets a minute or dB threshold. The Noise Ordinance (§4-1-1115(a), rewritten by Ord. 2024-012) makes it a disturbing, excessive and offensive noise to permit an animal to emit any frequent or long-continued noise that causes annoyance or discomfort to a reasonable person of normal sensitiveness in the vicinity; it does not count if someone is trespassing, threatening to trespass, or teasing or provoking the animal. The animal chapter (§4-11-435(a)) separately makes it a nuisance to knowingly permit an animal, by barking or other noise, to disturb any other person's peace and quiet; a watchdog is allowed only if the keeper quiets it at once and never leaves it unattended where prolonged or repeated barking disturbs anyone. Once an Animal Control Officer tells the owner, orally or in writing, that the animal violated the section, failing to stop the nuisance is itself a violation.",
+      "captureInstruction": "For each incident record the animal's address, the date, exact start and stop times, how often it recurred, the kind of noise, whether anyone was provoking or trespassing, and how it disturbed your peace and quiet or comfort. A run of dated incidents shows 'frequent or long-continued'. Note whether the owner has already been warned by Animal Control, because a repeat after that notice is its own violation. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call San Leandro Police Animal Control at 510-577-0449 (the City's Report a Concern page lists Animal Control under the Police Department) and ask that the complaint and the owner's notice be documented. For barking happening right now, the City routes noise to Police non-emergency dispatch at 510-577-2740. The MySanLeandro (SeeClickFix) portal has no animal or noise category.",
+      "actionLabel": "Call Animal Control",
+      "actionUri": "tel:5105770449",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:5105772740",
+      "officialSourceLabel": "San Leandro Municipal Code §§4-1-1115(a), 4-11-435(a)",
+      "officialSourceUrl": "https://ecode360.com/44069387",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "san-leandro-party_music",
+      "jurisdictionId": "san-leandro",
+      "jurisdiction": "San Leandro, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 65/55 dB table, the 50-foot night test, and the ambient-plus-5 rule",
+      "summary": "San Leandro's Noise Ordinance (Article 4-1-11, rewritten by Ord. 2024-012) bans any disturbing, excessive or offensive noise that annoys reasonable persons of normal sensitivity, weighed by eleven factors including level, ambient, time, duration, recurrence and zoning. For music, stereos and electronics (§4-1-1115(e)) it adds three concrete tests. First, playing any radio, TV, audio equipment, drum or instrument between 10:00 p.m. and 8:00 a.m. so it is plainly audible 50 feet from the building or vehicle is prima facie evidence of a violation. Second, any such noise that exceeds the ambient level on another occupied property, or inside an adjoining unit of a condo, apartment, duplex or attached business, by more than 5 decibels is a violation. Third, a Table of Applicable Limits sets 65 decibels from 8:01 a.m. to 10:00 p.m. and 55 decibels from 10:00 p.m. to 8:00 a.m. Loudspeakers and band practice between 10:00 p.m. and 8:00 a.m. that disturb neighbors are also listed, and motors, engines and mechanical devices are restricted 9:00 p.m. to 8:00 a.m. unless enclosed so they are not plainly audible at a residential property line. Occasional gatherings and entertainment events between 7:00 a.m. and 10:00 p.m., permitted special events, and residential property maintenance 8:00 a.m. to 10:00 p.m. are exempt. Violations are public nuisances abated under Chapter 1-12.",
+      "captureInstruction": "Record the source address and property type, exact times, duration, whether it recurred, and how it disturbed you. After 10:00 p.m., step 50 feet from the building or vehicle and note whether the music was plainly audible there. Measure the noise at your spot, then the quiet with the source silent at the same spot, so the difference against the 5 dB ambient rule is visible. The code names no meter type or measurement position, so a phone estimate is supporting evidence; the table limits are the City's numbers, not a promise about your reading.",
+      "requiredIncidentCount": null,
+      "nextAction": "The City's Report a Concern page lists Noise under the Police Department at 510-577-2740; call while the noise is happening so an officer can hear it. The MySanLeandro (SeeClickFix) portal has no noise category, so a written pattern goes in your own log and PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:5105772740",
+      "officialSourceLabel": "San Leandro Municipal Code §§4-1-1110–4-1-1130",
+      "officialSourceUrl": "https://ecode360.com/44068949",
+      "verifiedDate": "2026-09-29",
+      "meterLimit": {
+        "daytimeMaximumDb": 65,
+        "nighttimeMaximumDb": 55,
+        "daytimeStartsHour": 8,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "San Leandro 4-1-1115(e)(4) Table of Applicable Limits: 65 decibels 8:01 a.m.–10:00 p.m., 55 decibels 10:00 p.m.–8:00 a.m.; the code also treats more than 5 dB over the ambient on another occupied property as a violation. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "22:00",
+            "end": "08:00"
+          }
+        ],
+        "context": "Municipal Code 4-1-1115(e)(1): between 10:00 p.m. and 8:00 a.m., music plainly audible 50 feet from the building or vehicle is prima facie evidence of a violation. Outside those hours the loud-and-raucous and ambient-plus-5 tests still apply.",
+        "sourceCitation": "Municipal Code 4-1-1115(e)(1)",
+        "sourceQuote": "The operation of any such instrument, audio equipment, television set, machine or similar device between the hours of 10:00 p.m. and 8:00 a.m. in such manner as to be plainly audible at a distance of 50 feet from the building, structure or vehicle in which it is located, shall be prima facie evidence of a violation of this subsection."
+      }
+    },
+    {
+      "id": "san-leandro-construction",
+      "jurisdictionId": "san-leandro",
+      "jurisdiction": "San Leandro, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the day, the clock, and whether the work is next to homes",
+      "summary": "San Leandro's Noise Ordinance (§4-1-1115(b), rewritten by Ord. 2024-012) makes construction work or related activity that is adjacent to, or across a street or right-of-way from, a residential use a disturbing, excessive and offensive noise except between 7:00 a.m. and 7:00 p.m. on weekdays and 8:00 a.m. and 7:00 p.m. on Saturday and Sunday. No such construction is permitted on Federal holidays. 'Construction' covers site preparation, assembly, erection, substantial repair, alteration, demolition or similar action on private property, rights-of-way, streets, structures, utilities or facilities. The rule is hours-only; it sets no dB limit. A violation can be enforced as a public nuisance under Chapter 1-12 and by a stop-work order or revocation of the permits for that project. Separately, motors, engines and mechanical devices are restricted 9:00 p.m. to 8:00 a.m. (§4-1-1115(c)). Emergency work, public-agency and utility repair operations, and residential property maintenance between 8:00 a.m. and 10:00 p.m. are exempt, and the City Manager can issue an exception permit for up to six months.",
+      "captureInstruction": "Record the project address, that it sits next to or across the street from homes, the day of the week, whether it was a Federal holiday, and the exact start and stop times of the work outside the allowed hours. Note the kind of work (demolition, framing, grading) and the permit number from the posted card if visible. A photo or short clip with the time is strong here because the rule turns on the clock, not on dB. A phone dB estimate does not decide this hours-only rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work happening outside the allowed hours, call San Leandro Police non-emergency at 510-577-2740; the City's Report a Concern page routes noise to the Police Department. For a project that keeps doing it, the same page lists Building Code Enforcement at BuildingInspections@SanLeandro.org and 510-577-3405, which can issue a stop-work order or pull the permit; send the dated log and PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:5105772740",
+      "secondaryActionLabel": "Email Building Inspections",
+      "secondaryActionUri": "mailto:BuildingInspections@SanLeandro.org",
+      "officialSourceLabel": "San Leandro Municipal Code §4-1-1115(b)",
+      "officialSourceUrl": "https://ecode360.com/44068949",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "08:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "08:00",
+            "end": "19:00"
+          }
+        ],
+        "context": "Municipal Code 4-1-1115(b): construction next to or across the street from a residential use is allowed only inside these hours; none on Federal holidays. The rule is hours-only, with no dB limit.",
+        "sourceCitation": "Municipal Code 4-1-1115(b)",
+        "sourceQuote": "Construction work or related activity which is adjacent to or across a street or right-of-way from a residential use, except between the hours of 7:00 a.m. and 7:00 p.m. on weekdays, or between 8:00 a.m. and 7:00 p.m. on Sunday and Saturday. No such construction is permitted on Federal holidays."
+      }
+    },
+    {
+      "id": "livermore-barking_dog",
+      "jurisdictionId": "livermore",
+      "jurisdiction": "Livermore, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document prolonged or repeated barking and the owner's response",
+      "summary": "Livermore Municipal Code §6.04.060(A) makes it unlawful and a nuisance for an owner to knowingly permit an animal, by barking or other noise, to disturb any other person's peace and quiet. The owner must take immediate steps to quiet the animal whenever it creates such a nuisance, and may not leave it unattended where its barking, if prolonged or repeated an undue number of times, disturbs anyone's peace and quiet. The rule sets no minute count or dB threshold. The Police Department's Animal Services page asks you to try the owner first with a note or a word, then file a barking complaint by phone with the dog's exact address and your name and number; Animal Control contacts the owner with education first, and if it keeps up, the reporting person can co-sign a citation and take the matter to court.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how long it went on, how many times it happened that day or week, whether anyone was home, and how it disturbed your peace and quiet. Note the date you spoke to or left a note for the owner. Dated repeats show 'prolonged or repeated an undue number of times' and support the citation you may be asked to co-sign. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Livermore Police Animal Services at 925-371-4987 with the dog's exact address, and leave your name and number so Animal Control can reach you. Keep the log going after the first call; if the barking continues, tell them you are willing to co-sign a citation.",
+      "actionLabel": "Call Animal Services",
+      "actionUri": "tel:9253714987",
+      "officialSourceLabel": "Livermore Municipal Code §6.04.060(A)",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Livermore/Municipal/Livermore06/Livermore0604.html",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "livermore-party_music",
+      "jurisdictionId": "livermore",
+      "jurisdiction": "Livermore, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check disturbance at any hour and the 75-foot test after 11 p.m.",
+      "summary": "Livermore Municipal Code Chapter 9.36 bans any loud, disturbing, unnecessary, unusual or habitual noise that annoys, disturbs, injures or endangers the comfort, health, repose, peace or safety of other persons in the City (§9.36.020). For radios, musical instruments, phonographs and similar devices (§9.36.090) it is a violation at any time to play them so as to disturb the peace, quiet and comfort of neighbors, or louder than needed for the people in the room or vehicle who want to hear them. Between 11:00 p.m. and 7:00 a.m., playing them so they are plainly audible 75 feet from the source or at the property line, whichever is greater, is prima facie evidence of a violation. Yelling, shouting, hooting, whistling or singing on public streets is banned 11:00 p.m.–7:00 a.m., or at any time it disturbs people in homes or nearby (§9.36.100). Blowers, fans and combustion engines have their own night and holiday hours (§9.36.040). The chapter has no dB limit; short-term-rental outdoor noise is separately barred 10:00 p.m.–8:00 a.m., and industrial areas more than 500 feet from homes are exempt from the hour limits.",
+      "captureInstruction": "Record the source address, exact times, duration, whether it recurred, and how it disturbed you. After 11:00 p.m., step 75 feet from the source (or to the property line if that is farther) and note whether the music was plainly audible there; that is the code's own test. The code names no meter, position or dB number, so a phone estimate is supporting evidence of how loud it was, not the City's test.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Livermore Police non-emergency dispatch at 925-371-4987 so an officer can hear it. For a pattern, the City's Neighborhood Preservation code violation form has a 'Noise complaints' box for daytime filing; the form itself says to call LPD at 925-371-4987 after 5 p.m. Code Enforcement's phone is 925-960-4444. The form does not process anonymous complaints.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:9253714987",
+      "secondaryActionLabel": "File Code Violation Report",
+      "secondaryActionUri": "https://www.livermoreca.gov/departments/community-development/neighborhood-preservation/alleged-code-violations",
+      "officialSourceLabel": "Livermore Municipal Code §§9.36.020, 9.36.090, 9.36.100",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Livermore/Municipal/Livermore09/Livermore0936.html",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "23:00",
+            "end": "07:00"
+          }
+        ],
+        "context": "Municipal Code 9.36.090(B): between 11:00 p.m. and 7:00 a.m., music plainly audible 75 feet from the source or at the property line, whichever is greater, is prima facie evidence of a violation. At other hours the disturb-the-neighbors test in 9.36.090(A) still applies.",
+        "sourceCitation": "Municipal Code 9.36.090(B)",
+        "sourceQuote": "The operation of such set, instrument, phonograph, machine or device between the hours of 11:00 p.m. and 7:00 a.m. in such manner as to be plainly audible at a distance of either 75 feet from the source of the noise, or the property line, whichever is greater, which shall be prima facie evidence of a violation of the provisions of LMC 9.36.040 through 9.36.100."
+      },
+      "formGuide": {
+        "portal": "Livermore Neighborhood Preservation code violation form",
+        "access": "No sign-in needed. Anonymous complaints are not processed, so your name, phone and email are required.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "First Name / Last Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Address: Street Number and Name, City, Postal/ZIP Code",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "What is your phone number?",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Location of Alleged Code Violation: Street Number and Name",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "City, State, ZIP and Country boxes are required too: Livermore, CA, the zip, USA."
+          },
+          {
+            "label": "Description of Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "maxLength": 500,
+            "hint": "Where exactly, e.g. \"back yard of the house next door\"."
+          },
+          {
+            "label": "Check Box List",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise complaints (Contact LPD at 925-371-4987 after 5pm)"
+          },
+          {
+            "label": "Description of Alleged Violation(s)",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 500
+          },
+          {
+            "label": "Click button for uploading file",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Do you have a preferred contact method?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Reply by email or by phone."
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "After 5 p.m. and on weekends the form itself says to call Livermore Police at 925-371-4987."
+        ]
+      }
+    },
+    {
+      "id": "livermore-construction",
+      "jurisdictionId": "livermore",
+      "jurisdiction": "Livermore, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the day and the clock; the rule is hours, not decibels",
+      "summary": "Livermore Municipal Code §9.36.080 prohibits operating any pile driver, pneumatic tool, derrick, electric hoist, sandblaster or other loud construction, demolition or repair equipment from 6:00 p.m. Saturday to 7:00 a.m. Monday; from 8:00 p.m. to 7:00 a.m. Monday through Thursday nights; from 8:00 p.m. Friday to 9:00 a.m. Saturday; and at all on City-observed holidays. Read the other way, loud equipment is allowed 7:00 a.m.–8:00 p.m. Monday through Friday, 9:00 a.m.–6:00 p.m. Saturday, and never on Sunday. The rule sets no dB limit. Exceptions (§9.36.110): a homeowner doing their own permitted home improvements without a contractor may use noisy tools 7:00 a.m.–11:00 p.m. seven days a week; industrial areas more than 500 feet from homes are exempt from the hour limits; and the City Engineer or Building Official may authorize restricted-hour work for public-agency permit conditions, public health and safety, or specific approved activities such as large concrete pours, with 24 hours' notice to the Police watch commander and to neighbors. Blowers, fans and combustion engines follow the same clock (§9.36.040).",
+      "captureInstruction": "Record the project address, the day of the week, whether it was a City-observed holiday, the exact start and stop times outside the allowed hours, and what equipment was running. Note whether a contractor was on site, because the homeowner-only exception does not cover contractors, and whether neighbors got a 24-hour notice of approved off-hours work. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB. A phone dB estimate does not decide this hours-only rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Nights and weekends, when most off-hours work happens, call Livermore Police non-emergency dispatch at 925-371-4987. During business hours file the Neighborhood Preservation code violation form (check 'Noise complaints') or call Code Enforcement at 925-960-4444; the form does not process anonymous complaints. Attach the dated log and PDF.",
+      "actionLabel": "File Code Violation Report",
+      "actionUri": "https://www.livermoreca.gov/departments/community-development/neighborhood-preservation/alleged-code-violations",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:9253714987",
+      "officialSourceLabel": "Livermore Municipal Code §§9.36.080, 9.36.110",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Livermore/Municipal/Livermore09/Livermore0936.html",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Municipal Code 9.36.080: loud construction equipment is allowed only inside these hours; none on Sunday or on City-observed holidays. A homeowner doing permitted work without a contractor may work 7:00 a.m.–11:00 p.m. any day (9.36.110(A)).",
+        "sourceCitation": "Municipal Code 9.36.080",
+        "sourceQuote": "The operation between the hours of 6:00 p.m. Saturday to 7:00 a.m. Monday; 8:00 p.m. to 7:00 a.m. on Monday, Tuesday, Wednesday and Thursdays; 8:00 p.m. Friday to 9:00 a.m. on Saturday or at all on city-observed holidays of any pile driver, pneumatic tools, derrick, electric hoist, sandblaster or other equipment used in construction, demolition or other repair work, the use of which is attended by loud or unusual noise, is prohibited."
+      },
+      "formGuide": {
+        "portal": "Livermore Neighborhood Preservation code violation form",
+        "access": "No sign-in needed. Anonymous complaints are not processed, so your name, phone and email are required.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "First Name / Last Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Address: Street Number and Name, City, Postal/ZIP Code",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "What is your phone number?",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Location of Alleged Code Violation: Street Number and Name",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "City, State, ZIP and Country boxes are required too: Livermore, CA, the zip, USA."
+          },
+          {
+            "label": "Description of Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "maxLength": 500,
+            "hint": "Where exactly, e.g. \"back yard of the house next door\"."
+          },
+          {
+            "label": "Check Box List",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise complaints (Contact LPD at 925-371-4987 after 5pm)"
+          },
+          {
+            "label": "Description of Alleged Violation(s)",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 500
+          },
+          {
+            "label": "Click button for uploading file",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Do you have a preferred contact method?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Reply by email or by phone."
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "After 5 p.m. and on weekends the form itself says to call Livermore Police at 925-371-4987."
+        ]
+      }
+    },
+    {
+      "id": "redwood-city-barking_dog",
+      "jurisdictionId": "redwood-city",
+      "jurisdiction": "Redwood City, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document habitual barking; the county rule applies inside the City",
+      "summary": "Redwood City adopts the San Mateo County Animal Control Ordinance (County Code Chapter 6.04, as amended January 9, 2024) by reference in City Code §5.1. County Code §6.04.060(c) makes it unlawful for an owner to suffer or permit an animal to habitually bark or meow or otherwise act so as to continuously disturb the peace of any citizen or to be a public nuisance. The rule sets no minute count or dB threshold; 'habitually' and 'continuously' are the tests, so a dated run of incidents is the evidence. The City's Animal Control page says the County contracts with the Peninsula Humane Society & SPCA to enforce animal laws, and PHS says it does not take barking complaints and sends them to the local police. Redwood City's noise chapter (Chapter 24) is administered by the Chief of Police.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how long it went on, whether it recurs daily, and how it disturbed your peace. Note the date you spoke to or left a note for the owner. A pattern across days shows 'habitually'; a single long stretch shows 'continuously'. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Redwood City Police 24-hour dispatch (non-emergency) at 650-780-7118 with the dog's exact address and your name and number, and ask that the complaint be logged. For the written pattern, file a Noise Complaint (Residential Noise) in myRWC with the address, your log and a photo; the City's Animal Control page lists the County program manager at 650-573-3726 and PHS/SPCA at 650-340-8200 for other animal matters.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6507807118",
+      "secondaryActionLabel": "File myRWC Noise Complaint",
+      "secondaryActionUri": "https://www.redwoodcity.org/departments/city-manager/city-manager-s-initiatives/myrwc-report-problem-request-service/make-a-service-request",
+      "officialSourceLabel": "Redwood City Code §5.1; San Mateo County Code §6.04.060(c)",
+      "officialSourceUrl": "https://library.municode.com/ca/redwood_city/codes/city_code?nodeId=CH5ANFO",
+      "verifiedDate": "2026-09-29",
+      "formGuide": {
+        "portal": "myRWC (PublicStuff)",
+        "access": "Log In or Sign Up at the top of the form; the account is free.",
+        "steps": [
+          "Create new issue",
+          "Noise Complaint",
+          "Address, description, photo",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Create new issue",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise Complaint"
+          },
+          {
+            "label": "Noise Complaint type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Residential Noise"
+          },
+          {
+            "label": "Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it on the map."
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add a photo",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
+    },
+    {
+      "id": "redwood-city-party_music",
+      "jurisdictionId": "redwood-city",
+      "jurisdiction": "Redwood City, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 8 p.m. clock, three or more people, and 6 dB over the quiet",
+      "summary": "Redwood City Code Chapter 24 has no fixed dB limit for parties; it works from the local ambient. Between 8:00 p.m. and 8:00 a.m., noise from a party, dance, meeting or other gathering of three or more people that is more than 6 dB above the local ambient, measured anywhere in a residential district outside the source property's plane, is an excessive and unreasonable noise (§24.20A). For a gathering on residential property, the same 6 dB test also applies three feet from any wall, floor or ceiling inside another dwelling unit on the same property with doors and windows closed (§24.20B). 'Local ambient' is the lowest level repeating itself over six minutes with a precision meter, source silent, same spot, never below 40 dBA outdoors or 30 dBA indoors (§24.2). Enforcement runs through a written Notice to Abate from the Police: once served, letting the noise continue within the next twelve hours is a violation (§24.21), and the people noticed become liable for the cost of every later police response, arrests and court time, up to $15,000 in collection costs (§24.22). Violations are infractions and public nuisances (§§24.41, 24.42). The chapter is administered by the Chief of Police.",
+      "captureInstruction": "Record the source address, exact times after 8:00 p.m., how many people were gathered, whether it was inside or outside, and how it disturbed you. Measure the noise at your spot, then run the six-minute quiet baseline at the same spot with the source silent, so the difference against the 6 dB rule is visible. The City's test uses a precision meter at a point outside the property plane; a phone estimate is supporting evidence, not that measurement. Note whether police came and whether a written Notice to Abate was given, and log anything after it.",
+      "requiredIncidentCount": null,
+      "nextAction": "While the party is going, call Redwood City Police 24-hour dispatch (non-emergency) at 650-780-7118 so an officer can measure and serve the Notice to Abate; after-hours the Police page also lists 650-780-7100. For a repeat address, file a Noise Complaint (Residential Noise) in myRWC with the dates and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6507807118",
+      "secondaryActionLabel": "File myRWC Noise Complaint",
+      "secondaryActionUri": "https://www.redwoodcity.org/departments/city-manager/city-manager-s-initiatives/myrwc-report-problem-request-service/make-a-service-request",
+      "officialSourceLabel": "Redwood City Code §§24.2, 24.20–24.22",
+      "officialSourceUrl": "https://library.municode.com/ca/redwood_city/codes/city_code?nodeId=CH24NORE",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "20:00",
+            "end": "08:00"
+          }
+        ],
+        "context": "City Code 24.20: the 6-dB-over-ambient party rule runs from 8:00 p.m. to 8:00 a.m. and needs three or more people gathered. Outside those hours Chapter 24 sets no party rule.",
+        "sourceCitation": "City Code 24.20A",
+        "sourceQuote": "Noise levels, generated on or within any property between the hours of eight o'clock (8:00) P.M. and eight o'clock (8:00) A.M. by a party, dance, meeting or other assemblage of three (3) or more persons, which are more than six (6) dB above the local ambient measured at any point within a residential district of the City and outside the plane of said property"
+      },
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "Redwood City Code 24.2 measures the local ambient as the lowest sound level repeating itself over six minutes with a precision meter, slow response, A-weighting, source silent, same spot, and never below 40 dBA outdoors or 30 dBA for the indoor party rule. A party after 8:00 p.m. that runs more than 6 dB above that ambient outside the property plane is an excessive noise.",
+        "sourceCitation": "City Code 24.2 and 24.20",
+        "sourceQuote": "LOCAL AMBIENT: The lowest sound level repeating itself during a six-minute period as measured with a precision sound-level meter, using slow response and A-level weighting. The minimum sound level shall be determined with the noise source at issue silent and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this Chapter, in no case shall the local ambient be considered or determined to be less than: 1. Thirty (30) dBA for interior noise in Section 24.20B; 2. Forty (40) dBA in all other sections. … Noise levels, generated on or within any property between the hours of eight o'clock (8:00) P.M. and eight o'clock (8:00) A.M. by a party, dance, meeting or other assemblage of three (3) or more persons, which are more than six (6) dB above the local ambient measured at any point within a residential district of the City and outside the plane of said property"
+      },
+      "formGuide": {
+        "portal": "myRWC (PublicStuff)",
+        "access": "Log In or Sign Up at the top of the form; the account is free.",
+        "steps": [
+          "Create new issue",
+          "Noise Complaint",
+          "Address, description, photo",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Create new issue",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise Complaint"
+          },
+          {
+            "label": "Noise Complaint type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Residential Noise"
+          },
+          {
+            "label": "Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it on the map."
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add a photo",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
+    },
+    {
+      "id": "redwood-city-construction",
+      "jurisdictionId": "redwood-city",
+      "jurisdiction": "Redwood City, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check weekday hours, the 110 dB ceiling, and the ten-minute rule",
+      "summary": "Redwood City Code Chapter 24, Division 3 (amended 2019 and September 2025) limits general construction noise on private projects to weekdays 7:00 a.m.–8:00 p.m.; loud or 'excessive or unreasonable' construction noise is limited to weekdays 9:00 a.m.–4:00 p.m.; and both are prohibited during holiday periods posted on the City website (§24.32A). Weekends are outside the allowed hours, and the required job-site sign spells it out: noise prohibited Monday–Friday 8:00 p.m.–7:00 a.m. and all day Saturdays, Sundays and holidays (§24.33). Preconstruction noise such as deliveries, truck idling, backup beeps, yelling and radios follows the same hours (§24.32B). Any construction noise that persists for ten continuous minutes outside those hours is itself an excessive and unreasonable noise (§24.30B). At all times, construction may not exceed 110 dB measured at any point in a residential district outside the property plane, or 110 dB from a single machine measured 25 feet away (§§24.30, 24.31). 'Construction' includes landscaping and landscaping equipment. Exceptions: emergency work; an owner or resident personally working on their own unit weekdays 7:00 a.m.–8:00 p.m. and weekends and holidays 9:00 a.m.–5:00 p.m. (§24.35); and Building Official approval requested before the work, with a copy kept on site (§24.32C), or an exception permit of up to six months (§24.34). Violations are infractions and public nuisances.",
+      "captureInstruction": "Record the project address, the day, the exact start and stop times outside the hours, and whether the noise ran ten continuous minutes or more; the level trace shows that stretch. Note the kind of work and equipment, whether a contractor was present (the owner-resident exemption does not cover contractors), and whether the site sign and any approved off-hours letter were posted. The 110 dB ceiling is measured with a precision meter at the property plane or 25 feet from the machine; a phone estimate is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call Redwood City Police 24-hour dispatch (non-emergency) at 650-780-7118; Chapter 24 is enforced by the Police. For a project that keeps doing it, file a Noise Complaint (Construction Noise) in myRWC with the dates, the ten-minute stretches and the PDF.",
+      "actionLabel": "File myRWC Construction Noise Complaint",
+      "actionUri": "https://www.redwoodcity.org/departments/city-manager/city-manager-s-initiatives/myrwc-report-problem-request-service/make-a-service-request",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:6507807118",
+      "officialSourceLabel": "Redwood City Code §§24.30–24.35",
+      "officialSourceUrl": "https://library.municode.com/ca/redwood_city/codes/city_code?nodeId=CH24NORE",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "20:00"
+          }
+        ],
+        "context": "City Code 24.32A: general construction noise on private projects is allowed weekdays 7:00 a.m.–8:00 p.m. only; loud work only 9:00 a.m.–4:00 p.m.; none on Saturdays, Sundays or posted holiday periods. Ten continuous minutes of construction noise outside these hours is an excessive noise (24.30B).",
+        "sourceCitation": "City Code 24.32A",
+        "sourceQuote": "General construction noise on private projects shall be limited to weekdays from seven o'clock (7:00) A.M. to eight o'clock (8:00) P.M. Excessive or unreasonable construction noises, as identified under Section 24.30, shall be limited to weekdays from nine o'clock (9:00) A.M. to four o'clock (4:00) P.M. General and excessive or unreasonable construction noise is prohibited during holiday periods, as indicated on the City website."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 110,
+        "comparisonContext": "Redwood City Code 24.31: construction noise may not exceed 110 dB at any point in a residential district outside the property plane, or 110 dB from one machine at 25 feet. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "myRWC (PublicStuff)",
+        "access": "Log In or Sign Up at the top of the form; the account is free.",
+        "steps": [
+          "Create new issue",
+          "Noise Complaint",
+          "Address, description, photo",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Create new issue",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise Complaint"
+          },
+          {
+            "label": "Noise Complaint type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Construction Noise"
+          },
+          {
+            "label": "Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it on the map."
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add a photo",
             "required": false,
             "answer": "PHOTOS"
           }

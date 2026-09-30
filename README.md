@@ -8,8 +8,8 @@ NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the
 required incident history, and prepares the correct next action.
 
-The verified catalog covers 45 animal, general-noise, and construction
-workflows across 15 Bay Area cities:
+The verified catalog covers 54 animal, general-noise, and construction
+workflows across 18 Bay Area cities:
 
 - the official five-incident documentation requirement;
 - active party or amplified-music reporting;
@@ -43,9 +43,10 @@ built offline in two stages, and only the second stage ships in the app:
    no legal interpretation — see
    [`legal-corpus/acquisition-report.md`](legal-corpus/acquisition-report.md)
    for what was retrieved, what's URL-only, and what's flagged for review per
-   city. 15 Bay Area cities are covered as of 2026-07-25: San Jose, San
+   city. 18 Bay Area cities are covered as of 2026-09-29: San Jose, San
    Francisco, Oakland, Fremont, Santa Rosa, Hayward, Concord, Sunnyvale, Santa
-   Clara, Vallejo, Berkeley, Richmond, Antioch, Daly City, and San Mateo.
+   Clara, Vallejo, Berkeley, Richmond, Antioch, Daly City, San Mateo, San
+   Leandro, Livermore, and Redwood City.
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
    one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
@@ -111,7 +112,7 @@ source and the live Play Console state. The audit covered:
 - every product claim against the code that performs it;
 - microphone permission handling, estimated sound-level measurement, error
   handling, local incident storage, privacy, sharing, and complaint actions;
-- the complete offline ordinance catalog: 15 cities, 45 city-and-noise-type
+- the complete offline ordinance catalog: 18 cities, 54 city-and-noise-type
   workflows, and 52 archived official sources whose stored hashes matched;
 - unit tests, Android lint, debug compilation, signed Play bundle creation,
   bundle contents, package identity, version data, permissions, and signing;
