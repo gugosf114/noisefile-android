@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.Button
@@ -382,6 +384,9 @@ internal fun MoreScreen(
     onClearCalibration: () -> Unit,
     onShareNeighbor: () -> Unit,
     onOpenUri: (String) -> Unit,
+    unlocked: Boolean,
+    unlockPriceText: String?,
+    onShowUnlock: () -> Unit,
     nav: NavActions,
 ) {
     val context = LocalContext.current
@@ -409,6 +414,17 @@ internal fun MoreScreen(
                     )
                     HorizontalDivider(color = Hairline)
                     SettingRow(Icons.Default.Link, "Official sources", "Every city's own code and pages") { onOpenUri(SOURCES_PAGE) }
+                    HorizontalDivider(color = Hairline)
+                    SettingRow(
+                        if (unlocked) Icons.Default.LockOpen else Icons.Default.Lock,
+                        if (unlocked) "Unlocked" else "Unlock NoiseFile",
+                        if (unlocked) {
+                            "PDF report, form guide and city email are open on this phone"
+                        } else {
+                            "PDF report, form guide and city email. " + (unlockPriceText?.let { "Pay once, $it." } ?: "Pay once.")
+                        },
+                        onShowUnlock,
+                    )
                 }
             }
 

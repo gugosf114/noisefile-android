@@ -2,7 +2,10 @@ package com.noisefile.app
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.noisefile.app.BuildConfig
 import com.noisefile.app.audio.CalibrationMath
+import com.noisefile.app.billing.UnlockState
+import com.noisefile.app.billing.UnlockStore
 import com.noisefile.app.audio.MicProfile
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
@@ -105,6 +108,16 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         NoiseFileUiState(incidents = incidentStore.load()),
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
+
+    /** The one-time unlock (PDF report, form guide, filled-in email). Play is asked at start. */
+    private val unlockStore = UnlockStore(application).also { it.start() }
+    val unlock: StateFlow<UnlockState> = unlockStore.state
+
+    /** The preview build on the phone has no Play listing, so it is always open. */
+    fun isUnlocked(): Boolean = BuildConfig.DEBUG || unlock.value.unlocked
+    fun buyUnlock(activity: android.app.Activity) = unlockStore.buy(activity)
+    fun restoreUnlock() = unlockStore.restore()
+    fun clearUnlockMessage() = unlockStore.clearMessage()
 
     fun selectedRule(): RuleWorkflow =
         checkNotNull(ruleCatalog.byId(_uiState.value.selectedRuleId)) {

@@ -162,7 +162,7 @@ class StoreScreenshots {
             selectedJurisdiction = city,
             micStatus = MicStatus(micKey = "builtin", micLabel = "Built-in microphone", isUsb = false, supportsUnprocessed = false, profile = null),
             onShowCityPicker = {}, onBeginSelfTest = {}, onBeginCalibration = {}, onClearCalibration = {},
-            onShareNeighbor = {}, onOpenUri = {}, nav = nav,
+            onShareNeighbor = {}, onOpenUri = {}, unlocked = false, unlockPriceText = "\$7.99", onShowUnlock = {}, nav = nav,
         )
     }
 }
