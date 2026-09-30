@@ -425,7 +425,7 @@ private fun CityPickerDialog(
 }
 
 @Composable
-private fun MeterScreen(
+internal fun MeterScreen(
     rule: RuleWorkflow,
     reading: MeterReading,
     incidentCount: Int,
@@ -537,9 +537,14 @@ private fun MeterScreen(
                 style = MaterialTheme.typography.displayLarge,
             )
             Text("estimated dB", color = Muted, style = MaterialTheme.typography.labelMedium)
-            if (cityLimit != null) {
-                Text("city limit now ${cityLimit.roundToInt()}", color = Danger, style = MaterialTheme.typography.labelSmall)
-            }
+        }
+        if (cityLimit != null) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = "${rule.jurisdiction.substringBefore(",")} limit now ${cityLimit.roundToInt()} dB",
+                color = Danger,
+                style = MaterialTheme.typography.labelLarge,
+            )
         }
         Spacer(Modifier.height(24.dp))
 
@@ -865,7 +870,7 @@ private fun RuleAssessmentCard(
 }
 
 @Composable
-private fun ReviewScreen(
+internal fun ReviewScreen(
     state: NoiseFileUiState,
     rule: RuleWorkflow,
     incidentCount: Int,
@@ -1386,7 +1391,7 @@ private fun ImpactOption(
 }
 
 @Composable
-private fun HistoryScreen(
+internal fun HistoryScreen(
     cityName: String,
     incidents: List<Incident>,
     ruleForIncident: (String) -> RuleWorkflow?,
