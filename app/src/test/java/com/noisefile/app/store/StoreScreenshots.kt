@@ -122,6 +122,7 @@ class StoreScreenshots {
                 meterReading = reading(now = 52, peak = 66, average = 57, seconds = 92),
                 ambient = AmbientReading(db = 36.0, seconds = 300L, sampleWindows = 3_000),
                 draftLocation = "Oak Street, next door", draftImpact = "Woke me or someone in my home",
+                draftSoundKind = "Bass through the wall",
             ),
             rule = noise, incidentCount = 3,
             onLocationChange = {}, onImpactChange = {}, onNotesChange = {}, onSave = {}, onSaveAndPrepare = {}, onDiscard = {},

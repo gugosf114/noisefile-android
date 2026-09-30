@@ -23,6 +23,7 @@ fun buildIncidentHistoryReport(
         appendLine("Incident ${index + 1}")
         appendLine("Date: $date")
         appendLine("Type: ${incident.noiseType.displayName}")
+        incident.soundKind?.let { appendLine("Sound: $it") }
         appendLine("Location: ${incident.location.ifBlank { "None added" }}")
         appendLine("Duration: ${incident.durationSeconds} sec")
         appendLine(

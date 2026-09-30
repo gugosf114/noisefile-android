@@ -147,11 +147,13 @@ import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
+import com.noisefile.app.model.NoiseKinds
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
 import com.noisefile.app.ui.theme.Brass
 import com.noisefile.app.ui.theme.Chalk
 import com.noisefile.app.ui.theme.DeckHigh
+import com.noisefile.app.ui.theme.Hairline
 import com.noisefile.app.ui.theme.Cobalt
 import com.noisefile.app.ui.theme.CodeQuoteStyle
 import com.noisefile.app.ui.theme.PaperAmber
@@ -301,6 +303,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 incidentCount = viewModel.incidentCountFor(state.selectedRuleId),
                 onLocationChange = viewModel::setLocation,
                 onImpactChange = viewModel::setImpact,
+                onSoundKindChange = viewModel::setSoundKind,
                 onNotesChange = viewModel::setNotes,
                 onSave = { viewModel.saveIncident() },
                 onAddPhoto = viewModel::addDraftPhoto,
@@ -916,6 +919,7 @@ internal fun ReviewScreen(
     onSave: () -> Unit,
     onSaveAndPrepare: () -> Unit,
     onDiscard: () -> Unit,
+    onSoundKindChange: (String?) -> Unit = {},
     onAddPhoto: (Uri) -> Unit = {},
     onRemovePhoto: (File) -> Unit = {},
     onDropClip: () -> Unit = {},
@@ -1044,6 +1048,17 @@ internal fun ReviewScreen(
                     isError = state.error != null && state.draftLocation.isBlank(),
                     singleLine = true,
                     shape = RoundedCornerShape(18.dp),
+                )
+            }
+
+            item {
+                Text("What did you hear?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
+                Label("One tap. Optional. It goes into the complaint and the report.")
+                Spacer(Modifier.height(6.dp))
+                SoundKindRow(
+                    kinds = NoiseKinds.forType(rule.noiseType),
+                    selected = state.draftSoundKind,
+                    onSelect = onSoundKindChange,
                 )
             }
 
@@ -1378,6 +1393,36 @@ internal fun MicrophoneCard(
                     Text("I have a sound level meter")
                 }
             }
+        }
+    }
+}
+
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun SoundKindRow(kinds: List<String>, selected: String?, onSelect: (String?) -> Unit) {
+    androidx.compose.foundation.layout.FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        kinds.forEach { kind ->
+            val picked = kind == selected
+            FilterChip(
+                selected = picked,
+                onClick = { onSelect(kind) },
+                label = { Text(kind) },
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = DeckHigh,
+                    labelColor = Chalk,
+                    selectedContainerColor = Cobalt,
+                    selectedLabelColor = White,
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = picked,
+                    borderColor = Hairline,
+                    selectedBorderColor = Cobalt,
+                ),
+            )
         }
     }
 }

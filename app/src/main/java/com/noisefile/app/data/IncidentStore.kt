@@ -64,37 +64,38 @@ class IncidentStore(context: Context) {
         preferences.edit().putString(KEY_INCIDENTS, array.toString()).apply()
     }
 
-    private fun Incident.toJson(): JSONObject = JSONObject()
-        .put("id", id)
-        .put("ruleId", ruleId)
-        .put("noiseType", noiseType.name)
-        .put("startedAtEpochMillis", startedAtEpochMillis)
-        .put("durationSeconds", durationSeconds)
-        .put("minimumDb", minimumDb)
-        .put("averageDb", averageDb)
-        .put("maximumDb", maximumDb)
-        .put("location", location)
-        .put("impact", impact)
-        .put("notes", notes)
-        .put("ambientDb", ambientDb ?: JSONObject.NULL)
-        .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
-        .put("levelNote", levelNote ?: JSONObject.NULL)
-        .put("levelTrace", JSONArray().also { array -> levelTrace.forEach { array.put(it) } })
-        .put("traceSecondsPerSample", traceSecondsPerSample)
-        .put("evidenceHash", evidenceHash ?: JSONObject.NULL)
-        .put("previousHash", previousHash ?: JSONObject.NULL)
-        .put("photoNames", JSONArray().also { a -> photoNames.forEach { a.put(it) } })
-        .put("photoHashes", JSONArray().also { a -> photoHashes.forEach { a.put(it) } })
-        .put("clipName", clipName ?: JSONObject.NULL)
-        .put("clipHash", clipHash ?: JSONObject.NULL)
-        .put("clipSeconds", clipSeconds)
-
     private companion object {
         const val PREFERENCES_NAME = "noisefile_incidents"
         const val KEY_INCIDENTS = "incidents"
         const val MAX_INCIDENTS = 500
     }
 }
+
+internal fun Incident.toJson(): JSONObject = JSONObject()
+    .put("id", id)
+    .put("ruleId", ruleId)
+    .put("noiseType", noiseType.name)
+    .put("startedAtEpochMillis", startedAtEpochMillis)
+    .put("durationSeconds", durationSeconds)
+    .put("minimumDb", minimumDb)
+    .put("averageDb", averageDb)
+    .put("maximumDb", maximumDb)
+    .put("location", location)
+    .put("impact", impact)
+    .put("notes", notes)
+    .put("soundKind", soundKind ?: JSONObject.NULL)
+    .put("ambientDb", ambientDb ?: JSONObject.NULL)
+    .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
+    .put("levelNote", levelNote ?: JSONObject.NULL)
+    .put("levelTrace", JSONArray().also { array -> levelTrace.forEach { array.put(it) } })
+    .put("traceSecondsPerSample", traceSecondsPerSample)
+    .put("evidenceHash", evidenceHash ?: JSONObject.NULL)
+    .put("previousHash", previousHash ?: JSONObject.NULL)
+    .put("photoNames", JSONArray().also { a -> photoNames.forEach { a.put(it) } })
+    .put("photoHashes", JSONArray().also { a -> photoHashes.forEach { a.put(it) } })
+    .put("clipName", clipName ?: JSONObject.NULL)
+    .put("clipHash", clipHash ?: JSONObject.NULL)
+    .put("clipSeconds", clipSeconds)
 
 internal fun parseIncidents(raw: String): List<Incident> {
     val array = runCatching { JSONArray(raw) }.getOrNull() ?: return emptyList()
@@ -119,6 +120,7 @@ private fun JSONObject.toIncident(): Incident = Incident(
     location = optString("location"),
     impact = getString("impact"),
     notes = optString("notes"),
+    soundKind = if (has("soundKind") && !isNull("soundKind")) getString("soundKind") else null,
     ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
     ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
     levelNote = if (has("levelNote") && !isNull("levelNote")) getString("levelNote") else null,

@@ -134,6 +134,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         val inc = e.incident
         var h = 6f + 10f + 14f
         h += heightOf("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        inc.soundKind?.let { h += heightOf("Sound: $it", body + 0.5f) }
         h += heightOf("Impact: ${inc.impact}", body + 0.5f)
         h += heightOf("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
         inc.levelNote?.let { h += 2f + heightOf(it, body - 0.5f) }
@@ -302,6 +303,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         gap(6f); rule()
         label("What the person recorded")
         text("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        inc.soundKind?.let { text("Sound: $it", body + 0.5f) }
         text("Impact: ${inc.impact}", body + 0.5f)
         text("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
         inc.levelNote?.let { gap(2f); text(it, body - 0.5f, muted, italic = true) }
