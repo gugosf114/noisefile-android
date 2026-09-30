@@ -39,6 +39,8 @@ enum class AppScreen {
     HISTORY,
     RULES,
     MORE,
+    /** The city's form box by box, with the app's answers, before the browser opens. */
+    FORM_GUIDE,
 }
 
 /** What the microphone is measuring right now: the quiet baseline, or the noise. */
@@ -85,6 +87,8 @@ data class NoiseFileUiState(
     val draftPhotos: List<File> = emptyList(),
     val draftClip: File? = null,
     val draftClipSeconds: Int = 0,
+    /** The saved incident whose form guide is open. */
+    val formGuideIncidentId: Long? = null,
 )
 
 class NoiseFileViewModel(application: Application) : AndroidViewModel(application) {
@@ -180,6 +184,19 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update {
             it.copy(
                 screen = AppScreen.HISTORY,
+                captureStage = CaptureStage.NOISE,
+                error = null,
+            )
+        }
+    }
+
+    /** Open the city's form guide for a saved incident. */
+    fun showFormGuide(incidentId: Long) {
+        noiseMeter.stop()
+        _uiState.update {
+            it.copy(
+                screen = AppScreen.FORM_GUIDE,
+                formGuideIncidentId = incidentId,
                 captureStage = CaptureStage.NOISE,
                 error = null,
             )

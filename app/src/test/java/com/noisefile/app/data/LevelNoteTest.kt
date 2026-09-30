@@ -44,10 +44,11 @@ class LevelNoteTest {
         val rule = catalog.retrieve("hayward", NoiseType.PARTY_MUSIC) ?: error("Missing rule")
         val draft = buildComplaintDraft(incident(note), rule, ZoneId.of("America/Los_Angeles"))
         assertTrue(draft, draft.contains("calibrated against a reference meter on Sep 7, 2026 (+4 dB)"))
-        assertFalse(draft, draft.contains("estimates from my phone"))
+        assertTrue(draft, draft.contains("Phone estimate at my spot"))
 
         val plain = buildComplaintDraft(incident(null), rule, ZoneId.of("America/Los_Angeles"))
-        assertTrue(plain, plain.contains("estimates from my phone"))
+        assertFalse(plain, plain.contains("calibrated"))
+        assertTrue(plain, plain.contains("Phone estimate at my spot"))
     }
 
     @Test

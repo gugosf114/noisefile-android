@@ -84,6 +84,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -299,7 +300,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onDropClip = viewModel::dropDraftClip,
                 onSaveAndPrepare = {
                     viewModel.saveIncident()?.let { incident ->
-                        copyComplaintAndOpenDestination(context, incident, rule)
+                        prepareComplaint(context, incident, rule, viewModel::showFormGuide)
                     }
                 },
                 onDiscard = viewModel::showHome,
@@ -317,9 +318,25 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
-                copyComplaintAndOpenDestination(context, incident, rule)
+                prepareComplaint(context, incident, rule, viewModel::showFormGuide)
             },
         )
+
+        AppScreen.FORM_GUIDE -> {
+            val incident = state.incidents.firstOrNull { it.id == state.formGuideIncidentId }
+            val rule = incident?.let { viewModel.ruleForIncident(it.ruleId) }
+            if (incident == null || rule?.formGuide == null) {
+                LaunchedEffect(Unit) { viewModel.showHistory() }
+            } else {
+                FormGuideScreen(
+                    incident = incident,
+                    rule = rule,
+                    nav = nav,
+                    onBack = viewModel::showHistory,
+                    onOpenForm = { copyComplaintAndOpenDestination(context, incident, rule) },
+                )
+            }
+        }
     }
 
     if (state.selfTestRunning || state.selfTestResult != null) {
@@ -1063,6 +1080,7 @@ internal fun ReviewScreen(
                     Spacer(Modifier.width(9.dp))
                     Text(
                         text = when {
+                            rule.formGuide != null -> "Save & fill the city form"
                             destination.isOnlineForm -> "Save, copy & open city form"
                             destination.isDocumentPacket -> "Save, copy & open city packet"
                             else -> "Save, copy & open city contact"
@@ -1710,6 +1728,7 @@ private fun IncidentCard(
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = when {
+                            rule.formGuide != null -> "Fill the city form"
                             destination.isOnlineForm -> "Copy complaint & open city form"
                             destination.isDocumentPacket -> "Copy complaint & open city packet"
                             else -> "Copy complaint & open city contact"
@@ -1889,6 +1908,25 @@ internal fun formatElapsed(millis: Long): String {
     val minutes = totalSeconds / 60L
     val seconds = totalSeconds % 60L
     return "%02d:%02d".format(minutes, seconds)
+}
+
+/**
+ * The "file it" button: when the city's form has been walked, show its boxes
+ * first with the description already on the clipboard. Otherwise copy and open.
+ */
+private fun prepareComplaint(
+    context: Context,
+    incident: Incident,
+    rule: RuleWorkflow,
+    showFormGuide: (Long) -> Unit,
+) {
+    if (rule.formGuide != null) {
+        val clipboard = context.getSystemService(ClipboardManager::class.java)
+        clipboard.setPrimaryClip(ClipData.newPlainText("NoiseFile complaint", buildComplaintDraft(incident, rule)))
+        showFormGuide(incident.id)
+    } else {
+        copyComplaintAndOpenDestination(context, incident, rule)
+    }
 }
 
 private fun copyComplaintAndOpenDestination(
