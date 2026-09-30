@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-29.4",
+  "catalogVersion": "2026-09-29.5",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -107,6 +107,30 @@
     {
       "id": "redwood-city",
       "displayName": "Redwood City",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "mountain-view",
+      "displayName": "Mountain View",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "milpitas",
+      "displayName": "Milpitas",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "pleasanton",
+      "displayName": "Pleasanton",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "alameda",
+      "displayName": "Alameda",
       "region": "Bay Area",
       "available": true
     }
@@ -3543,6 +3567,539 @@
             "required": false,
             "answer": "PHOTOS"
           }
+        ]
+      }
+    },
+    {
+      "id": "mountain-view-barking_dog",
+      "jurisdictionId": "mountain-view",
+      "jurisdiction": "Mountain View, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Time it: ten minutes straight, or half an hour on and off",
+      "summary": "Mountain View City Code §5.62 makes it unlawful to keep a dog that disturbs the peace and quiet of one or more persons in the immediate neighborhood by loud barking or unusual noises. 'Loud barking' is defined: barking, howling or baying, by day or night, continuously or incessantly for ten minutes, or intermittently for one-half hour or more, that creates a noise disturbance across a residential or commercial property line. Barking while the dog is protecting its premises against a trespasser does not count, and the owner carries the burden of proving that. The rule sets no dB threshold; the clock is the test. Animal law enforcement in Mountain View is done by the Silicon Valley Animal Control Authority (SVACA), a joint powers authority; the City's Animal Services page lists SVACA at 408-764-0344 and staff@svaca.com, with the Police non-emergency line for urgent after-hours matters.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, and whether the barking ran ten minutes without a real break or came and went for thirty minutes or more; the app's level trace shows the stretch. Note that nobody was at the fence or gate provoking the dog. A phone dB estimate does not decide this rule; the ten-minute and thirty-minute clocks do.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call SVACA at 408-764-0344 with the dog's exact address and your name and number; SVACA's complaints page says it may ask you to complete its Animal Complaint Form so it can investigate. For a written record, email staff@svaca.com with the dated log and PDF. For an urgent after-hours matter the City points to Mountain View Police at 650-903-6344.",
+      "actionLabel": "Call SVACA",
+      "actionUri": "tel:4087640344",
+      "secondaryActionLabel": "Email SVACA",
+      "secondaryActionUri": "mailto:staff@svaca.com",
+      "officialSourceLabel": "Mountain View City Code §5.62",
+      "officialSourceUrl": "https://library.municode.com/ca/mountain_view/codes/code_of_ordinances?nodeId=PTIITHCO_CH5AN_ARTVDOCA_S5.62BADO",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "mountain-view-party_music",
+      "jurisdictionId": "mountain-view",
+      "jurisdiction": "Mountain View, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "State law covers loud parties; the City has no music decibel rule",
+      "summary": "Mountain View's City Code has no general loud-music or party ordinance: the old noise sections in Chapter 21 (§§21.20, 21.25, 21.27) were repealed in 1997, and what remains regulates stationary equipment (§21.26) and sound trucks (§21.33). Loud parties and music are handled by Mountain View Police under California Penal Code §415(2), which makes it an offense to maliciously and willfully disturb another person by loud and unreasonable noise. That rule applies at any hour and sets no dB cutoff; it turns on conduct and reasonableness. Separately, stationary equipment such as air conditioners, pool pumps and compressors may not exceed 55 dB(A), or 50 dB(A) from 10:00 p.m. to 7:00 a.m., measured on a receiving residential property with a Type 2 meter (§21.26).",
+      "captureInstruction": "Record the source address, exact times, duration, whether it recurred, what was heard (music, shouting, bass), and how it disturbed you. Note whether the noise continued after a request to stop, because willfulness matters under §415. A phone estimate is supporting evidence of how loud it was; no City number decides a party complaint.",
+      "requiredIncidentCount": null,
+      "nextAction": "While the noise is happening, call Mountain View Police non-emergency at 650-903-6344 so an officer can hear it. For a repeat address, send a Concern to the Police Department through Ask Mountain View with the dates and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6509036344",
+      "secondaryActionLabel": "File Ask MV Police Concern",
+      "secondaryActionUri": "https://clients.comcate.com/newrequest.php?id=128",
+      "officialSourceLabel": "California Penal Code §415(2); Mountain View City Code §21.26",
+      "officialSourceUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=415.&lawCode=PEN",
+      "verifiedDate": "2026-09-29",
+      "formGuide": {
+        "portal": "Ask Mountain View (Comcate)",
+        "access": "No sign-in needed. You can pick \"Remain Anonymous\", or give your name so staff can reply.",
+        "steps": [
+          "Pick a topic",
+          "How to contact you",
+          "Your request",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Topic",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Police Department"
+          },
+          {
+            "label": "How would you like to be contacted? (New User / Existing User / Remain Anonymous)",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First Name / Last Name / Email Address",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Bold boxes are required unless you stay anonymous."
+          },
+          {
+            "label": "Preferred contact method",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Address / City / State / Zip",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Your own address. The noise address goes in the request text."
+          },
+          {
+            "label": "Request Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Concern"
+          },
+          {
+            "label": "Address of the noise",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "This form has no box for it. Paste it as the first line of your message."
+          },
+          {
+            "label": "Your Request",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Attach a file",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "Ask MV is not read around the clock. For noise happening now, call Police non-emergency 650-903-6344."
+        ]
+      }
+    },
+    {
+      "id": "mountain-view-construction",
+      "jurisdictionId": "mountain-view",
+      "jurisdiction": "Mountain View, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Weekdays 7 to 6 only; equipment limited to 55 by day, 50 at night",
+      "summary": "Mountain View City Code §8.06.05 (rewritten September 9, 2025) allows construction activity only from 7:00 a.m. to 6:00 p.m., Monday through Friday. No work is permitted on Saturday, Sunday, recognized holidays, or outside those hours without prior written approval from the Chief Building Official, who may also cut or extend hours on 24 hours' notice. 'Construction activity' means any physical activity on the site or staging area, including material deliveries. Emergencies are exempt but must be reported to Police and the Building Division by the next business day. A sign at each vehicle entrance must show the working hours and contacts, and any written order or permit must be produced on request. Recognized holidays include New Year's Day, MLK Day, Presidents Day, Farmworkers Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Veterans Day, Thanksgiving and the Friday after, Christmas Eve and Christmas Day, and City Hall's closure between Christmas and New Year's. The hours rule sets no dB limit. Separately, stationary mechanical equipment such as air conditioners, pool pumps and compressors may not exceed 55 dB(A), or 50 dB(A) from 10:00 p.m. to 7:00 a.m., measured anywhere on a receiving residential property with a Type 2 or better meter (§21.26).",
+      "captureInstruction": "Record the site address, the day, whether it was a holiday, and the exact start and stop times outside 7:00 a.m.–6:00 p.m. weekdays; deliveries count. Note whether the required sign is up and whether the contractor could show a written approval for off-hours work. For a fixed machine (compressor, pump, air conditioner), measure at your property, then measure the quiet with it off; the City measures on the receiving residential property with a Type 2 meter, so a phone estimate is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "The City's Construction Hours page: during business hours report to the Building Division at 650-903-6313 (Monday–Friday 8–5); after hours, weekends and holidays call Police non-emergency at 650-903-6344, then email the Building Division at cmvworkrequest@mountainview.gov for follow-up. Work in the street or sidewalk goes to Public Works at 650-903-6311.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6509036344",
+      "secondaryActionLabel": "Email Building Division",
+      "secondaryActionUri": "mailto:cmvworkrequest@mountainview.gov",
+      "officialSourceLabel": "Mountain View City Code §§8.06.05, 21.26",
+      "officialSourceUrl": "https://library.municode.com/ca/mountain_view/codes/code_of_ordinances?nodeId=PTIITHCO_CH8BU_ARTIAD_DIV2COHOBA_S8.06.05COHO",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "City Code 8.06.05: construction activity, including deliveries, is allowed only 7:00 a.m.–6:00 p.m. Monday–Friday; none on Saturday, Sunday or recognized holidays without the Chief Building Official's written approval.",
+        "sourceCitation": "City Code 8.06.05(a)",
+        "sourceQuote": "No construction activity shall commence prior to 7:00 a.m. nor continue later than 6:00 p.m., Monday through Friday. No work is permitted on Saturday, Sunday, recognized holidays, or outside of these hours unless prior written approval is granted by the chief building official. The term \"construction activity\" shall include any physical activity on the construction site or in the staging area, including the delivery of materials."
+      },
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Mountain View City Code 21.26: stationary equipment such as air compressors, pool and spa equipment and air conditioners may not exceed 55 dB(A), or 50 dB(A) from 10 p.m. to 7 a.m., measured on the receiving residential property with a Type 2 meter. This is the equipment rule, not a construction-site limit. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "milpitas-barking_dog",
+      "jurisdictionId": "milpitas",
+      "jurisdiction": "Milpitas, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document frequent barking that disturbs anyone within 300 yards",
+      "summary": "Milpitas Municipal Code V-210-4.03 (Excessive Noise) says no person owning or controlling an animal may allow it to bark, howl, wail, bay, yelp, cry or make any other noise with such frequency or in such a manner as to disturb the peace and quiet of one or more persons living within 300 yards of the premises where the animal is kept. The rule sets no minute count or dB threshold; frequency and manner are the test, and one disturbed neighbor is enough. Section V-210-4.06 also lets a private person sue under the Civil Code when the nuisance specially injures them. The City's resource directory lists Noise Complaints and Leash Law Enforcement at 408-586-3071; Milpitas contracts animal control field services to San Jose Animal Care & Services.",
+      "captureInstruction": "For each incident record the animal's address, the date, exact start and stop times, how often it happened that day and that week, and how it disturbed your peace and quiet. Your address within 300 yards of the animal's premises is part of the rule, so note the distance. A phone dB estimate does not decide this no-threshold rule; the dated pattern does.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Milpitas Code Compliance at 408-586-3071, the number the City lists for noise complaints and leash-law enforcement, with the animal's address and your name and number. For the written pattern, email Code Enforcement at Code_Enforcement@milpitas.gov with the dated log and PDF; the City's Report Violations page names that mailbox for code complaints. The MyMilpitas (SeeClickFix) app has no animal or noise category.",
+      "actionLabel": "Call Code Compliance",
+      "actionUri": "tel:4085863071",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Code_Enforcement@milpitas.gov",
+      "officialSourceLabel": "Milpitas Municipal Code V-210-4.03",
+      "officialSourceUrl": "https://library.municode.com/ca/milpitas/codes/code_of_ordinances?nodeId=TITVPUHESAWE_CH210ANRE_S4ANBEUI",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "milpitas-party_music",
+      "jurisdictionId": "milpitas",
+      "jurisdiction": "Milpitas, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 65 dB at the line, 3 dB over the quiet, and the 50-foot night test",
+      "summary": "Milpitas Municipal Code Chapter 213 (Noise Abatement, amended September 2, 2025) works three ways in residential zones. First, any Disturbing Noise that raises the level 3 dB over the ambient, or exceeds 65 dB, measured at the noise source's property line, whichever is stricter, is unlawful (V-213-3.01). Second, a Disturbing Noise is a prima facie violation if it is audible 50 feet from the source property line between 10:00 p.m. and 7:00 a.m., or 100 feet from the line between 7:01 a.m. and 9:59 p.m.; a moving source uses 100 feet at any hour (V-213-3.03). Third, 'Disturbing Noise' is defined as sound that disturbs a reasonable person of normal sensitivity living in the area, and expressly includes music, TV or speakers played louder than needed for the people in the room, horns, machinery, engine revving, and yelling or singing (V-213-2.04). Ambient is the Leq over at least three minutes with the source silent (V-213-2.01). Outdoor music at restaurants and bars in commercial and mixed-use zones has its own 9:00 a.m.–11:00 p.m. window and 65–90 dB limits (V-213-3(b)). A violation is a public nuisance and an infraction, and after a first police warning at a loud or unruly gathering, the second and later police responses are billed to the responsible person (V-213-10, 11).",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, and how it disturbed you. After 10:00 p.m., step 50 feet from the source property line and note whether the noise was plainly audible there; by day use 100 feet. Measure the noise, then run the three-minute quiet baseline at the same spot with the source silent, so the 3 dB and 65 dB tests are both visible. The City measures at the source's property line; a phone estimate at your spot is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "While the noise is happening, call Milpitas Police non-emergency at 408-586-2400 so an officer can hear it and give the first warning. By day, Code Compliance takes noise complaints at 408-586-3071. For a repeat address, email Code Enforcement at Code_Enforcement@milpitas.gov with the dates and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:4085862400",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Code_Enforcement@milpitas.gov",
+      "officialSourceLabel": "Milpitas Municipal Code V-213-2, V-213-3(a), V-213-10",
+      "officialSourceUrl": "https://library.municode.com/ca/milpitas/codes/code_of_ordinances?nodeId=TITVPUHESAWE_CH213NOAB",
+      "verifiedDate": "2026-09-29",
+      "meterLimit": {
+        "fixedMaximumDb": 65,
+        "comparisonContext": "Milpitas Code V-213-3.01: in a residential zone a disturbing noise may not exceed 65 dB, or 3 dB over the ambient, measured at the noise source's property line, whichever is stricter. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "22:00",
+            "end": "07:00"
+          }
+        ],
+        "context": "Milpitas Code V-213-3.03: between 10:00 p.m. and 7:00 a.m. a disturbing noise audible 50 feet from the source property line is a prima facie violation; by day the distance is 100 feet, so the rule still applies outside these hours.",
+        "sourceCitation": "Milpitas Municipal Code V-213-3.03",
+        "sourceQuote": "It shall be prima facie violation of this Section if any Disturbing Noise is audible during the hours of 10:00 p.m. to 7:00 a.m. from a distance of 50 feet from the property line of the noise source or from a distance of 100 feet from any nonstationary noise source. It shall also be prima facie violation of this Section if any Disturbing Noise is audible during the hours of 7:01 a.m. to 9:59 p.m. from a distance of 100 feet from the property line of the noise source or any nonstationary noise source."
+      },
+      "ambientRecipe": {
+        "minutes": 3,
+        "note": "Milpitas Code V-213-2.01 measures the ambient as the Leq over at least three minutes, or until the Leq holds within a one-dB spread, with the noise at issue silent. In a residential zone a disturbing noise that raises the level 3 dB over that ambient at the source's property line, or passes 65 dB there, whichever is stricter, is unlawful (V-213-3.01).",
+        "sourceCitation": "Milpitas Municipal Code V-213-2.01 and V-213-3.01",
+        "sourceQuote": "\"Ambient Noise Level\" as used herein in this Chapter means the continuous equivalent-energy level (Leq) measured for a minimum of three minutes, or until the Leq remains within a one dB spread, and with the noise issue at silent. … it shall be unlawful for any person in any district zoned for residential use … to make, continue, maintain, permit or cause to be made, continued, maintained, or permitted any Disturbing Noise that increases the noise exposure level by three dB over the local ambient noise level measured from the property line of the noise source, or more than 65 dB measured from the property line of the noise source, whichever is more restrictive."
+      }
+    },
+    {
+      "id": "milpitas-construction",
+      "jurisdictionId": "milpitas",
+      "jurisdiction": "Milpitas, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Seven to seven every day, never on the six holidays",
+      "summary": "Milpitas Municipal Code V-213-3.07 (amended September 2, 2025) allows construction of any building, road, walkway, pool or landscape improvement, and the operations that go with it including delivery of materials, only between 7:00 a.m. and 7:00 p.m. on weekdays and weekends. No construction work may be performed on the Chapter's holidays: New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving Day and Christmas Day (V-213-2.07). The rule is hours-only; it sets no dB limit for construction. Exempt (V-213-3.08): emergency work to protect life and property; state-preempted work such as public school construction; utility construction and maintenance; work on an existing single-family or duplex home done by the property owner; right-of-way work the Public Works Director deems necessary; and anything else the City Manager exempts. Construction noise outside the hours is also a Disturbing Noise under the residential-zone rules, and any violation of the Chapter is a public nuisance and an infraction.",
+      "captureInstruction": "Record the site address, the date, whether it was one of the six holidays, and the exact start and stop times before 7:00 a.m. or after 7:00 p.m.; material deliveries count. Note the kind of work and whether a contractor was present, since the owner-only exemption covers a homeowner working on their own house, not a crew. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB. A phone dB estimate does not decide this hours-only rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Early mornings, evenings and holidays call Milpitas Police non-emergency at 408-586-2400. During business hours Code Compliance takes noise complaints at 408-586-3071. For a project that keeps doing it, email Code Enforcement at Code_Enforcement@milpitas.gov with the dated log and PDF; the City's Report Violations page names that mailbox.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:4085862400",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Code_Enforcement@milpitas.gov",
+      "officialSourceLabel": "Milpitas Municipal Code V-213-3(c)",
+      "officialSourceUrl": "https://library.municode.com/ca/milpitas/codes/code_of_ordinances?nodeId=TITVPUHESAWE_CH213NOAB",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "07:00",
+            "end": "19:00"
+          }
+        ],
+        "context": "Milpitas Code V-213-3.07: construction, including deliveries, is allowed only 7:00 a.m.–7:00 p.m., weekdays and weekends alike; none on New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving or Christmas.",
+        "sourceCitation": "Milpitas Municipal Code V-213-3.07",
+        "sourceQuote": "No person shall engage or permit others to engage in construction of any building or related road or walkway, pool or landscape improvement or in the construction operations related thereto, including, delivery of construction materials, supplies, or improvements on or to a construction site except within the hours of 7:00 a.m. to 7:00 p.m. on weekdays and weekends. No construction work shall be conducted or performed on the holidays indicated in Section V-213-2-2.05 of this Chapter."
+      }
+    },
+    {
+      "id": "pleasanton-barking_dog",
+      "jurisdictionId": "pleasanton",
+      "jurisdiction": "Pleasanton, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document barking by loudness, duration and location; 60 dBA is the outer bound",
+      "summary": "Pleasanton Municipal Code §7.08.010 makes it unlawful and a nuisance for an owner to knowingly permit or tolerate an animal, by barking or other noise of such loudness, duration and location, to disturb any reasonable person's peace and quiet. A watchdog is allowed only if the owner quiets it at once whenever it barks and never leaves it unattended where its barking would disturb a reasonable person. That rule has no minute or dB threshold. Separately, the noise chapter's residential limit (§9.04.030) applies to any 'machine, animal, device' on residential property: a noise level over 60 dBA at any point outside the property plane, measured with a Type S2A meter on slow response, is a violation at any hour. Pleasanton's Animal Services Officers are part of the Police Department and enforce the animal code; the City says animal control problems can be reported to Police 24 hours a day.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how long it went on, whether anyone was home, and how it disturbed your peace and quiet; loudness, duration and location are the code's own three words. Note the dates you spoke to or left a note for the owner. A phone estimate near the property line is supporting evidence for the 60 dBA animal limit, not the officer's meter reading.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Pleasanton Police / Animal Services at 925-931-5100, the number the City gives for animal complaints around the clock, with the dog's exact address and your name and number. Keep the dated log for the officer; if the owner is warned and the barking continues, the log carries the case.",
+      "actionLabel": "Call Animal Services",
+      "actionUri": "tel:9259315100",
+      "officialSourceLabel": "Pleasanton Municipal Code §§7.08.010, 9.04.030",
+      "officialSourceUrl": "https://ecode360.com/43027589",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "pleasanton-party_music",
+      "jurisdictionId": "pleasanton",
+      "jurisdiction": "Pleasanton, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 60 dBA at the property line, any hour",
+      "summary": "Pleasanton Municipal Code §9.04.030 says no person may produce, on residential property, a noise level over 60 dBA at any point outside the property plane, by any machine, animal, device or combination of them. On multifamily property the same 60 dBA cap applies inside any other dwelling unit, measured at least four feet from walls, floor and ceiling with doors and windows closed. 'Noise level' is the maximum continuous or repetitive peak level on a precision meter, A-weighted, slow response. The limit runs all day and all night; there is no separate night number. One daytime exception: a source that never exceeds 70 dBA at 25 feet is exempt from the residential limit between 8:00 a.m. and 8:00 p.m. (10:00 a.m.–6:00 p.m. on Sundays and holidays). Commercial property is capped at 70 dBA and industrial at 75 dBA at the property plane, and a business within 300 feet of homes that is open 10:00 p.m.–6:00 a.m. must meet the residential standard at the zoning boundary. Permitted events at the fairgrounds, schools and parks are exempt, and the City Manager may issue an exception permit of up to six months.",
+      "captureInstruction": "Record the source address and property type, exact times, duration, and how it disturbed you. Measure as close to the source's property line as you safely can, because the City's number is taken at any point outside the property plane; a phone estimate is supporting evidence, not the Type S2A meter reading. If the noise was before 8:00 p.m., note whether it was still loud 25 feet from the source, which is where the daytime exception is judged.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Pleasanton Police non-emergency at 925-931-5100 so an officer can hear it. For a repeat address, send the dated log and PDF to Code Enforcement through its contact form; the Code Enforcement page lists noise ordinance violations among the issues it handles and gives 925-931-5620 for questions.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:9259315100",
+      "secondaryActionLabel": "File Code Enforcement Report",
+      "secondaryActionUri": "https://www.cityofpleasantonca.gov/our-government/community-and-economic-development/code-enforcement/#contact-us",
+      "officialSourceLabel": "Pleasanton Municipal Code §§9.04.020–9.04.070",
+      "officialSourceUrl": "https://ecode360.com/43027672",
+      "verifiedDate": "2026-09-29",
+      "meterLimit": {
+        "fixedMaximumDb": 60,
+        "comparisonContext": "Pleasanton Code 9.04.030: noise from residential property may not exceed 60 dBA at any point outside the property plane, day or night, on a precision meter set to slow. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Pleasanton Code Enforcement contact form",
+        "access": "No sign-in needed. Name and email are required.",
+        "steps": [
+          "One short form at the bottom of the Code Enforcement page"
+        ],
+        "fields": [
+          {
+            "label": "Your Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Subject",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Address of the noise",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "This form has no box for it. Paste it as the first line of your message."
+          },
+          {
+            "label": "Message",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "hint": "Put the noise address in the first line; the form has no address box."
+          },
+          {
+            "label": "File Upload",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "One file, up to 5 MB."
+          }
+        ],
+        "tips": [
+          "Code Enforcement lists \"Noise Ordinance violations\" among the issues it handles; office hours Monday–Friday 9–4, 925-931-5620. Nights and weekends call Police at 925-931-5100."
+        ]
+      }
+    },
+    {
+      "id": "pleasanton-construction",
+      "jurisdictionId": "pleasanton",
+      "jurisdiction": "Pleasanton, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the permit hours and the 83/86 dBA limits; off hours fall to 60",
+      "summary": "Pleasanton Municipal Code §9.04.100 lets permitted construction, alteration or repair work exceed the normal property limits only between 8:00 a.m. and 8:00 p.m. daily, and 10:00 a.m.–6:00 p.m. on Sundays and holidays, and only if it meets at least one of two limits: no single piece of equipment over 83 dBA at 25 feet (measured outside any structure as near 25 feet as possible), or no more than 86 dBA at any point outside the project's property plane. Outside those hours the ordinary limits apply instead of a ban: 60 dBA at the property plane for residential property (§9.04.030), 70 dBA commercial, 75 dBA industrial. Emergencies and utility standby testing are exempt (§9.04.090), and the City Manager may issue an exception permit of up to six months (§9.04.110). Pool equipment must meet the property's limit and is field-tested before final approval (§9.04.078). The residential limit also reaches machines and devices, so a compressor, pump or air conditioner over 60 dBA at the line is a violation at any hour.",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, the exact start and stop times, and the equipment running. Inside the permit window, a reading near 25 feet from one machine and a reading at the property line map onto the two limits; outside the window, the 60 dBA residential line is the test. The City measures with a Type S2A precision meter on slow response, so a phone estimate is supporting evidence, not that measurement. Note the permit number from the posted card if visible.",
+      "requiredIncidentCount": null,
+      "nextAction": "Early mornings, evenings, Sundays and holidays call Pleasanton Police non-emergency at 925-931-5100. During office hours (Monday–Friday 9–4) Code Enforcement takes noise ordinance violations at 925-931-5620 or through its contact form; send the dated log, the level trace and the PDF.",
+      "actionLabel": "File Code Enforcement Report",
+      "actionUri": "https://www.cityofpleasantonca.gov/our-government/community-and-economic-development/code-enforcement/#contact-us",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:9259315100",
+      "officialSourceLabel": "Pleasanton Municipal Code §§9.04.030, 9.04.100",
+      "officialSourceUrl": "https://ecode360.com/43027672",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "08:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "10:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Pleasanton Code 9.04.100: inside these hours permitted construction may run up to 83 dBA per machine at 25 feet or 86 dBA at the property plane; outside them the ordinary 60 dBA residential limit applies instead of a ban. Holidays use the Sunday hours.",
+        "sourceCitation": "Pleasanton Municipal Code 9.04.100",
+        "sourceQuote": "Notwithstanding any other provision of this chapter, between the hours of 8:00 a.m. and 8:00 p.m. daily, except Sunday and holidays, when the exemption shall apply between 10:00 a.m. and 6:00 p.m., construction, alteration or repair activities which are authorized by a valid city permit shall be allowed if they meet at least one of the following noise limitations: A. No individual piece of equipment shall produce a noise level exceeding 83 dBA at a distance of 25 feet. … B. The noise level at any point outside of the property plane of the project shall not exceed 86 dBA."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 86,
+        "comparisonContext": "Pleasanton Code 9.04.100: during permit hours, project noise may not exceed 86 dBA at any point outside the property plane (or 83 dBA per machine at 25 feet); outside permit hours the residential limit is 60 dBA. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Pleasanton Code Enforcement contact form",
+        "access": "No sign-in needed. Name and email are required.",
+        "steps": [
+          "One short form at the bottom of the Code Enforcement page"
+        ],
+        "fields": [
+          {
+            "label": "Your Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Subject",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Address of the noise",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "This form has no box for it. Paste it as the first line of your message."
+          },
+          {
+            "label": "Message",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "hint": "Put the noise address in the first line; the form has no address box."
+          },
+          {
+            "label": "File Upload",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "One file, up to 5 MB."
+          }
+        ],
+        "tips": [
+          "Code Enforcement lists \"Noise Ordinance violations\" among the issues it handles; office hours Monday–Friday 9–4, 925-931-5620. Nights and weekends call Police at 925-931-5100."
+        ]
+      }
+    },
+    {
+      "id": "alameda-barking_dog",
+      "jurisdictionId": "alameda",
+      "jurisdiction": "Alameda, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Time it: ten minutes straight, or half an hour on and off",
+      "summary": "Alameda has two barking rules. The Noise Regulations (§4-10.5(b)(2)) make it a violation to own or harbor an animal that howls, barks, meows or squawks continuously or incessantly for ten minutes, or intermittently for one-half hour or more, creating a noise disturbance across a residential or commercial property line; barking at a trespasser or at someone teasing or provoking the animal does not count. The Animal Control chapter (§7-3.10) separately bans keeping a dog that disturbs the peace and quiet of any neighborhood or person by persistent or prolonged barking, howling or unusual noises, and treats it as a §4-10.5 violation. A 'noise disturbance' is sound that annoys or disturbs a reasonable person of normal sensitivity, weighed by factors such as level over ambient, closeness to bedrooms, number of people affected, time and duration. No dB number decides a barking case; the clocks do. Each day is a separate infraction (§4-10.12). The City's two Animal Control Officers respond to barking complaints and are reached through Alameda Police dispatch.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, and whether the barking ran ten minutes without a real break or came and went for thirty minutes or more; the app's level trace shows the stretch. Note that nobody was at the fence provoking the dog. Dated repeats show 'persistent or prolonged'. A phone dB estimate does not decide this rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Alameda Police dispatch at 510-337-8340, the number the City's Animal Services page gives for barking complaints and any on-going animal issue, with the dog's exact address and your name and number; an Animal Control Officer is on duty 8:30 a.m.–6:30 p.m. every day. The shelter line is 510-337-8565. Keep the dated log for the officer.",
+      "actionLabel": "Call Police Dispatch (Animal Control)",
+      "actionUri": "tel:5103378340",
+      "officialSourceLabel": "Alameda Municipal Code §§4-10.5(b)(2), 7-3.10",
+      "officialSourceUrl": "https://library.municode.com/ca/alameda/codes/code_of_ordinances?nodeId=CHVIIANCO_7-3DOCA_7-3.10BAHODO",
+      "verifiedDate": "2026-09-29"
+    },
+    {
+      "id": "alameda-party_music",
+      "jurisdictionId": "alameda",
+      "jurisdiction": "Alameda, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the minutes-per-hour table; music is held 5 dB lower",
+      "summary": "Alameda's Noise Regulations (§4-10) set exterior standards measured at the receiving property. For a home, school, hospital, church or library (Table I), the noise may not exceed 55 dB(A) by day (7:00 a.m.–10:00 p.m.) or 50 dB(A) at night (10:00 p.m.–7:00 a.m.) for more than 30 cumulative minutes in any hour; 60/55 for 15 minutes; 65/60 for 5 minutes; 70/65 for 1 minute; and 75/70 may never be exceeded. Noise that is mainly music or speech, a pure tone, or recurring impulses is held 5 dB(A) lower. If the ambient is already above a standard, the ambient becomes the standard. Measurements are A-weighted, slow response, anywhere on the affected property, with the microphone 3–5 feet up and 4 feet from reflecting surfaces, after calibration. Separately, playing a radio, TV, drum or instrument so as to create a noise disturbance is a prohibited act at any hour (§4-10.5(b)(1)), and a portable or vehicle radio audible 50 feet away in a public place is a violation (§4-10.5(b)(9)). 'Noise disturbance' means sound that annoys a reasonable person of normal sensitivity, judged by level over ambient, closeness to bedrooms, people affected, time and duration. Recreation programs in City parks 9:00 a.m.–10:15 p.m. are exempt. Each day is a separate infraction and a public nuisance (§4-10.12).",
+      "captureInstruction": "Record the source address, exact times, how many minutes in the hour it ran, and how it disturbed you; the level trace shows the minutes above each step. Measure at your property, then the quiet with the source silent, so the ambient comparison is visible. The City measures on the affected property with a calibrated meter on slow response; a phone estimate is supporting evidence, not that measurement. After 10:00 p.m. the night column applies, and music takes the 5 dB(A) reduction.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Alameda Police non-emergency at 510-337-8340 so an officer can hear it. The code (§4-10.8) also lets you file a written complaint about a source that exceeds the Table with the Planning Department or Public Works, stating the location, nature and extent of the noise; Code Enforcement is at 510-747-6818 during business hours. Send the dated log and PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:5103378340",
+      "officialSourceLabel": "Alameda Municipal Code §§4-10.3–4-10.5, 4-10.8",
+      "officialSourceUrl": "https://library.municode.com/ca/alameda/codes/code_of_ordinances?nodeId=CHIVOFPUSA_ARTIINORE_4-10NOCO",
+      "verifiedDate": "2026-09-29",
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Alameda Code 4-10.4 Table I (residential receiving property): the noise may not exceed 55 dB(A) by day (7 a.m.–10 p.m.) or 50 dB(A) at night for more than 30 minutes in an hour, with steps up to 60/55 for 15 minutes, 65/60 for 5 minutes, 70/65 for 1 minute, and never 75/70; music, speech and pure tones are held 5 dB(A) lower; a higher ambient replaces the standard. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "alameda-construction",
+      "jurisdictionId": "alameda",
+      "jurisdiction": "Alameda, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Weekdays 7 to 7, Saturdays 8 to 5, no Sundays; outside that, the table applies",
+      "summary": "Alameda Municipal Code §4-10.5(b)(10) makes construction outside 7:00 a.m.–7:00 p.m. Monday through Friday and 8:00 a.m.–5:00 p.m. on Saturdays a prohibited act; there are no Sunday hours. The ban does not apply to work that needs no City permit, to emergency work, to a person working on their own principal residence or rental property, or where the City Manager grants an exception for significant financial hardship. Inside those hours construction noise is exempt from the exterior standards (§4-10.7(e)); outside them, and for exempt work, the receiving-property table still applies: 55 dB(A) by day and 50 dB(A) at night for more than 30 minutes an hour at a home, stepping up to a never-exceed 75/70 (§4-10.4). Loading, unloading and handling of building materials between 10:00 p.m. and 7:00 a.m. that disturbs a home is its own violation, and vibration felt at the property line is another (§4-10.5(b)(7), (8)). Residential maintenance is exempt 7:00 a.m.–9:00 p.m. weekdays and 9:00 a.m.–8:00 p.m. weekends. Residential air-conditioning and refrigeration equipment is capped at 50 dB(A) at the receiving property (55 for older units). Each day is a separate infraction (§4-10.12).",
+      "captureInstruction": "Record the site address, the day, and the exact start and stop times outside the allowed hours; note the kind of work and whether a permit card is posted, since permit-free work and owner work on their own home are exempt from the hours ban. For work outside the hours or for exempt work, measure at your property and note how many minutes in the hour it ran, because the table counts minutes. The City measures on the affected property with a calibrated meter on slow response; a phone estimate is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call Alameda Police non-emergency at 510-337-8340. For a project that keeps doing it, file a Code Enforcement request in Alameda's SeeClickFix and pick 'Construction Noise' from its list; include your phone and email in the description, because the form says Code Enforcement needs them to open a case. Code Enforcement is at 510-747-6818, status checks at 510-747-6845.",
+      "actionLabel": "File Construction Noise Complaint",
+      "actionUri": "https://seeclickfix.com/us-ca-alameda/report",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:5103378340",
+      "officialSourceLabel": "Alameda Municipal Code §§4-10.4, 4-10.5(b)(10), 4-10.7(e)",
+      "officialSourceUrl": "https://library.municode.com/ca/alameda/codes/code_of_ordinances?nodeId=CHIVOFPUSA_ARTIINORE_4-10NOCO",
+      "verifiedDate": "2026-09-29",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "08:00",
+            "end": "17:00"
+          }
+        ],
+        "context": "Alameda Code 4-10.5(b)(10): permitted construction outside these hours is a prohibited act; no Sunday hours. Work that needs no permit, emergency work, and an owner working on their own home are exempt from the hours ban, and the receiving-property table (4-10.4) still applies to them.",
+        "sourceCitation": "Alameda Municipal Code 4-10.5(b)(10)",
+        "sourceQuote": "Construction. Construction other than during the following hours: 7:00 a.m. to 7:00 p.m. Monday through Fridays and 8:00 a.m. to 5:00 p.m. on Saturdays. This prohibition does not apply to: (a) Construction that does not require a City permit; or (b) Construction where the City Manager or his/her designee grants an exception upon a showing of significant financial hardship; or (c) Emergency work to protect or restore safe conditions where immediate construction is required; or (d) Construction by any person on his/her principal place of residence or rental property."
+      },
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Outside the construction hours, or for permit-free and owner work, Alameda Code 4-10.4 Table I (residential receiving property): the noise may not exceed 55 dB(A) by day (7 a.m.–10 p.m.) or 50 dB(A) at night for more than 30 minutes in an hour, with steps up to 60/55 for 15 minutes, 65/60 for 5 minutes, 70/65 for 1 minute, and never 75/70; music, speech and pure tones are held 5 dB(A) lower; a higher ambient replaces the standard. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Alameda SeeClickFix",
+        "access": "Sign in or register; the City says new users set up an account on the first request.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then confirm it."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "hint": "Add your phone and email: the form says Code Enforcement needs them to open a case."
+          },
+          {
+            "label": "Please choose from the following",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Construction Noise"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "Status check for a filed complaint: 510-747-6845."
         ]
       }
     }
