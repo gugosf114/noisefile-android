@@ -59,8 +59,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(22, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(66, catalog.rules.size)
+        assertEquals(29, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(87, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -79,6 +79,10 @@ class RuleCatalogTest {
                 "mountain-view-construction", "milpitas-party_music",
                 "pleasanton-party_music", "pleasanton-construction",
                 "alameda-party_music", "alameda-construction",
+                "cupertino-construction", "cupertino-party_music", "palo-alto-construction",
+                "san-bruno-construction", "san-bruno-party_music",
+                "south-san-francisco-construction", "south-san-francisco-party_music",
+                "union-city-construction",
             ),
             limitedRules,
         )
@@ -670,7 +674,7 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theTwelveEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theTwentyThreeEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
@@ -689,6 +693,17 @@ class RuleCatalogTest {
                 "milpitas-barking_dog" to "mailto:Code_Enforcement@milpitas.gov",
                 "milpitas-party_music" to "mailto:Code_Enforcement@milpitas.gov",
                 "milpitas-construction" to "mailto:Code_Enforcement@milpitas.gov",
+                "palo-alto-barking_dog" to "mailto:animalcontrol@paloalto.gov",
+                "palo-alto-party_music" to "mailto:Planning.Enforcement@paloalto.gov",
+                "palo-alto-construction" to "mailto:Planning.Enforcement@paloalto.gov",
+                "san-bruno-barking_dog" to "mailto:police@sanbruno.ca.gov",
+                "san-bruno-party_music" to "mailto:police@sanbruno.ca.gov",
+                "san-bruno-construction" to "mailto:police@sanbruno.ca.gov",
+                "union-city-party_music" to "mailto:neighborhoodpreservation@unioncity.org",
+                "union-city-construction" to "mailto:neighborhoodpreservation@unioncity.org",
+                "walnut-creek-party_music" to "mailto:CodeEnforcement@walnut-creek.org",
+                "pittsburg-party_music" to "mailto:ce@pittsburgca.gov",
+                "pittsburg-construction" to "mailto:ce@pittsburgca.gov",
             ),
             emails,
         )
@@ -794,5 +809,56 @@ class RuleCatalogTest {
         assertTrue(alBuild.hoursRule!!.windows.none { it.days == DayGroup.SUNDAY })
         assertEquals("Construction Noise", alBuild.formGuide?.fields?.first { it.label.startsWith("Please choose") }?.fixedText)
         assertTrue(complaintDestination(alBuild).isOnlineForm)
+    }
+
+    @Test
+    fun theSevenSeptemberThirtiethCitiesReadTheirCurrentCodes() {
+        val catalog = catalog()
+
+        val pa = catalog.retrieve("palo-alto", NoiseType.PARTY_MUSIC)!!
+        assertEquals(6, pa.ambientRecipe?.minutes)
+        assertNull(pa.meterLimit)
+        assertTrue(catalog.retrieve("palo-alto", NoiseType.BARKING_DOG)!!.summary.contains("ten minutes within a fifteen-minute period"))
+        assertEquals(110.0, catalog.retrieve("palo-alto", NoiseType.CONSTRUCTION)!!.meterLimit?.fixedMaximumDb)
+
+        val ssf = catalog.retrieve("south-san-francisco", NoiseType.PARTY_MUSIC)!!
+        assertEquals(60.0, ssf.meterLimit?.daytimeMaximumDb)
+        assertEquals(50.0, ssf.meterLimit?.nighttimeMaximumDb)
+        assertEquals(6, ssf.ambientRecipe?.minutes)
+        assertTrue(complaintDestination(ssf).isOnlineForm)
+        assertEquals("Police Request (Non-Emergency)", ssf.formGuide?.fields?.get(1)?.fixedText)
+        assertEquals(90.0, catalog.retrieve("south-san-francisco", NoiseType.CONSTRUCTION)!!.meterLimit?.fixedMaximumDb)
+
+        val sb = catalog.retrieve("san-bruno", NoiseType.PARTY_MUSIC)!!
+        assertEquals(70.0, sb.meterLimit?.daytimeMaximumDb)
+        assertEquals(55.0, sb.meterLimit?.nighttimeMaximumDb)
+        assertEquals(HoursKind.QUIET, sb.hoursRule?.kind)
+        assertEquals(85.0, catalog.retrieve("san-bruno", NoiseType.CONSTRUCTION)!!.meterLimit?.daytimeMaximumDb)
+        assertNull(catalog.retrieve("san-bruno", NoiseType.CONSTRUCTION)!!.hoursRule)
+
+        val uc = catalog.retrieve("union-city", NoiseType.BARKING_DOG)!!
+        assertTrue(complaintDestination(uc).isOnlineForm)
+        assertEquals("barking dog", uc.formGuide?.fields?.first { it.answer == FormAnswer.FIXED }?.fixedText)
+        assertEquals(6, catalog.retrieve("union-city", NoiseType.PARTY_MUSIC)!!.ambientRecipe?.minutes)
+        assertEquals(86.0, catalog.retrieve("union-city", NoiseType.CONSTRUCTION)!!.meterLimit?.fixedMaximumDb)
+
+        val wc = catalog.retrieve("walnut-creek", NoiseType.CONSTRUCTION)!!
+        assertTrue(wc.hoursRule!!.windows.all { it.days == DayGroup.WEEKDAY })
+        assertNull(wc.meterLimit)
+        assertTrue(complaintDestination(wc).isOnlineForm)
+        assertTrue(complaintDestination(catalog.retrieve("walnut-creek", NoiseType.BARKING_DOG)!!).isOnlineForm)
+        assertTrue(catalog.retrieve("walnut-creek", NoiseType.PARTY_MUSIC)!!.summary.contains("50 feet"))
+
+        val pit = catalog.retrieve("pittsburg", NoiseType.PARTY_MUSIC)!!
+        assertEquals(HoursKind.QUIET, pit.hoursRule?.kind)
+        assertEquals(23 * 60 + 30, pit.hoursRule!!.windows.single().startMinuteOfDay)
+        assertTrue(catalog.retrieve("pittsburg", NoiseType.CONSTRUCTION)!!.hoursRule!!.windows.single().days == DayGroup.ALL)
+
+        val cup = catalog.retrieve("cupertino", NoiseType.PARTY_MUSIC)!!
+        assertEquals(60.0, cup.meterLimit?.daytimeMaximumDb)
+        assertEquals(20, cup.meterLimit?.nighttimeStartsHour)
+        assertEquals(80.0, catalog.retrieve("cupertino", NoiseType.CONSTRUCTION)!!.meterLimit?.fixedMaximumDb)
+        assertEquals("Barking Dog", catalog.retrieve("cupertino", NoiseType.BARKING_DOG)!!.formGuide?.fields?.get(2)?.fixedText)
+        assertTrue(complaintDestination(catalog.retrieve("cupertino", NoiseType.BARKING_DOG)!!).isOnlineForm)
     }
 }

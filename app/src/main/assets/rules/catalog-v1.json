@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-29.5",
+  "catalogVersion": "2026-09-30.1",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -131,6 +131,48 @@
     {
       "id": "alameda",
       "displayName": "Alameda",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "palo-alto",
+      "displayName": "Palo Alto",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "south-san-francisco",
+      "displayName": "South San Francisco",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "san-bruno",
+      "displayName": "San Bruno",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "union-city",
+      "displayName": "Union City",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "walnut-creek",
+      "displayName": "Walnut Creek",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "pittsburg",
+      "displayName": "Pittsburg",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "cupertino",
+      "displayName": "Cupertino",
       "region": "Bay Area",
       "available": true
     }
@@ -4100,6 +4142,1193 @@
         ],
         "tips": [
           "Status check for a filed complaint: 510-747-6845."
+        ]
+      }
+    },
+    {
+      "id": "palo-alto-barking_dog",
+      "jurisdictionId": "palo-alto",
+      "jurisdiction": "Palo Alto, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Time it: ten minutes of barking inside any fifteen",
+      "summary": "Palo Alto Municipal Code §6.20.140 makes it unlawful to keep or permit a 'barking dog' on any premises. A barking dog is one that barks, bays, cries, howls or makes any other noise continuously and incessantly for ten minutes within a fifteen-minute period, to the disturbance of any other person. Whether to cite is up to the Animal Control Officer, and the City may also use nuisance-abatement procedures. The rule sets no dB threshold; the ten-in-fifteen clock is the test. The noise chapter adds a second angle: any animal on residential property that pushes the noise more than 6 dB above the six-minute local ambient at the property plane violates §9.10.030. Palo Alto Police Animal Control Officers serve Palo Alto, Los Altos and Los Altos Hills and handle animal-related code violations; the City's page gives dispatch at 650-329-2413 and animalcontrol@paloalto.gov.",
+      "captureInstruction": "For each incident record the dog's address, the date, the exact start and stop times, and whether the barking filled ten minutes inside a fifteen-minute window with no real break; the app's level trace shows the run. Note that nobody was provoking the dog. A phone dB estimate does not decide this rule; the clock does. If you also ran the six-minute quiet baseline, the jump over ambient supports the noise-chapter angle.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Palo Alto Police dispatch at 650-329-2413, the number the Animal Control Division page gives, with the dog's exact address and your name and number. For the written pattern, email animalcontrol@paloalto.gov with the dated log and PDF.",
+      "actionLabel": "Call Animal Control (Dispatch)",
+      "actionUri": "tel:6503292413",
+      "secondaryActionLabel": "Email Animal Control",
+      "secondaryActionUri": "mailto:animalcontrol@paloalto.gov",
+      "officialSourceLabel": "Palo Alto Municipal Code §§6.20.140, 9.10.030",
+      "officialSourceUrl": "https://codelibrary.amlegal.com/codes/paloalto/latest/paloalto_ca/0-0-0-65661",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "palo-alto-party_music",
+      "jurisdictionId": "palo-alto",
+      "jurisdiction": "Palo Alto, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 6 dB over the quiet at the property line, any hour",
+      "summary": "Palo Alto Municipal Code Chapter 9.10 has no fixed dB cap for homes; it works from the local ambient. No person may produce, by any machine, animal or device on residential property, a noise level more than 6 dB above the local ambient at any point outside the property plane (§9.10.030(a)). On multifamily property the same 6 dB test applies three feet from any wall, floor or ceiling inside another unit with doors and windows closed (§9.10.030(b)). Commercial and industrial property gets 8 dB over ambient; public property 15 dB at 25 feet. 'Local ambient' is the lowest level repeating itself over six minutes on a precision meter, source silent, same spot, never below 40 dBA outdoors or 30 dBA indoors (§9.10.020(d)). The rule runs all day and night; the only relief is the general daytime exception, which exempts a source that stays at or below 70 dBA at 25 feet between 8:00 a.m. and 8:00 p.m. Monday–Friday, 9:00 a.m.–8:00 p.m. Saturday, and 10:00 a.m.–6:00 p.m. on Sundays and holidays (§9.10.060(a)). Approved sound performances up to 80 dBA at 50 feet are exempt. Most violations of the chapter are misdemeanors (§9.10.080); the City Manager may issue an exception permit of up to six months.",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure the noise, then run the six-minute quiet baseline at the same spot with the source silent, so the difference against the 6 dB rule is visible. The City measures with a precision meter at a point outside the property plane; a phone estimate is supporting evidence, not that measurement. By day, note whether the source was still loud 25 feet away, which is where the daytime exception is judged.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Palo Alto Police non-emergency at 650-329-2413; the Code Enforcement page sends all public nuisance complaints there. For a repeat address, email Code Enforcement at Planning.Enforcement@paloalto.gov with the dates, the quiet baseline and the PDF. Palo Alto 311 has no noise category.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6503292413",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Planning.Enforcement@paloalto.gov",
+      "officialSourceLabel": "Palo Alto Municipal Code §§9.10.020–9.10.030, 9.10.060(a)",
+      "officialSourceUrl": "https://codelibrary.amlegal.com/codes/paloalto/latest/paloalto_ca/0-0-0-66179",
+      "verifiedDate": "2026-09-30",
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "Palo Alto Code 9.10.020(d) measures the local ambient as the lowest level repeating itself over six minutes on a precision meter, slow response, A-weighted, source silent, same spot, never below 40 dBA outdoors or 30 dBA for the indoor multifamily rule. Noise from residential property more than 6 dB above that ambient at the property plane is a violation at any hour (9.10.030).",
+        "sourceCitation": "Palo Alto Municipal Code 9.10.020(d) and 9.10.030(a)",
+        "sourceQuote": "\"Local ambient\" means the lowest sound level repeating itself during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The minimum sound level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this chapter, in no case shall the local ambient be considered or determined to be less than: (1) Thirty dBA for interior noise in Section 9.10.030(b); (2) Forty dBA in all other sections. … No person shall produce, suffer or allow to be produced by any machine, animal or device, or any combination of same, on residential property, a noise level more than six dB above the local ambient at any point outside of the property plane"
+      }
+    },
+    {
+      "id": "palo-alto-construction",
+      "jurisdictionId": "palo-alto",
+      "jurisdiction": "Palo Alto, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Weekdays 8 to 6, Saturday 9 to 6, never Sundays or holidays; 110 dBA cap",
+      "summary": "Palo Alto Municipal Code §9.10.060(b) and (c) prohibit permitted construction, alteration, demolition and repair on Sundays and holidays, and on all other days except 8:00 a.m.–6:00 p.m. Monday through Friday and 9:00 a.m.–6:00 p.m. on Saturday; the required job-site sign says the hours include any and all deliveries. Inside those hours no single piece of equipment may exceed 110 dBA at 25 feet, and the project may not exceed 110 dBA at any point outside its property plane. Holidays are New Year's Day, Martin Luther King Day, Washington's Birthday, Memorial Day, Independence Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving and Christmas (§9.10.020(k)). City, contractor and utility equipment follows the same hours. Violating the construction rule is a misdemeanor punishable by up to six months in jail and a $1,000 fine, as the sign itself warns; the City Manager may issue an exception permit of up to six months (§9.10.070). Outside the construction hours any machine on residential property is also held to 6 dB over the local ambient at the property plane (§9.10.030).",
+      "captureInstruction": "Record the site address, the day, whether it was a listed holiday, and the exact start and stop times outside the hours; deliveries count. Note whether the required black-on-white hours sign is posted at the entrances. For work inside the hours, a reading near 25 feet from one machine or at the property line maps onto the 110 dBA limits. The City measures with a precision meter, so a phone estimate is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call Palo Alto Police non-emergency at 650-329-2413. For a project that keeps doing it, email Code Enforcement at Planning.Enforcement@paloalto.gov with the dated log and PDF; the City's Code Enforcement page names that mailbox and routes nuisance calls to Police.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6503292413",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Planning.Enforcement@paloalto.gov",
+      "officialSourceLabel": "Palo Alto Municipal Code §9.10.060(b)–(c)",
+      "officialSourceUrl": "https://codelibrary.amlegal.com/codes/paloalto/latest/paloalto_ca/0-0-0-66179",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "18:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Palo Alto Code 9.10.060(b)-(c): permitted construction, including deliveries, is allowed only inside these hours; none on Sundays or the ten listed holidays. Inside the hours the cap is 110 dBA per machine at 25 feet and at the property plane.",
+        "sourceCitation": "Palo Alto Municipal Code 9.10.060(c)",
+        "sourceQuote": "Construction, alteration, demolition or repair activities conducted in a residential zone, authorized by valid city building permit, shall be prohibited on Sundays and holidays and is prohibited on all other days except during the hours of eight a.m. and six p.m. Monday through Friday, nine a.m. and six p.m. on Saturday, provided that the construction, demolition or repair activities during those hours meet the following standards: (1) No individual piece of equipment shall produce a noise level exceeding one hundred ten dBA at a distance of twenty-five feet. … (2) The noise level at any point outside of the property plane of the project shall not exceed one hundred ten dBA."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 110,
+        "comparisonContext": "Palo Alto Code 9.10.060(b)-(c): during construction hours, no machine may exceed 110 dBA at 25 feet and the project may not exceed 110 dBA at any point outside its property plane. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "south-san-francisco-barking_dog",
+      "jurisdictionId": "south-san-francisco",
+      "jurisdiction": "South San Francisco, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document habitual barking; the county animal rule applies in the City",
+      "summary": "South San Francisco Municipal Code §9.04.060(c) (adopted from the San Mateo County Animal Control Ordinance, Ord. 1652, January 2024) makes it unlawful for an owner to suffer or permit an animal to habitually bark or meow or otherwise act to disturb the peace of any citizen or to be a public nuisance. The rule sets no minute count or dB threshold; 'habitually' is the test, so a dated run of incidents is the evidence. The noise chapter adds a second angle: any source that pushes the level on a neighbor's property past the Table (60 dB by day, 50 at night in single-family zones, for more than 30 minutes in an hour) violates §8.32.030, and 'any loud, unnecessary or unusual noise which disturbs the peace or quiet of any neighborhood' is banned outright (§8.32.030(d)). Animal control in the City is the County program run by the Peninsula Humane Society; the City's Engage SSF 'Animal Issue' category only points to County Animal Control, and PHS says barking complaints go to the local police.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how many minutes in the hour it ran, and how it disturbed your peace. Note the dates you spoke to or left a note for the owner. A pattern across days shows 'habitually'; the level trace shows the minutes for the noise-chapter angle. A phone dB estimate is supporting evidence, not the City's Type 1 meter reading.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call South San Francisco Police non-emergency at 650-877-8900 with the dog's exact address and your name and number, and ask that the complaint be logged. For the written pattern, file a Police Request (Non-Emergency) in Engage SSF with the log and PDF. County Animal Control & Licensing is 650-573-3726 and PHS/SPCA is 650-340-8200 for other animal matters.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6508778900",
+      "secondaryActionLabel": "File Engage SSF Police Request",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/pjqrRrbqWEvUPoXTQYvBCN2E/report/category/15155/location",
+      "officialSourceLabel": "South San Francisco Municipal Code §§9.04.060(c), 8.32.030",
+      "officialSourceUrl": "https://ecode360.com/43445070",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Engage SSF (SeeClickFix)",
+        "access": "Sign in or continue as a guest. Check \"anonymous\" if you do not want your name shown.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Police Request (Non-Emergency)"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Please provide your first and last name (optional)",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Please provide a phone number, in case additional information is needed",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "Requests are public records; the anonymous box hides your name on the page."
+        ]
+      }
+    },
+    {
+      "id": "south-san-francisco-party_music",
+      "jurisdictionId": "south-san-francisco",
+      "jurisdiction": "South San Francisco, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 60/50 table by the minute, measured on the neighbor's property",
+      "summary": "South San Francisco Municipal Code Chapter 8.32 sets noise standards measured on the receiving property. In single-family and duplex zones the standard is 60 dB from 7:00 a.m. to 10:00 p.m. and 50 dB from 10:00 p.m. to 7:00 a.m.; multifamily and downtown zones use 60 by day and 55 at night; commercial 65/60; industrial 70 any time (Table 8.32.030). A source violates the chapter if it exceeds the standard for more than 30 cumulative minutes in any hour, the standard plus 5 dB for more than 15 minutes, plus 10 dB for more than 5 minutes, plus 15 dB for more than 1 minute, or plus 20 dB for any time at all (§8.32.030(a)). A higher measured ambient replaces the standard (§8.32.030(b)). On multifamily property, noise more than 10 dB above the allowed level inside another unit, three feet from a wall with doors and windows closed, is a separate violation (§8.32.040). Independently, any wilful loud, unnecessary or unusual noise that disturbs the peace of a neighborhood is unlawful (§8.32.030(d)). Amplified sound in public needs a Police Chief permit and is limited to 8:00 a.m.–8:00 p.m. (§§8.32.070–080). Exceeding the limits is prima facie evidence of a violation and a public nuisance (§8.32.090); each day is a misdemeanor (§8.32.110). By day, complaints go to the Engineering Division or Code Enforcement Officer; when that office is closed, to the Police (§8.32.100).",
+      "captureInstruction": "Record the source address, exact times, how many minutes in the hour it ran, and how it disturbed you; the level trace shows the minutes above each step. Measure at your property, then run the six-minute quiet baseline with the source silent, so the ambient comparison is visible. The City measures with a Type 1 meter five feet above ground on the receiving property, so a phone estimate is supporting evidence, not that measurement. After 10:00 p.m. the night column applies.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call South San Francisco Police non-emergency at 650-877-8900; the code sends after-hours noise complaints to the Police. For a repeat address, file a Police Request (Non-Emergency) in Engage SSF with the dates, the quiet baseline and the PDF; on weekdays 8–5 the Engineering Division and Code Enforcement Officer investigate.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6508778900",
+      "secondaryActionLabel": "File Engage SSF Police Request",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/pjqrRrbqWEvUPoXTQYvBCN2E/report/category/15155/location",
+      "officialSourceLabel": "South San Francisco Municipal Code §§8.32.020–8.32.040, 8.32.090–8.32.110",
+      "officialSourceUrl": "https://ecode360.com/43443928",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "South San Francisco Code 8.32.030 Table: single-family and duplex zones 60 dB by day (7 a.m.–10 p.m.) and 50 dB at night, measured on the receiving property, for more than 30 minutes in an hour; +5 dB for 15 minutes, +10 for 5 minutes, +15 for 1 minute, and never +20; multifamily zones use 55 at night; a higher ambient replaces the standard. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "South San Francisco Code 8.32.020 measures the ambient as the average level over six minutes on a Type 1 precision meter, slow response, A-weighted, five feet above the ground, with the source silent at the same spot. If the ambient is above the Table standard, the ambient becomes the standard and the minute steps stack on it in 5 dB increments (8.32.030(b)).",
+        "sourceCitation": "South San Francisco Municipal Code 8.32.020 and 8.32.030(b)",
+        "sourceQuote": "\"Ambient\" means the average sound level during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The sound level shall be determined with the noise source at issue silent and in the same location as the measurement of the noise level of the source or sources at issue. … If the measured ambient level for any area is higher than the standard set in Table 8.32.030, then the ambient shall be the base noise level standard for purposes of subsection (a)(1) of this section."
+      },
+      "formGuide": {
+        "portal": "Engage SSF (SeeClickFix)",
+        "access": "Sign in or continue as a guest. Check \"anonymous\" if you do not want your name shown.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Police Request (Non-Emergency)"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Please provide your first and last name (optional)",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Please provide a phone number, in case additional information is needed",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "Requests are public records; the anonymous box hides your name on the page."
+        ]
+      }
+    },
+    {
+      "id": "south-san-francisco-construction",
+      "jurisdictionId": "south-san-francisco",
+      "jurisdiction": "South San Francisco, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the permit hours and the 90 dB limits; off hours fall to the table",
+      "summary": "South San Francisco Municipal Code §8.32.050(d) allows permitted construction, alteration, repair and landscape maintenance on weekdays 8:00 a.m.–8:00 p.m., Saturdays 9:00 a.m.–8:00 p.m., and Sundays and holidays 10:00 a.m.–6:00 p.m., or other hours the permit authorizes, if it meets at least one of two limits: no single piece of equipment over 90 dB at 25 feet (measured outside any structure or trailer as near 25 feet as possible), or no more than 90 dB at any point outside the project's property plane. Outside those hours the ordinary receiving-property table applies instead of a ban: 60 dB by day and 50 dB at night in single-family zones for more than 30 minutes in an hour, stepping up to a never-exceed plus 20 (§8.32.030). Utility and street repairs, street sweepers, garbage service and emergencies are exempt (§8.32.050(c)), and the City Manager may issue an exception permit of up to six months (§8.32.060). Exceeding a limit is prima facie evidence of a violation; each day is a misdemeanor. By day, complaints go to the Engineering Division or Code Enforcement Officer; after hours, to the Police (§8.32.100).",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, the exact start and stop times, and the equipment running. Inside the permit window, a reading near 25 feet from one machine and a reading at the property line map onto the two 90 dB limits; outside the window, the table's minutes count. The City measures with a Type 1 meter on the receiving property, so a phone estimate is supporting evidence, not that measurement. Note the permit number from the posted card if visible.",
+      "requiredIncidentCount": null,
+      "nextAction": "Early mornings, evenings and weekends call South San Francisco Police non-emergency at 650-877-8900. For a project that keeps doing it, file a Possible Code Violation in Engage SSF with the dated log, the level trace and the PDF; on weekdays 8–5 the Engineering Division and Code Enforcement Officer investigate.",
+      "actionLabel": "File Engage SSF Code Violation",
+      "actionUri": "https://seeclickfix.com/web_portal/pjqrRrbqWEvUPoXTQYvBCN2E/report/category/14935/location",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:6508778900",
+      "officialSourceLabel": "South San Francisco Municipal Code §§8.32.030, 8.32.050(d), 8.32.100",
+      "officialSourceUrl": "https://ecode360.com/43443928",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "10:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "South San Francisco Code 8.32.050(d): inside these hours permitted construction may run up to 90 dB per machine at 25 feet or 90 dB at the property plane; outside them the receiving-property table of 8.32.030 applies instead of a ban. Holidays use the Sunday hours; a permit can set other hours.",
+        "sourceCitation": "South San Francisco Municipal Code 8.32.050(d)",
+        "sourceQuote": "Construction, alteration, repair or landscape maintenance activities which are authorized by a valid city permit shall be allowed on weekdays between the hours of eight a.m. and eight p.m., on Saturdays between the hours of nine a.m. and eight p.m., and on Sundays and holidays between the hours of ten a.m. and six p.m., or at such other hours as may be authorized by the permit, if they meet at least one of the following noise limitations: (1) No individual piece of equipment shall produce a noise level exceeding ninety dB at a distance of twenty-five feet. … (2) The noise level at any point outside of the property plane of the project shall not exceed ninety dB."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 90,
+        "comparisonContext": "South San Francisco Code 8.32.050(d): during permit hours, project noise may not exceed 90 dB at any point outside the property plane (or 90 dB per machine at 25 feet); outside permit hours the 60/50 receiving-property table applies. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Engage SSF (SeeClickFix)",
+        "access": "Sign in or continue as a guest. Check \"anonymous\" if you do not want your name shown.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Possible Code Violation"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Please provide your first and last name (optional)",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Please provide a phone number, in case additional information is needed",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "Requests are public records; the anonymous box hides your name on the page."
+        ]
+      }
+    },
+    {
+      "id": "san-bruno-barking_dog",
+      "jurisdictionId": "san-bruno",
+      "jurisdiction": "San Bruno, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document habitual barking; the county animal rule applies in the City",
+      "summary": "San Bruno Municipal Code §6.36.010 (Ord. 1948, April 2024) adopts the San Mateo County Animal Control Ordinance, Chapter 6.04, as City law. County Code §6.04.060(c) makes it unlawful for an owner to suffer or permit an animal to habitually bark or meow or otherwise act to disturb the peace of any citizen or to be a public nuisance. The rule sets no minute count or dB threshold; 'habitually' is the test, so a dated run of incidents is the evidence. The City's own noise chapter adds a second angle: any noise more than 10 dB over the ambient base at the property plane is prima facie evidence of a violation (§6.16.050), and any wilful loud, unnecessary or unusual noise that disturbs the peace of a neighborhood is unlawful outright (§6.16.170). Animal control in the City is the County program run by the Peninsula Humane Society, which sends barking complaints to the local police; the City's FAQ says noise complaints are handled by San Bruno Police patrol officers.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how long it went on, and how it disturbed your peace. Note the dates you spoke to or left a note for the owner. A pattern across days shows 'habitually'. A phone dB estimate is supporting evidence for the 10-dB-over-ambient angle, not the City's meter reading.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call San Bruno Police non-emergency at 650-616-7100 while the barking is going on, so an officer can hear it and log it. For the written pattern, email police@sanbruno.ca.gov, the address the City directory lists for the Police Department, with the dated log and PDF. County Animal Control & Licensing is 650-573-3726 and PHS/SPCA 650-340-8200 for other animal matters. San Bruno Responds has no animal or noise category.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6506167100",
+      "secondaryActionLabel": "Email Police Department",
+      "secondaryActionUri": "mailto:police@sanbruno.ca.gov",
+      "officialSourceLabel": "San Bruno Municipal Code §6.36.010; San Mateo County Code §6.04.060(c)",
+      "officialSourceUrl": "https://ecode360.com/44250732",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "san-bruno-party_music",
+      "jurisdictionId": "san-bruno",
+      "jurisdiction": "San Bruno, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 10 dB over the ambient base at the line; 60 by day, 45 at night is the floor",
+      "summary": "San Bruno Municipal Code Chapter 6.16 (rewritten by Ord. 1897, 2021) works from an 'ambient base level'. In residential zones the base is never lower than 60 decibels from 7:00 a.m. to 10:00 p.m. and 45 decibels from 10:00 p.m. to 7:00 a.m.; where the real ambient is higher, the real ambient is the base (§6.16.030). Any noise more than 10 decibels above that base at the property plane, at a residential zone line, on another property, or inside an adjoining apartment or condo unit is prima facie evidence of a violation; between 7:00 a.m. and 10:00 p.m. the base may be exceeded by up to 20 decibels for no more than 30 minutes in any 24 hours (§6.16.050). Machinery, pumps, fans and air conditioners have the same 10-dB rule (§6.16.060). Independently, any wilful loud, unnecessary or unusual noise that disturbs the peace or quiet of a neighborhood is unlawful, judged by twelve factors including level, time, duration, recurrence and closeness to bedrooms (§6.16.170). A violation that annoys people of normal sensitiveness is a public nuisance (§6.16.040). Measurements are A-weighted, slow response (§6.16.020). Amplified sound in public needs a registration with the City Manager and runs 8:00 a.m.–8:00 p.m. (§§6.16.100–160).",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure the noise at your spot, then the quiet with the source silent, so the 10-dB jump over the ambient base is visible; at night the floor is 45, so anything past 55 at the line is over the base plus 10. The City measures A-weighted on slow response at the property plane; a phone estimate is supporting evidence, not that measurement. By day, note how long it ran, because the 20-dB allowance is capped at 30 minutes.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call San Bruno Police non-emergency at 650-616-7100 while it is happening; the City's FAQ says noise complaints are handled by patrol officers and should be called in while the noise is active so they can respond and document it. For a repeat address, email police@sanbruno.ca.gov with the dates, the quiet baseline and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6506167100",
+      "secondaryActionLabel": "Email Police Department",
+      "secondaryActionUri": "mailto:police@sanbruno.ca.gov",
+      "officialSourceLabel": "San Bruno Municipal Code §§6.16.030–6.16.060, 6.16.170",
+      "officialSourceUrl": "https://ecode360.com/44250594",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 55,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "San Bruno Code 6.16.030 and 6.16.050: the residential ambient base is at least 60 dB by day (7 a.m.–10 p.m.) and 45 dB at night, and more than 10 dB over the base at the property plane is prima facie evidence of a violation, so 70 by day and 55 at night is the lowest line; by day a 20-dB excess is allowed for up to 30 minutes in 24 hours, and a louder real ambient raises the base. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "22:00",
+            "end": "07:00"
+          }
+        ],
+        "context": "San Bruno Code 6.16.030 and 6.16.050: from 10:00 p.m. to 7:00 a.m. the residential ambient base drops to 45 decibels and the 30-minute, 20-decibel daytime allowance does not apply.",
+        "sourceCitation": "San Bruno Municipal Code 6.16.030 and 6.16.050",
+        "sourceQuote": "Residential zone, time ten p.m. to seven a.m., forty-five decibels; seven a.m. to ten p.m., sixty decibels. … Any noise level exceeding the zone ambient base level at the property plane of any property … by more than ten decibels shall be deemed to be prima facie evidence of a violation of the provisions of this chapter. However, during the period of seven a.m. to ten p.m. the ambient base level may be exceeded by twenty decibels for a period not to exceed thirty minutes during any twenty-four-hour period."
+      }
+    },
+    {
+      "id": "san-bruno-construction",
+      "jurisdictionId": "san-bruno",
+      "jurisdiction": "San Bruno, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check 85 dB at 100 feet by day and 60 at night; no hours ban, a permit can lift it",
+      "summary": "San Bruno Municipal Code §6.16.070 sets construction noise by the clock rather than by a ban. Within any residential zone, or within 500 feet of one, no person may run construction equipment or do outside construction or repair work, including pile drivers, power shovels, pneumatic hammers, derricks and hoists, that exceeds 85 decibels measured at 100 feet between 7:00 a.m. and 10:00 p.m., or 60 decibels at 100 feet between 10:00 p.m. and 7:00 a.m., unless the Director of Public Works has issued a permit for it. Emergency work needs no permit. Separately, machinery of any kind may not push the level at the property plane more than 10 decibels over the ambient base (§6.16.060, base 60 by day and 45 at night), and any wilful loud, unnecessary or unusual noise that disturbs a neighborhood is unlawful (§6.16.170). Measurements are A-weighted, slow response. A violation that annoys people of normal sensitiveness is a public nuisance (§6.16.040).",
+      "captureInstruction": "Record the site address, the date, the exact start and stop times, and the equipment running, and note whether the site is in or within 500 feet of homes. The City's numbers are taken 100 feet from the source: a reading at about 100 feet maps onto the 85 or 60 dB line, and a reading at your property line onto the 10-over-ambient rule. A phone estimate is supporting evidence, not the City's slow-response meter reading. Ask whether the contractor holds a Public Works night-work permit.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on now, especially at night, call San Bruno Police non-emergency at 650-616-7100. For a project that keeps doing it, email police@sanbruno.ca.gov with the dated log, the level trace and the PDF; the Code Enforcement Division can be reached at 650-616-7087 during business hours.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:6506167100",
+      "secondaryActionLabel": "Email Police Department",
+      "secondaryActionUri": "mailto:police@sanbruno.ca.gov",
+      "officialSourceLabel": "San Bruno Municipal Code §§6.16.060, 6.16.070",
+      "officialSourceUrl": "https://ecode360.com/44250594",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 85,
+        "nighttimeMaximumDb": 60,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "San Bruno Code 6.16.070: construction in or within 500 feet of a residential zone may not exceed 85 decibels at 100 feet from 7 a.m. to 10 p.m., or 60 decibels at 100 feet from 10 p.m. to 7 a.m., without a Public Works permit. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "union-city-barking_dog",
+      "jurisdictionId": "union-city",
+      "jurisdiction": "Union City, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document prolonged or repeated barking and the owner's notice",
+      "summary": "Union City Municipal Code §8.28.010 says no person keeping a dog, bird, fowl or other animal may knowingly permit it, by barking or other noise, to disturb any other person's peace and quiet. A watchdog is allowed only if the keeper quiets it at once whenever it barks and never leaves it unattended where its barking, if prolonged or repeated an undue number of times, disturbs anyone. Once the owner has been told, orally or in writing, that the animal disturbed someone, failing to take whatever steps are needed to stop it is a separate violation (§8.28.020). The rule sets no minute or dB threshold. The Community Noise chapter adds a second angle: any animal on residential property that pushes the level more than 10 dBA above the six-minute local ambient at the property plane violates §9.40.041. The Police Department's Animal Control unit says it responds to animal noise complaints, starts with an educational brochure to the owner, and may refer a continuing case to the Alameda County District Attorney.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how long it went on, how many times that day, and how it disturbed your peace and quiet. Note the date the owner was told, by you or by Animal Control, because a repeat after that notice is its own violation (§8.28.020). A phone dB estimate does not decide the animal rule; it supports the 10-over-ambient angle only.",
+      "requiredIncidentCount": null,
+      "nextAction": "File the Police Department's online Animal Complaint form with Request Type 'barking dog', the dog's address, the dates and times, and your phone number if you want a call back; allow 24 hours. For barking happening now, call Union City Police at 510-471-1365. Keep the log going after the brochure goes to the owner.",
+      "actionLabel": "File Animal Complaint Online",
+      "actionUri": "https://fs27.formsite.com/unioncity/kabuhbnnb3/index.html",
+      "secondaryActionLabel": "Call Police",
+      "secondaryActionUri": "tel:5104711365",
+      "officialSourceLabel": "Union City Municipal Code §§8.28.010–8.28.020, 9.40.041",
+      "officialSourceUrl": "https://ecode360.com/43309636",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Union City Police Animal Control complaint form (Formsite)",
+        "access": "No sign-in needed. You may stay anonymous, but a call back needs at least your phone number.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Address",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Your own address."
+          },
+          {
+            "label": "Phone Number",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email address",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Reason",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Request Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "barking dog"
+          },
+          {
+            "label": "Location",
+            "required": false,
+            "answer": "ADDRESS",
+            "hint": "The address where the dog is kept."
+          },
+          {
+            "label": "Repetitive issue?",
+            "required": false,
+            "answer": "DAY",
+            "hint": "Say how often: which days and times."
+          },
+          {
+            "label": "Desired outcome?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "e.g. \"Owner warned and the barking stopped.\""
+          },
+          {
+            "label": "Additional info",
+            "required": false,
+            "answer": "IMPACT"
+          },
+          {
+            "label": "Date",
+            "required": false,
+            "answer": "DATE",
+            "maxLength": 10
+          }
+        ],
+        "tips": [
+          "The Police Animal Control unit says allow 24 hours for a response."
+        ]
+      }
+    },
+    {
+      "id": "union-city-party_music",
+      "jurisdictionId": "union-city",
+      "jurisdiction": "Union City, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 10 dBA over the quiet at the property line, any hour",
+      "summary": "Union City Municipal Code Chapter 9.40 (Community Noise) has no fixed dB cap for homes; it works from the local ambient. No person may produce, by any machine, animal or device on residential property, a noise level more than 10 dBA above the local ambient at any point outside the property plane (§9.40.041). 'Local ambient' is the lowest level repeating itself over six minutes on a precision meter, source silent, same spot, never below 40 dBA (§9.40.030). Commercial and industrial property gets 12 dBA over ambient; public property 15 dBA at 25 feet. Independently, producing any 'noise disturbance' is prohibited (§9.40.040): sound that endangers or injures the health of people or animals or persons of normal sensitivity, judged by eleven factors including level over ambient, closeness to bedrooms, people affected, day and time, duration, musical content and recurrence. The only relief is the daytime exception: a source that stays at or below 70 dBA at 25 feet is exempt from the limits between 8:00 a.m. and 8:00 p.m., or 10:00 a.m.–6:00 p.m. on Sundays and holidays (§9.40.050). Approved sound performances up to 80 dBA at 50 feet are exempt. Measurements are A-weighted, slow response, on the affected property with the microphone 3–5 feet up and 4 feet from reflecting surfaces, after calibration (§§9.40.080–081). Complaints may be filed with the Planning Department, which measures and, where the impact is significant, pursues noise reduction (§§9.40.070–073).",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure the noise at your property, then run the six-minute quiet baseline with the source silent, so the 10 dBA jump is visible. The City measures on the affected property with a calibrated meter on slow response; a phone estimate is supporting evidence, not that measurement. By day, note whether the source was still loud 25 feet away, which is where the daytime exception is judged.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Union City Police at 510-471-1365 so an officer can hear it. For a repeat address, email the Neighborhood Preservation Program at neighborhoodpreservation@unioncity.org, the address the City's Report a Problem page gives for Municipal Code nuisance complaints, with the exact address, the dates, the quiet baseline and the PDF; the office phone is 510-675-5315.",
+      "actionLabel": "Call Police",
+      "actionUri": "tel:5104711365",
+      "secondaryActionLabel": "Email Neighborhood Preservation",
+      "secondaryActionUri": "mailto:neighborhoodpreservation@unioncity.org",
+      "officialSourceLabel": "Union City Municipal Code §§9.40.030–9.40.050, 9.40.070",
+      "officialSourceUrl": "https://ecode360.com/43309875",
+      "verifiedDate": "2026-09-30",
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "Union City Code 9.40.030 measures the local ambient as the lowest level repeating itself over six minutes on a precision meter, slow response, A-weighted, source silent, same spot, never below 40 dBA. Noise from residential property more than 10 dBA above that ambient at the property plane is a violation (9.40.041).",
+        "sourceCitation": "Union City Municipal Code 9.40.030 and 9.40.041",
+        "sourceQuote": "\"Local ambient\" or \"local ambient noise level\" means the lowest sound level repeating itself at a certain location during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The local ambient noise level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this chapter, in no case shall the local ambient be considered or determined to be less than 40 dBA. … No person shall produce, suffer or allow to be produced by any machine, animal or device, or any combination of same, on residential property, a noise level more than 10 dBA above the local ambient at any point outside of the property plane."
+      }
+    },
+    {
+      "id": "union-city-construction",
+      "jurisdictionId": "union-city",
+      "jurisdiction": "Union City, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the permit hours and the 83/86 dBA limits; off hours fall to ambient plus 10",
+      "summary": "Union City Municipal Code §9.40.053 lets permitted construction, alteration or repair work exceed the normal limits only between 8:00 a.m. and 8:00 p.m. on weekdays, 9:00 a.m.–8:00 p.m. on Saturdays, and 10:00 a.m.–6:00 p.m. on Sundays and holidays, and only if it meets at least one of two limits: no single piece of equipment over 83 dBA at 25 feet (measured outside any structure as near 25 feet as possible), or no more than 86 dBA at any point outside the project's property plane. Outside those hours the ordinary rules apply instead of a ban: on residential property, no more than 10 dBA above the six-minute local ambient at the property plane (§9.40.041), and no 'noise disturbance' at all (§9.40.040). Emergencies are exempt (§9.40.052), and the City may issue an exception permit (§9.40.060). Measurements are A-weighted, slow response, on the affected property (§§9.40.080–081). Complaints go to the Planning Department (§9.40.070).",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, the exact start and stop times, and the equipment running. Inside the permit window, a reading near 25 feet from one machine and a reading at the property line map onto the two limits; outside the window, measure at your property and run the six-minute quiet baseline so the 10 dBA jump is visible. The City measures with a calibrated meter on slow response, so a phone estimate is supporting evidence, not that measurement. Note the permit number from the posted card if visible.",
+      "requiredIncidentCount": null,
+      "nextAction": "Early mornings, evenings and Sundays call Union City Police at 510-471-1365. For a project that keeps doing it, email the Neighborhood Preservation Program at neighborhoodpreservation@unioncity.org with the exact address, the dated log, the level trace and the PDF; its phone is 510-675-5315.",
+      "actionLabel": "Call Police",
+      "actionUri": "tel:5104711365",
+      "secondaryActionLabel": "Email Neighborhood Preservation",
+      "secondaryActionUri": "mailto:neighborhoodpreservation@unioncity.org",
+      "officialSourceLabel": "Union City Municipal Code §§9.40.041, 9.40.053",
+      "officialSourceUrl": "https://ecode360.com/43309875",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "10:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Union City Code 9.40.053: inside these hours permitted construction may run up to 83 dBA per machine at 25 feet or 86 dBA at the property plane; outside them the ordinary ambient-plus-10 limit applies instead of a ban. Holidays use the Sunday hours.",
+        "sourceCitation": "Union City Municipal Code 9.40.053",
+        "sourceQuote": "Notwithstanding any other provision of this chapter, between the hours of eight a.m. and eight p.m. daily except Saturday, when the exemption herein shall apply between nine a.m. and eight p.m. and Sundays and holidays, when the exemption herein shall apply between ten a.m. and six p.m., construction, alteration, or repair activities which are authorized by valid City permit shall be allowed if they meet at least one of the following noise limitations: A. No individual piece of equipment shall produce a noise level exceeding eighty-three dBA at a distance of twenty-five feet. … B. The noise level at any point outside of the property plane of the project shall not exceed eighty-six dBA."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 86,
+        "comparisonContext": "Union City Code 9.40.053: during permit hours, project noise may not exceed 86 dBA at any point outside the property plane (or 83 dBA per machine at 25 feet); outside permit hours the limit is the local ambient plus 10 dBA. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "Union City Code 9.40.030 measures the local ambient as the lowest level repeating itself over six minutes on a precision meter, slow response, A-weighted, source silent, same spot, never below 40 dBA. Noise from residential property more than 10 dBA above that ambient at the property plane is a violation (9.40.041).",
+        "sourceCitation": "Union City Municipal Code 9.40.030 and 9.40.041",
+        "sourceQuote": "\"Local ambient\" or \"local ambient noise level\" means the lowest sound level repeating itself at a certain location during a six-minute period as measured with a precision sound level meter, using slow response and \"A\" weighting. The local ambient noise level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this chapter, in no case shall the local ambient be considered or determined to be less than 40 dBA. … No person shall produce, suffer or allow to be produced by any machine, animal or device, or any combination of same, on residential property, a noise level more than 10 dBA above the local ambient at any point outside of the property plane."
+      }
+    },
+    {
+      "id": "walnut-creek-barking_dog",
+      "jurisdictionId": "walnut-creek",
+      "jurisdiction": "Walnut Creek, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Time it for the County rule; the City adds a 50-foot test",
+      "summary": "Walnut Creek Municipal Code §5-1.01 adopts the Contra Costa County Animal Control Ordinance (Division 416) and hands enforcement to County Animal Services. Under the County's noisy-animal rule an animal violates when its noise disturbs a person and lasts at least 30 continuous minutes, or at least 60 intermittent minutes in a 24-hour period, at any hour; the County sets no dB threshold, sends a warning letter with a 15-day compliance period, and takes a second report as a notarized affidavit within 60 days. The City's penalty section (§5-1.02) lets Animal Services issue administrative fines of $100, $200 and $500 for a barking-dog violation on an officer's own observation or on a complaint signed under penalty of perjury. The City's own noise article adds a second angle: keeping an animal that causes frequent or continuous noise disturbing anyone nearby is a loud noise (§4-6.203(e)), and animal noise plainly audible 50 feet from the source is prima facie evidence of a violation, punishable as an infraction or misdemeanor (§4-6.207).",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, whether it ran 30 minutes straight or added up to 60 minutes in the day, and how it disturbed you; the level trace shows the run. Step 50 feet from the source and note whether it was plainly audible there for the City's test. Keep the log through the County's 15-day compliance period, because the second report is a sworn affidavit. A phone dB estimate does not decide either rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "File the County's Noisy Animal Complaint Form with the dog's address, your details and the dates; the City's SeeClickFix 'Animal Issues' box sends barking to Contra Costa Animal Services at 925-608-8400. If the 15-day compliance period passes without change, use the County's sworn-affidavit step within 60 days. For barking that is happening now, Walnut Creek Police dispatch is 925-935-6400.",
+      "actionLabel": "Open County Complaint Form",
+      "actionUri": "https://www.contracosta.ca.gov/FormCenter/Animal-Services-17/Noisy-Animal-Complaint-Form-218",
+      "secondaryActionLabel": "Call County Animal Services",
+      "secondaryActionUri": "tel:9256088400",
+      "officialSourceLabel": "Walnut Creek Municipal Code §§5-1.01–5-1.02, 4-6.203(e); Contra Costa County Code Division 416",
+      "officialSourceUrl": "https://ecode360.com/48488675",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
+    },
+    {
+      "id": "walnut-creek-party_music",
+      "jurisdictionId": "walnut-creek",
+      "jurisdiction": "Walnut Creek, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 50-foot test, any hour; the City has no music decibel number",
+      "summary": "Walnut Creek Municipal Code Chapter 4-6, Article 2 bans any loud, excessive or unreasonable noise in the City (§4-6.204). 'Loud noise' is excessive or unreasonable noise, sound or vibration that endangers the comfort, repose, health, peace or safety of others, judged by the hour, place, nature and circumstances (§4-6.202). Playing a radio, instrument, phonograph or other sound device so as to disturb the peace, quiet and comfort of people on a street or in or near a home or business is a listed loud noise, and music plainly audible 50 feet from its source is prima facie evidence of a violation, at any time of day (§4-6.203(a)). Yelling, shouting, hooting, whistling or singing on a public street with intent to disturb is listed too (§4-6.203(d)). Commercial loudspeakers need a Police Chief permit and are held to 50 feet and daytime hours (§4-6.203(b)). The article sets no dB limit. A violation is a misdemeanor or an infraction (§4-6.207) and a public nuisance the Police Chief or Community Development Director may abate (§4-6.208). Emergencies are exempt (§4-6.205).",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, and how it disturbed you. Step 50 feet from the source and note whether the music was plainly audible there; that is the code's own test and it applies day or night. The code names no meter or dB number, so a phone estimate is supporting evidence of how loud it was.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Walnut Creek Police non-emergency at 925-943-5844, the number the City's own SeeClickFix noise form gives for loud music, vehicles and parties; dispatch is 925-935-6400. For a repeat address, email Code Enforcement at CodeEnforcement@walnut-creek.org, the mailbox on the City's Report a Code Violation page, with the dates and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:9259435844",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:CodeEnforcement@walnut-creek.org",
+      "officialSourceLabel": "Walnut Creek Municipal Code §§4-6.202–4-6.204, 4-6.207",
+      "officialSourceUrl": "https://ecode360.com/48488571",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "walnut-creek-construction",
+      "jurisdictionId": "walnut-creek",
+      "jurisdiction": "Walnut Creek, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Permit work weekdays 7 to 6 only; power tools 8 to 7, weekends 9 to 7",
+      "summary": "Walnut Creek Municipal Code §4-6.203(f) makes it a loud noise to erect, construct, demolish, alter or repair any building that needs a permit, or to excavate under a grading permit, other than between 7:00 a.m. and 6:00 p.m. on weekdays that are not holidays, or during the precise hours written into the individual permit. The Chief of Code Enforcement (for buildings) or the City Engineer (for grading) may allow other hours when public health and safety are not impaired and someone would otherwise suffer loss, and may issue three-day emergency permits. Public utilities need no permit but must minimize noise. Separately, noise-creating landscaping and home maintenance equipment, including hammers, blowers, trimmers, mowers, chainsaws, power fans and any engine, may run only 8:00 a.m.–7:00 p.m. on weekdays and 9:00 a.m.–7:00 p.m. on weekends and holidays (§4-6.203(g)); businesses in the core area and schools may start at 7:00 a.m. on weekdays (§4-6.205). Gas-powered leaf blowers have their own chapter (5-9). The article sets no dB limit. A violation is a misdemeanor or infraction and a public nuisance (§§4-6.207–208).",
+      "captureInstruction": "Record the site address, the day, whether it was a holiday, and the exact start and stop times outside 7:00 a.m.–6:00 p.m. weekdays; note the kind of work and whether the permit card shows special hours. For power tools and maintenance equipment the window is 8–7 weekdays and 9–7 weekends. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB. A phone dB estimate does not decide this hours-only rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "For a project that keeps working outside the hours, file a Noise report in Walnut Creek's SeeClickFix; the City's Code Enforcement page lists construction-related noise among the violations it takes there, and the form's own box asks for the source, length and time of construction noise outside 7 a.m.–6 p.m. Monday–Friday. Code Enforcement is 925-943-5863 and CodeEnforcement@walnut-creek.org. For work going on right now at night, Police dispatch is 925-935-6400.",
+      "actionLabel": "File SeeClickFix Noise Report",
+      "actionUri": "https://seeclickfix.com/web_portal/QbpShk5dbjoeunvwJeNMRp9j/report/category/50437/location",
+      "secondaryActionLabel": "Call Police Dispatch",
+      "secondaryActionUri": "tel:9259356400",
+      "officialSourceLabel": "Walnut Creek Municipal Code §4-6.203(f)–(g)",
+      "officialSourceUrl": "https://ecode360.com/48488571",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Walnut Creek Code 4-6.203(f): permit-required construction and grading is allowed only 7:00 a.m.–6:00 p.m. on weekdays that are not holidays, or the hours written into the permit; none on weekends. Maintenance equipment has its own 8–7 weekday and 9–7 weekend window (4-6.203(g)). The rule is hours-only, with no dB limit.",
+        "sourceCitation": "Walnut Creek Municipal Code 4-6.203(f)",
+        "sourceQuote": "Construction or Repair of Buildings. The erection, construction, demolition, alteration or repair of any building, structure or residence that requires a permit, or the excavation of any earth, fill, streets or highways that requires a grading permit, other than between the hours of 7:00 a.m. and 6:00 p.m. on weekdays which are not holidays, or those precise hours of operation enumerated in individual building and grading permits."
+      },
+      "formGuide": {
+        "portal": "Walnut Creek SeeClickFix",
+        "access": "Sign in or continue as a guest. Code Enforcement keeps your identity confidential.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "For noise relating to construction activity outside the allowed hours of 7 a.m. to 6 p.m. Monday-Friday, please briefly describe the source of the noise, length…",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "hint": "The form asks for source, length and time; the copied text has all three."
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "The form itself says loud music, vehicles and parties go to Police non-emergency 925-943-5844, not to this box."
+        ]
+      }
+    },
+    {
+      "id": "pittsburg-barking_dog",
+      "jurisdictionId": "pittsburg",
+      "jurisdiction": "Pittsburg, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Time it for the County; the City bans frequent or long-continued animal noise",
+      "summary": "Pittsburg Municipal Code §9.44.010(F) lists keeping any animal or bird that, by causing frequent or long-continued noise, disturbs the comfort or repose of anyone in the vicinity as an unreasonably loud, disturbing noise; the section sets no minute or dB threshold. Pittsburg Police have no animal services division and use Contra Costa County Animal Services, whose noisy-animal rule counts noise that disturbs a person and lasts at least 30 continuous minutes, or at least 60 intermittent minutes in a 24-hour period, at any hour; the County sends a warning letter with a 15-day compliance period and takes a second report as a notarized affidavit within 60 days. The City's Animal Services page gives County Animal Services' 24-hour number and, for animal emergencies, County dispatch.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, whether it ran 30 minutes straight or added up to 60 minutes in the day, how often it recurs, and how it disturbed you; the level trace shows the run. Keep the log through the County's 15-day compliance period, because the second report is a sworn affidavit. A phone dB estimate does not decide either rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "File the County's Noisy Animal Complaint Form with the dog's address, your details and the dates; Contra Costa Animal Services is 925-608-8400 around the clock. If the 15-day compliance period passes without change, use the County's sworn-affidavit step within 60 days. For barking happening now that needs an officer, Pittsburg Police non-emergency dispatch is 925-646-2441.",
+      "actionLabel": "Open County Complaint Form",
+      "actionUri": "https://www.contracosta.ca.gov/FormCenter/Animal-Services-17/Noisy-Animal-Complaint-Form-218",
+      "secondaryActionLabel": "Call County Animal Services",
+      "secondaryActionUri": "tel:9256088400",
+      "officialSourceLabel": "Pittsburg Municipal Code §9.44.010(F); Contra Costa County Noisy Animal Ordinance",
+      "officialSourceUrl": "https://ecode360.com/47557828",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
+    },
+    {
+      "id": "pittsburg-party_music",
+      "jurisdictionId": "pittsburg",
+      "jurisdiction": "Pittsburg, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 50-foot test after 11:30 p.m.; louder than needed is banned any time",
+      "summary": "Pittsburg Municipal Code §9.44.010 makes it unlawful to make or continue any noise that unreasonably annoys, disturbs, injures or endangers the comfort, repose, health, peace or safety of others in the City, and lists specific acts. Playing a radio, TV, jukebox, instrument or other sound device so as to disturb the peace, quiet and comfort of neighbors, or at any time louder than needed for the listeners in the room or vehicle, is one (§9.44.010(B)). Between 11:30 p.m. and 7:00 a.m., playing such a device so it is plainly audible 50 feet from the building or vehicle is prima facie evidence of a violation. Yelling, shouting, hooting, whistling or singing on a street, particularly 11:30 p.m.–7:00 a.m., or in a home or hall in those hours so it disturbs neighbors, is also listed, with the same 50-foot test for the indoor case (§9.44.010(D)–(E)). The chapter sets no dB limit and cross-references Penal Code §415 for disturbing the peace.",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, and how it disturbed you. After 11:30 p.m., step 50 feet from the building or vehicle and note whether the music or shouting was plainly audible there; that is the code's own test. The code names no meter or dB number, so a phone estimate is supporting evidence of how loud it was.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Pittsburg Police non-emergency dispatch at 925-646-2441 so an officer can hear it. For a repeat address, email Code Enforcement at ce@pittsburgca.gov, the mailbox on the City's Code Enforcement page, with the dates and the PDF; its phone is 925-252-4010.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:9256462441",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:ce@pittsburgca.gov",
+      "officialSourceLabel": "Pittsburg Municipal Code §9.44.010(B), (D)–(E)",
+      "officialSourceUrl": "https://ecode360.com/47557828",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "23:30",
+            "end": "07:00"
+          }
+        ],
+        "context": "Pittsburg Code 9.44.010(B): between 11:30 p.m. and 7:00 a.m., music plainly audible 50 feet from the building or vehicle is prima facie evidence of a violation. At other hours the disturb-the-neighbors and louder-than-needed tests still apply.",
+        "sourceCitation": "Pittsburg Municipal Code 9.44.010(B)",
+        "sourceQuote": "The operation of any such set, instrument, phonograph, machine or device between the hours of 11:30 p.m. and 7:00 a.m. in such a manner as to be plainly audible at a distance of 50 feet from the building, structure or vehicle in which it is located shall be prima facie evidence of a violation of this section"
+      }
+    },
+    {
+      "id": "pittsburg-construction",
+      "jurisdictionId": "pittsburg",
+      "jurisdiction": "Pittsburg, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Loud equipment is banned 10 p.m. to 7 a.m.; no dB number",
+      "summary": "Pittsburg Municipal Code §9.44.010(J) lists operating any pile driver, steam shovel, pneumatic hammer, derrick, steam or electric hoist, or other appliance attended by loud or unusual noise between 10:00 p.m. and 7:00 a.m. as an unreasonably loud, disturbing noise, except in an emergency. Blowers, power fans and internal combustion engines must be muffled (§9.44.010(K)). Outside those hours the general rule still applies: any noise that unreasonably annoys, disturbs, injures or endangers the comfort, repose, health, peace or safety of others is unlawful. The chapter sets no dB limit; a building permit's own conditions may set tighter hours, and the City's Code Enforcement Division takes public nuisance complaints.",
+      "captureInstruction": "Record the site address, the date, the exact start and stop times between 10:00 p.m. and 7:00 a.m., and what equipment was running. Note the permit number from the posted card if visible, since permit conditions may set daytime hours the code itself does not. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB. A phone dB estimate does not decide this rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "For loud equipment running at night, call Pittsburg Police non-emergency dispatch at 925-646-2441. For a project that keeps doing it, email Code Enforcement at ce@pittsburgca.gov with the dated log and PDF; the Division's phone is 925-252-4010 and its online request portal is user.govoutreach.com/pittsburg.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:9256462441",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:ce@pittsburgca.gov",
+      "officialSourceLabel": "Pittsburg Municipal Code §9.44.010(J)–(K)",
+      "officialSourceUrl": "https://ecode360.com/47557828",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "07:00",
+            "end": "22:00"
+          }
+        ],
+        "context": "Pittsburg Code 9.44.010(J): pile drivers, pneumatic hammers, hoists and other loud construction appliances may not run between 10:00 p.m. and 7:00 a.m. except in an emergency; the general unreasonable-noise rule applies at all hours. The rule is hours-only, with no dB limit.",
+        "sourceCitation": "Pittsburg Municipal Code 9.44.010(J)",
+        "sourceQuote": "Pile Drivers, Hammers and Similar Equipment. The operation between the hours of 10:00 p.m. and 7:00 a.m. of any pile driver, steam shovel, pneumatic hammer, derrick, steam or electric hoist or other appliance, the use of which is attended by loud or unusual noise, except in case of emergency"
+      }
+    },
+    {
+      "id": "cupertino-barking_dog",
+      "jurisdictionId": "cupertino",
+      "jurisdiction": "Cupertino, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document habitual animal noise; the City's 60/50 table also applies to animals",
+      "summary": "Cupertino Municipal Code §10.48.061 makes it unlawful and a nuisance to keep on any lot any animal, including fowl, which by any sound or cry habitually disturbs the peace and comfort of any person in the reasonable and comfortable enjoyment of life or property. The rule sets no minute or dB threshold; 'habitually' is the test. The animal title separately bars letting an animal interfere with the reasonable and comfortable use of property by barking, howling, baying or making any other noise (Title 8). The noise chapter's table also reaches animal noise: a source on residential property may not exceed 60 dBA by day or 50 dBA at night measured at the complaint site on the receiving property (§10.48.040), where daytime is 7:00 a.m.–8:00 p.m. on weekdays and 9:00 a.m.–6:00 p.m. on weekends. Any violation of the chapter is a misdemeanor (§10.48.070), enforced by the City's Noise Control Officer, which is the Code Enforcement Division. Cupertino 311 has an Animal Concern request with a 'Barking Dog' issue type.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how often it recurs, and how it disturbed you. A pattern across days shows 'habitually'. A phone estimate at your property is supporting evidence for the 60/50 table, not the City's meter reading on the receiving property.",
+      "requiredIncidentCount": null,
+      "nextAction": "File an Animal Concern in Cupertino 311 with Issue Type 'Barking Dog', the dog's exact address and the dated log; the City reads requests Monday–Friday. Code Enforcement is 408-777-3182 and code@cupertino.gov. For barking happening now that needs a deputy, the Santa Clara County Sheriff's non-emergency line is 408-299-2311.",
+      "actionLabel": "File Cupertino 311 Animal Concern",
+      "actionUri": "https://cupertinoca.citysourced.com/servicerequests/create",
+      "secondaryActionLabel": "Call Code Enforcement",
+      "secondaryActionUri": "tel:4087773182",
+      "officialSourceLabel": "Cupertino Municipal Code §§10.48.040, 10.48.061",
+      "officialSourceUrl": "https://codehub.gridics.com/us/ca/cupertino#/a8af46ed-a49e-4810-95c3-04f3c9fca249",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Cupertino 311 (CitySourced)",
+        "access": "Free account needed to submit; the form asks you to log in at the end.",
+        "steps": [
+          "Select a Report Type",
+          "Where is the request?",
+          "Tell us more details",
+          "Add photos, videos, or audio",
+          "Privacy and Submit"
+        ],
+        "fields": [
+          {
+            "label": "Select a Report Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Animal Concern"
+          },
+          {
+            "label": "Where is the request?",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then confirm the pin."
+          },
+          {
+            "label": "Issue Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Barking Dog"
+          },
+          {
+            "label": "Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add photos, videos, or audio",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Keep this request private",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Yes"
+          },
+          {
+            "label": "Log in: Email, First Name, Last Name, Telephone",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Submitting asks you to log in or create a free account."
+          }
+        ],
+        "tips": [
+          "Requests are read Monday–Friday. After hours, Santa Clara County Communications 408-299-2507 can call out staff."
+        ]
+      }
+    },
+    {
+      "id": "cupertino-party_music",
+      "jurisdictionId": "cupertino",
+      "jurisdiction": "Cupertino, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 60 dBA by day and 50 at night at the neighbor's property",
+      "summary": "Cupertino Municipal Code §10.48.040 caps noise from a residential source at 60 dBA in the daytime and 50 dBA at night, measured at the complaint site on the receiving property; nonresidential sources get 65/55. Daytime is 7:00 a.m.–8:00 p.m. on weekdays and 9:00 a.m.–6:00 p.m. on weekends; everything else is nighttime (§10.48.010). Brief daytime incidents are allowed only if the minutes of excess plus the dBA over the limit add up to no more than 20 in any two-hour period, for example 5 dBA over for 15 minutes or 10 dBA over for 10 minutes (§10.48.050). Inside a multifamily building, noise may not exceed 45 dBA five feet from a wall in the next unit by day or 40 dBA from 10:00 p.m. to 7:00 a.m. (§10.48.054). Independently, no person may unreasonably make or continue a 'noise disturbance', meaning sound that annoys or disturbs a reasonable person of normal sensitivities or endangers health or property (§§10.48.010, 10.48.060). The Social Host chapter (10.05) separately holds hosts responsible for loud parties. Sound level is the maximum continuous or repeated peak on an A-weighted meter. A verbal or written warning comes first unless the person is plainly not trying to comply; then citation, complaint or abatement (§10.48.011). Any violation is a misdemeanor (§10.48.070).",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure at your property, because the City's number is taken at the complaint site on the receiving property; a phone estimate is supporting evidence, not the meter reading. By day, note how many minutes it ran over, because the minutes-plus-dBA rule caps brief incidents at 20 in two hours. After 8:00 p.m. on weekdays or 6:00 p.m. on weekends, the 50 dBA night line applies.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call the Santa Clara County Sheriff's non-emergency line at 408-299-2311, which the City's Code Enforcement page gives for a deputy response. For a repeat address, file a Noise Disturbance in Cupertino 311 with the exact address, your name and email or phone (anonymous noise complaints are not investigated), the dates and the PDF; it is private to Code Enforcement.",
+      "actionLabel": "Call Sheriff Non-Emergency",
+      "actionUri": "tel:4082992311",
+      "secondaryActionLabel": "File Cupertino 311 Noise Disturbance",
+      "secondaryActionUri": "https://cupertinoca.citysourced.com/servicerequests/create",
+      "officialSourceLabel": "Cupertino Municipal Code §§10.48.010, 10.48.040, 10.48.050, 10.48.060",
+      "officialSourceUrl": "https://codehub.gridics.com/us/ca/cupertino#/a8af46ed-a49e-4810-95c3-04f3c9fca249",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 20,
+        "comparisonContext": "Cupertino Code 10.48.040: a residential source may not exceed 60 dBA by day or 50 dBA at night at the complaint site on the receiving property; daytime is 7 a.m.–8 p.m. on weekdays and 9 a.m.–6 p.m. on weekends, so on weekends the 50 line starts at 6 p.m. Brief daytime excesses are capped by minutes plus dBA over, at 20 in two hours. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Cupertino 311 (CitySourced)",
+        "access": "Free account needed to submit; the form asks you to log in at the end.",
+        "steps": [
+          "Select a Report Type",
+          "Where is the request?",
+          "Tell us more details",
+          "Add photos, videos, or audio",
+          "Privacy and Submit"
+        ],
+        "fields": [
+          {
+            "label": "Select a Report Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise Disturbance"
+          },
+          {
+            "label": "Where is the request?",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then confirm the pin."
+          },
+          {
+            "label": "Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add photos, videos, or audio",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Keep this request private",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Yes"
+          },
+          {
+            "label": "Log in: Email, First Name, Last Name, Telephone",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Submitting asks you to log in or create a free account."
+          }
+        ],
+        "tips": [
+          "Give your name and email or phone; the form says anonymous noise complaints are not investigated.",
+          "Requests are read Monday–Friday. After hours, Santa Clara County Communications 408-299-2507 can call out staff."
+        ]
+      }
+    },
+    {
+      "id": "cupertino-construction",
+      "jurisdictionId": "cupertino",
+      "jurisdiction": "Cupertino, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Daytime only, never holidays; 87 dBA at 25 feet or 80 at the neighbor's",
+      "summary": "Cupertino Municipal Code §10.48.053 lets grading, construction and demolition exceed the 60/50 table only during daytime hours, which are 7:00 a.m.–8:00 p.m. on weekdays and 9:00 a.m.–6:00 p.m. on weekends, and only with good mufflers and one of two limits met: no single device over 87 dBA at 25 feet, or no more than 80 dBA on any nearby property. Grading, street construction, demolition and underground utility work within 750 feet of a residential area is banned on Saturdays, Sundays, holidays and at night. Other construction is banned on holidays (New Year's, Memorial Day, Independence Day, Labor Day, Thanksgiving, Christmas) and at night unless it meets the night table (50 dBA at a home). A homeowner using domestic tools on their own single home may work on holidays 9:00 a.m.–6:00 p.m. (§10.48.029). Construction helicopters are limited to 9:00 a.m.–6:30 p.m. weekdays. Landscape equipment runs 8:00 a.m.–8:00 p.m. weekdays and 9:00 a.m.–6:00 p.m. weekends and holidays, and only certified leaf blowers are allowed (§10.48.051). Emergencies are exempt and the Noise Control Officer may grant special exceptions after notifying neighbors (§§10.48.030–031). Any violation is a misdemeanor (§10.48.070).",
+      "captureInstruction": "Record the site address, the day, whether it was a holiday, and the exact start and stop times outside the daytime window; note the kind of work, since grading, demolition and street or utility work within 750 feet of homes is banned every weekend. Inside the window, a reading near 25 feet from one machine and a reading at your property map onto the 87 and 80 dBA limits. The City measures at the complaint site with an A-weighted meter; a phone estimate is supporting evidence, not that measurement.",
+      "requiredIncidentCount": null,
+      "nextAction": "File a Construction request in Cupertino 311 with the Issue Type (residential or commercial), the exact address, the dated log, the level trace and the PDF; Code Enforcement is the Noise Control Officer and reads requests Monday–Friday (408-777-3182, code@cupertino.gov). For work going on at night or on a holiday, the Santa Clara County Sheriff's non-emergency line is 408-299-2311.",
+      "actionLabel": "File Cupertino 311 Construction Report",
+      "actionUri": "https://cupertinoca.citysourced.com/servicerequests/create",
+      "secondaryActionLabel": "Call Sheriff Non-Emergency",
+      "secondaryActionUri": "tel:4082992311",
+      "officialSourceLabel": "Cupertino Municipal Code §§10.48.010, 10.48.029, 10.48.053",
+      "officialSourceUrl": "https://codehub.gridics.com/us/ca/cupertino#/a8af46ed-a49e-4810-95c3-04f3c9fca249",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "18:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Cupertino Code 10.48.053 with the daytime definition in 10.48.010: construction may exceed the table only in daytime, 7 a.m.–8 p.m. weekdays and 9 a.m.–6 p.m. weekends, at 87 dBA per machine at 25 feet or 80 dBA at a nearby property; none on the six holidays; grading, demolition and street or utility work within 750 feet of homes is banned all weekend. At night the 50 dBA table applies.",
+        "sourceCitation": "Cupertino Municipal Code 10.48.053",
+        "sourceQuote": "Grading, construction and demolition activities shall be allowed to exceed the noise limits of Section 10.48.040 during daytime hours; provided, that the equipment utilized has high-quality noise muffler and abatement devices installed and in good condition, and the activity meets one of the following two criteria: No individual device produces a noise level more than eighty-seven dBA at a distance of twenty-five feet (7.5 meters); or The noise level on any nearby property does not exceed eighty dBA. Notwithstanding Section 10.48.053A, it is a violation of this chapter to engage in any grading, street construction, demolition or underground utility work within seven hundred fifty feet of a residential area on Saturdays, Sundays and holidays, and during the nighttime period, except as provided in Section 10.48.030. Construction, other than street construction, is prohibited on holidays, except as provided in Sections 10.48.029 and 10.48.030. Construction, other than street construction, is prohibited during nighttime periods unless it meets the nighttime standards of Section 10.48.040."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 80,
+        "comparisonContext": "Cupertino Code 10.48.053: during daytime, construction may not exceed 80 dBA on any nearby property (or 87 dBA per machine at 25 feet); at night the 50 dBA residential table applies. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Cupertino 311 (CitySourced)",
+        "access": "Free account needed to submit; the form asks you to log in at the end.",
+        "steps": [
+          "Select a Report Type",
+          "Where is the request?",
+          "Tell us more details",
+          "Add photos, videos, or audio",
+          "Privacy and Submit"
+        ],
+        "fields": [
+          {
+            "label": "Select a Report Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Construction"
+          },
+          {
+            "label": "Where is the request?",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then confirm the pin."
+          },
+          {
+            "label": "Issue Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Residential Construction"
+          },
+          {
+            "label": "Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Add photos, videos, or audio",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Keep this request private",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Yes"
+          },
+          {
+            "label": "Log in: Email, First Name, Last Name, Telephone",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Submitting asks you to log in or create a free account."
+          }
+        ],
+        "tips": [
+          "Pick Commercial Construction if the site is a business.",
+          "Requests are read Monday–Friday. After hours, Santa Clara County Communications 408-299-2507 can call out staff."
         ]
       }
     }
