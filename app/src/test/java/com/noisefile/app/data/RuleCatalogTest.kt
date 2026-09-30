@@ -1,6 +1,8 @@
 package com.noisefile.app.data
 
 import com.noisefile.app.model.FormAnswer
+import com.noisefile.app.model.DayGroup
+import com.noisefile.app.model.HoursKind
 import com.noisefile.app.model.NoiseType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -57,8 +59,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(15, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(45, catalog.rules.size)
+        assertEquals(18, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(54, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -73,6 +75,7 @@ class RuleCatalogTest {
                 "berkeley-party_music", "hayward-party_music", "santa-clara-party_music",
                 "sunnyvale-party_music", "san-mateo-party_music", "richmond-party_music",
                 "hayward-construction", "san-mateo-construction",
+                "san-leandro-party_music", "redwood-city-construction",
             ),
             limitedRules,
         )
@@ -680,5 +683,52 @@ class RuleCatalogTest {
             ),
             emails,
         )
+    }
+
+    @Test
+    fun sanLeandroLivermoreAndRedwoodCityReadTheirCurrentCodes() {
+        val catalog = catalog()
+
+        val slAnimal = catalog.retrieve("san-leandro", NoiseType.BARKING_DOG)!!
+        val slNoise = catalog.retrieve("san-leandro", NoiseType.PARTY_MUSIC)!!
+        val slBuild = catalog.retrieve("san-leandro", NoiseType.CONSTRUCTION)!!
+        assertTrue(slAnimal.summary.contains("frequent or long-continued"))
+        assertEquals("tel:5105770449", slAnimal.actionUri)
+        assertEquals(65.0, slNoise.meterLimit?.daytimeMaximumDb)
+        assertEquals(55.0, slNoise.meterLimit?.nighttimeMaximumDb)
+        assertTrue(slNoise.summary.contains("plainly audible 50 feet"))
+        assertTrue(slNoise.summary.contains("more than 5 decibels"))
+        assertEquals("tel:5105772740", slNoise.actionUri)
+        assertNull(slBuild.meterLimit)
+        assertTrue(slBuild.summary.contains("No such construction is permitted on Federal holidays"))
+        assertEquals("mailto:BuildingInspections@SanLeandro.org", slBuild.secondaryActionUri)
+        assertTrue(complaintDestination(slBuild).isEmail)
+
+        val livAnimal = catalog.retrieve("livermore", NoiseType.BARKING_DOG)!!
+        val livNoise = catalog.retrieve("livermore", NoiseType.PARTY_MUSIC)!!
+        val livBuild = catalog.retrieve("livermore", NoiseType.CONSTRUCTION)!!
+        assertTrue(livAnimal.summary.contains("co-sign a citation"))
+        assertEquals("tel:9253714987", livAnimal.actionUri)
+        assertTrue(livNoise.summary.contains("plainly audible 75 feet"))
+        assertEquals(HoursKind.QUIET, livNoise.hoursRule?.kind)
+        assertEquals(HoursKind.ALLOWED, livBuild.hoursRule?.kind)
+        assertTrue(livBuild.hoursRule!!.windows.none { it.days == DayGroup.SUNDAY })
+        assertTrue(livBuild.summary.contains("never on Sunday"))
+        assertTrue(complaintDestination(livBuild).isOnlineForm)
+        assertEquals("Noise complaints (Contact LPD at 925-371-4987 after 5pm)", livBuild.formGuide?.fields?.first { it.answer == FormAnswer.FIXED }?.fixedText)
+
+        val rwcAnimal = catalog.retrieve("redwood-city", NoiseType.BARKING_DOG)!!
+        val rwcNoise = catalog.retrieve("redwood-city", NoiseType.PARTY_MUSIC)!!
+        val rwcBuild = catalog.retrieve("redwood-city", NoiseType.CONSTRUCTION)!!
+        assertTrue(rwcAnimal.summary.contains("6.04.060(c)"))
+        assertEquals("tel:6507807118", rwcAnimal.actionUri)
+        assertEquals(6, rwcNoise.ambientRecipe?.minutes)
+        assertTrue(rwcNoise.summary.contains("three or more people"))
+        assertNull(rwcNoise.meterLimit)
+        assertEquals(110.0, rwcBuild.meterLimit?.fixedMaximumDb)
+        assertTrue(rwcBuild.summary.contains("ten continuous minutes"))
+        assertTrue(complaintDestination(rwcBuild).isOnlineForm)
+        assertEquals("Construction Noise", rwcBuild.formGuide?.fields?.get(1)?.fixedText)
+        assertEquals("Residential Noise", rwcNoise.formGuide?.fields?.get(1)?.fixedText)
     }
 }

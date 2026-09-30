@@ -130,8 +130,8 @@ class MeterRuleAssessmentTest {
     @Test
     fun everyRuleProducesAnExplicitResultAndReason() {
         val catalog = catalog()
-        assertEquals(15, catalog.jurisdictions.size)
-        assertEquals(45, catalog.rules.size)
+        assertEquals(18, catalog.jurisdictions.size)
+        assertEquals(54, catalog.rules.size)
 
         val assessments = catalog.rules.map { rule ->
             val assessment = assessMeterReading(
