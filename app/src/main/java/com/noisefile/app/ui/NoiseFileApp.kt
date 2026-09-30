@@ -188,6 +188,10 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     var showCityPicker by remember { mutableStateOf(false) }
+    val unlock by viewModel.unlock.collectAsStateWithLifecycle()
+    var showUnlock by remember { mutableStateOf(false) }
+    // A locked door opens the unlock card instead; the tap is not remembered, the person taps again after buying.
+    val gated: (() -> Unit) -> Unit = { action -> if (viewModel.isUnlocked()) action() else showUnlock = true }
     var pendingStage by remember { mutableStateOf(CaptureStage.NOISE) }
     var pendingCalibrationMode by remember { mutableStateOf(CalibrationMode.SMOKE_ALARM) }
     val startStage = { stage: CaptureStage ->
@@ -268,6 +272,9 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onClearCalibration = viewModel::clearCalibration,
             onShareNeighbor = { shareNeighborInvite(context, viewModel.selectedRule()) },
             onOpenUri = { openUri(context, it) },
+            unlocked = viewModel.isUnlocked(),
+            unlockPriceText = unlock.priceText,
+            onShowUnlock = { showUnlock = true },
             nav = nav,
         )
 
@@ -301,7 +308,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onDropClip = viewModel::dropDraftClip,
                 onSaveAndPrepare = {
                     viewModel.saveIncident()?.let { incident ->
-                        prepareComplaint(context, incident, rule, viewModel::showFormGuide)
+                        gated { prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
                     }
                 },
                 onDiscard = viewModel::showHome,
@@ -316,10 +323,10 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             fileFor = viewModel::incidentFile,
             nav = nav,
             onExport = { shareHistory(context, state.incidents) },
-            onExportPdf = { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) },
+            onExportPdf = { gated { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) } },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
-                prepareComplaint(context, incident, rule, viewModel::showFormGuide)
+                gated { prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
             },
         )
 
@@ -338,6 +345,17 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 )
             }
         }
+    }
+
+    if (showUnlock) {
+        UnlockDialog(
+            state = unlock,
+            onBuy = viewModel::buyUnlock,
+            onRestore = viewModel::restoreUnlock,
+            onClose = { showUnlock = false; viewModel.clearUnlockMessage() },
+        )
+        // The card closes itself the moment Play says the purchase is done.
+        LaunchedEffect(unlock.unlocked) { if (unlock.unlocked) showUnlock = false }
     }
 
     if (state.selfTestRunning || state.selfTestResult != null) {

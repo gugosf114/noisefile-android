@@ -1,8 +1,14 @@
 # NoiseFile
 
-### ▶ [Download NoiseFile — 2026-09-30 (v0.23.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
+### ▶ [Download NoiseFile — 2026-09-30 (v0.24.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
 
 **Know the rule. Log the noise. File the complaint.**
+
+Free: pick your city, read the rule, record, save incidents, see the city
+check. One-time unlock ($7.99 on Google Play, product `noisefile_unlock`):
+the sealed PDF report, the city form guide, and the filled-in city email.
+Play Billing talks to the Play Store app; the app still has no internet
+permission and no account.
 
 NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the

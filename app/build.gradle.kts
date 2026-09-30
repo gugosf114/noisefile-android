@@ -25,8 +25,8 @@ android {
         applicationId = "com.wimlabs.noisefile"
         minSdk = 26
         targetSdk = 36
-        versionCode = 41
-        versionName = "0.23.0"
+        versionCode = 42
+        versionName = "0.24.0"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -69,6 +69,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {
@@ -108,6 +109,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // The one paid thing: a single one-time product. Play Billing talks to the Play Store app, not the internet.
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
