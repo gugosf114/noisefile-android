@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-29.1",
+  "catalogVersion": "2026-09-29.2",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -110,7 +110,65 @@
       "secondaryActionUri": "https://www.sanjoseca.gov/home/showpublisheddocument/10831/636664003494630000",
       "officialSourceLabel": "San Jose Municipal Code § 7.40.010",
       "officialSourceUrl": "https://library.municode.com/ca/san_jose/codes/code_of_ordinances?nodeId=TIT7ANCACO_CH7.40PRAC",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "formGuide": {
+        "portal": "San Jose Animal Care nuisance petition (PDF)",
+        "access": "Call first for a case number. Then print.",
+        "steps": [
+          "Case number from Animal Care",
+          "Petition page",
+          "Incident log (at least 5)",
+          "Sign",
+          "Mail the original"
+        ],
+        "fields": [
+          {
+            "label": "Case number",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Animal Care gives it over the phone."
+          },
+          {
+            "label": "Location of the animal",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Owner name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "If known."
+          },
+          {
+            "label": "Description of the noise",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Log: Date / Day",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Log: Start / End / Duration",
+            "required": true,
+            "answer": "TIME_RANGE"
+          },
+          {
+            "label": "Log: How it obstructed use of your property",
+            "required": true,
+            "answer": "IMPACT"
+          },
+          {
+            "label": "Your name, phone, home address, signature",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Mail the original to San Jose Animal Care & Services, 2750 Monterey Road, San Jose, CA 95111."
+        ]
+      }
     },
     {
       "id": "san-jose-party-music",
@@ -157,6 +215,62 @@
         "context": "Municipal Code 20.100.450 for work within 500 feet of a residential unit, unless a development permit or planning approval expressly allows other hours, so check the posted permit. The section names no holidays; the app cannot tell a holiday from a workday.",
         "sourceCitation": "Municipal Code 20.100.450(A)",
         "sourceQuote": "Unless otherwise expressly allowed in a development permit or other planning approval, no applicant or agent of an applicant shall suffer or allow any construction activity on a site located within 500 feet of a residential unit before 7:00 a.m. or after 7:00 p.m., Monday through Friday, or at any time on weekends."
+      },
+      "formGuide": {
+        "portal": "San Jose Code Enforcement complaint form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Address",
+          "Violations",
+          "Your contact",
+          "Submit"
+        ],
+        "fields": [
+          {
+            "label": "Street Number and Name",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "The noise address; the other boxes take its city, state, zip, country."
+          },
+          {
+            "label": "Unit Number",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Construction on private property outside of permitted hours",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Check it"
+          },
+          {
+            "label": "Provide information and description of the problem",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 500
+          },
+          {
+            "label": "First Name / Last Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Street Number and Name, City, State, ZIP, Country",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Your own address."
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ]
       }
     },
     {
@@ -191,7 +305,52 @@
       "officialSourceUrl": "https://codelibrary.amlegal.com/codes/antioch/latest/antioch_ca/0-0-0-23275",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://seeclickfix.com/web_portal/community/report/category/112204",
-      "secondaryActionLabel": "File Private Property Report"
+      "secondaryActionLabel": "File Private Property Report",
+      "formGuide": {
+        "portal": "Antioch SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Private Property"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
+      }
     },
     {
       "id": "antioch-construction",
@@ -232,6 +391,51 @@
         "context": "Code 5-17.04 for heavy construction equipment within 300 feet of occupied dwellings; farther away, weekdays run 7:00 AM-6:00 PM. Holidays use the weekend hours.",
         "sourceCitation": "Code 5-17.04(B)",
         "sourceQuote": "It shall be unlawful for any person to operate heavy construction equipment during the hours specified below: (1) On weekdays prior to 7:00 a.m. and after 6:00 p.m. (2) On weekdays within 300 feet of occupied dwelling space, prior to 8:00 a.m. and after 5:00 p.m. (3) On weekends and holidays, prior to 9:00 a.m. and after 5:00 p.m. …"
+      },
+      "formGuide": {
+        "portal": "Antioch SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Private Property"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
       }
     },
     {
@@ -279,6 +483,62 @@
         "context": "Municipal Code 8.18.020: persistent raucous or nerve-racking noise in these hours is a nuisance. The noise still has to disturb peace, comfort or health, so the clock alone is not the violation.",
         "sourceCitation": "Municipal Code 8.18.020",
         "sourceQuote": "The persistent maintenance or emission of any noise or sound produced by human, animal or mechanical means, between the hours of nine p.m. and seven a.m. next ensuing, which, by reason of its raucous or nerve-racking nature, shall disturb the peace or comfort, or be injurious to the health of any person shall constitute a nuisance."
+      },
+      "formGuide": {
+        "portal": "Oakland Accela enforcement portal",
+        "access": "No sign-in needed. Accept the terms, then pick \"Zoning Complaint\".",
+        "steps": [
+          "Property Info",
+          "Complainant Info",
+          "Detailed Info",
+          "Photos",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Street No. / Street Name / Street Type",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Fill the boxes, press Search, and the Parcel Number fills itself. It is required."
+          },
+          {
+            "label": "Complainant: Contact First / Contact Last",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 70,
+            "hint": "Press \"Add New\" to open the contact boxes."
+          },
+          {
+            "label": "Complainant: Address Line 1, City, State, Zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Complainant: Primary Phone Number / E-mail",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Detailed Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Other",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Check it",
+            "hint": "The list has no noise box."
+          },
+          {
+            "label": "Photos",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "The contact page appears twice: Tenant/Occupant, then Neighbor. Fill one."
+        ]
       }
     },
     {
@@ -320,6 +580,62 @@
         "context": "Planning Code 17.120.050(G)(2): weekday work 7:00 PM-7:00 AM and weekend or federal-holiday work 8:00 PM-9:00 AM is nighttime work held to the stricter nighttime noise levels, not banned outright. A permit or condition of approval can set other hours. On a holiday use the Sunday hours.",
         "sourceCitation": "Planning Code 17.120.050(G)(2)",
         "sourceQuote": "The nighttime noise level received by any land use and produced by any construction or demolition activity between weekday hours of seven (7) p.m. and seven (7) a.m. or between eight (8) p.m. and nine (9) a.m. on weekends and federal holidays shall not exceed the applicable nighttime noise level standards outlined in this Section."
+      },
+      "formGuide": {
+        "portal": "Oakland Accela enforcement portal",
+        "access": "No sign-in needed. Accept the terms, then pick \"Zoning Complaint\".",
+        "steps": [
+          "Property Info",
+          "Complainant Info",
+          "Detailed Info",
+          "Photos",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Street No. / Street Name / Street Type",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Fill the boxes, press Search, and the Parcel Number fills itself. It is required."
+          },
+          {
+            "label": "Complainant: Contact First / Contact Last",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 70,
+            "hint": "Press \"Add New\" to open the contact boxes."
+          },
+          {
+            "label": "Complainant: Address Line 1, City, State, Zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Complainant: Primary Phone Number / E-mail",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Detailed Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Other",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Check it",
+            "hint": "The list has no noise box."
+          },
+          {
+            "label": "Photos",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ],
+        "tips": [
+          "The contact page appears twice: Tenant/Occupant, then Neighbor. Fill one."
+        ]
       }
     },
     {
@@ -338,7 +654,52 @@
       "officialSourceUrl": "https://law.cityofsanmateo.org/us/ca/cities/san-mateo/code/8.02.060",
       "verifiedDate": "2026-07-29",
       "secondaryActionLabel": "Call Police Non-Emergency",
-      "secondaryActionUri": "tel:6505227700"
+      "secondaryActionUri": "tel:6505227700",
+      "formGuide": {
+        "portal": "San Mateo Barking Dog Information Packet (PDF)",
+        "access": "Print it. No sign-in.",
+        "steps": [
+          "Read the packet",
+          "Fill the log",
+          "Bring it to the police front counter"
+        ],
+        "fields": [
+          {
+            "label": "Address where the barking comes from",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Description of the barking",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 400
+          },
+          {
+            "label": "Date / Day",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Start time / End time",
+            "required": true,
+            "answer": "TIME_RANGE"
+          },
+          {
+            "label": "How it affected you",
+            "required": true,
+            "answer": "IMPACT"
+          },
+          {
+            "label": "Your name, address, phone",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Police non-emergency 650-522-7620 if you want to talk first."
+        ]
+      }
     },
     {
       "id": "san-mateo-party_music",
@@ -441,7 +802,41 @@
       "officialSourceUrl": "https://library.municode.com/ca/hayward/codes/municipal_code?nodeId=HAYWARD_MUNICIPAL_CODE_CH4PUWEMOCO_ART4ANCORE",
       "verifiedDate": "2026-07-29",
       "secondaryActionLabel": "Open Animal Services Request",
-      "secondaryActionUri": "https://user.govoutreach.com/hayward/support.php?classificationId=68676"
+      "secondaryActionUri": "https://user.govoutreach.com/hayward/support.php?classificationId=68676",
+      "formGuide": {
+        "portal": "Hayward Access (GovOutreach)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Enter issue location or drag red dotted marker on map",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type the address of the noise and pick it from the list."
+          },
+          {
+            "label": "Describe your problem or question in detail",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Attach a photo",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your email and phone",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "The form has no contact boxes. Add them at the end of the description if you want a reply."
+          }
+        ],
+        "tips": [
+          "The old Hayward Access form is the live one; the newer portal link is dead."
+        ]
+      }
     },
     {
       "id": "hayward-party_music",
@@ -466,6 +861,40 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 21,
         "comparisonContext": "Hayward 4-1.03.1(a): noise from residential property may not exceed this level at any point outside that property's plane. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Hayward Access (GovOutreach)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Enter issue location or drag red dotted marker on map",
+            "required": false,
+            "answer": "ADDRESS",
+            "hint": "Type the address of the noise and pick it from the list."
+          },
+          {
+            "label": "Describe your problem or question in detail",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Attach a photo",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your email and phone",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "The form has no contact boxes. Add them at the end of the description if you want a reply."
+          }
+        ],
+        "tips": [
+          "The old Hayward Access form is the live one; the newer portal link is dead."
+        ]
       }
     },
     {
@@ -511,6 +940,40 @@
       "meterLimit": {
         "fixedMaximumDb": 86,
         "comparisonContext": "Hayward: during allowed hours, project noise may not exceed 86 dBA anywhere outside the project's property plane (and 83 dBA per device at 25 feet). Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Hayward Access (GovOutreach)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Enter issue location or drag red dotted marker on map",
+            "required": false,
+            "answer": "ADDRESS",
+            "hint": "Type the address of the noise and pick it from the list."
+          },
+          {
+            "label": "Describe your problem or question in detail",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Attach a photo",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your email and phone",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "The form has no contact boxes. Add them at the end of the description if you want a reply."
+          }
+        ],
+        "tips": [
+          "The old Hayward Access form is the live one; the newer portal link is dead."
+        ]
       }
     },
     {
@@ -529,7 +992,85 @@
       "officialSourceUrl": "https://www.contracosta.ca.gov/6839/Noisy-Animal-Ordinance",
       "verifiedDate": "2026-07-29",
       "secondaryActionLabel": "Call Animal Services",
-      "secondaryActionUri": "tel:9256088400"
+      "secondaryActionUri": "tel:9256088400",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
     },
     {
       "id": "concord-party-music",
@@ -576,6 +1117,51 @@
         "context": "Development Code 18.150.130 for site preparation and construction, except on holidays, or as approved in a planning permit. The Police Department's noise flyer also lists weekends 8:00 AM-5:00 PM, which the code text does not; the permit decides.",
         "sourceCitation": "Development Code 18.150.130(O)(6)",
         "sourceQuote": "Site preparation and construction activities between the hours of 7:30 a.m. to 6:00 p.m. weekdays (except on holidays) or as approved by the city as part of a planning permit."
+      },
+      "formGuide": {
+        "portal": "Concord SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Bldg Const outside allowed Municipal Code days and times"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
       }
     },
     {
@@ -617,6 +1203,68 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 22,
         "comparisonContext": "Berkeley Table 13.40-1 base level for R-1/R-2 zones, measured on the receiving property; the base may be exceeded by 5 dBA for 15 cumulative minutes an hour, 10 dBA for 5 minutes, 15 dBA for 1 minute, and never by 20 dBA; a higher measured ambient replaces it. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Berkeley 311",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Details",
+          "Location",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Type of Issue",
+            "required": false,
+            "answer": "TITLE",
+            "maxLength": 255
+          },
+          {
+            "label": "Comments",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 4000
+          },
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type the address of the noise and pick it from the list."
+          },
+          {
+            "label": "First Name",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 75
+          },
+          {
+            "label": "Last Name",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 75
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone / Extension",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 12
+          },
+          {
+            "label": "Email me at",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Check it",
+            "hint": "So the city can write back with the case number."
+          }
+        ],
+        "tips": [
+          "One form for every noise type; the first box says which kind."
+        ]
       }
     },
     {
@@ -658,6 +1306,68 @@
         "context": "Municipal Code 13.40.070: outside these hours construction tools may not create a noise disturbance across a residential or commercial property line; emergency utility work and Environmental Health variances are excepted. Legal holidays use the weekend hours.",
         "sourceCitation": "Municipal Code 13.40.070",
         "sourceQuote": "Operating or causing the operation of any tools or equipment used in construction, drilling, repair, alteration, or demolition work before 7:00 a.m. on a weekday (or before 9:00 a.m. on a weekend or holiday) or after 7:00 p.m. on a weekday (or after 8:00 p.m. on a weekend or holiday) such that the sound therefrom across a residential or commercial real property line violates Section 13.40.050 or 13.40.060, except for emergency work of public service utilities or by variance issued by the EHD."
+      },
+      "formGuide": {
+        "portal": "Berkeley 311",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Details",
+          "Location",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Type of Issue",
+            "required": false,
+            "answer": "TITLE",
+            "maxLength": 255
+          },
+          {
+            "label": "Comments",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 4000
+          },
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type the address of the noise and pick it from the list."
+          },
+          {
+            "label": "First Name",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 75
+          },
+          {
+            "label": "Last Name",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 75
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone / Extension",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 12
+          },
+          {
+            "label": "Email me at",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Check it",
+            "hint": "So the city can write back with the case number."
+          }
+        ],
+        "tips": [
+          "One form for every noise type; the first box says which kind."
+        ]
       }
     },
     {
@@ -694,7 +1404,52 @@
       "officialSourceUrl": "https://library.municode.com/ca/vallejo/codes/municipal_code?nodeId=TIT7PUHESAWE_VIOFAGPUPE_CH7.84RENODI",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "tel:7076484321",
-      "secondaryActionLabel": "Call Police Non-Emergency"
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "formGuide": {
+        "portal": "Vallejo SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
+      }
     },
     {
       "id": "vallejo-construction",
@@ -725,6 +1480,51 @@
         "context": "Zoning Code 16.502.09 for construction, demolition and loading that may exceed the temporary-construction table, in residential and mixed-use districts. Grading and pile driving within a quarter mile of homes run weekdays 8:00 AM-5:00 PM only (16.502.03); Table 16.502-E gives no Sunday or legal-holiday allowance for construction equipment. A permit or condition of approval can set stricter hours.",
         "sourceCitation": "Zoning Code 16.502.09(D)(1)",
         "sourceQuote": "Construction, demolition, and related loading/unloading activities that may generate noise exceeding levels in Table 16.502.E shall be limited to hours between 7:00 a.m. and 7:00 p.m. in residential zoning districts and in any mixed-use district."
+      },
+      "formGuide": {
+        "portal": "Vallejo SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
       }
     },
     {
@@ -743,7 +1543,85 @@
       "officialSourceUrl": "https://library.municode.com/ca/richmond/codes/code_of_ordinances?nodeId=ARTIXHE_CH9.52CONOOR",
       "verifiedDate": "2026-07-29",
       "secondaryActionLabel": "Call Richmond Police",
-      "secondaryActionUri": "tel:5102331214"
+      "secondaryActionUri": "tel:5102331214",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
     },
     {
       "id": "richmond-party_music",
@@ -768,6 +1646,46 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 22,
         "comparisonContext": "Richmond 9.52.100 30-minute-per-hour source-boundary level for single-family residential (55 dBA) less the 5 dBA reduction for music or speech, and 10 dBA lower from 10 p.m. to 7 a.m.; the officer chooses whether this dBA test applies. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Richmond iMS request portal",
+        "access": "Tap \"Continue as Guest\". No account needed.",
+        "steps": [
+          "Location",
+          "Complaint Details",
+          "Complaint Type",
+          "Photos",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Number (address search)",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type the house number, pick the address from the list."
+          },
+          {
+            "label": "Complaint Details",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Complaint Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Details (required box under the type)",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Upload photos or documents",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
       }
     },
     {
@@ -809,6 +1727,46 @@
         "context": "Municipal Code 9.52.110 publishes its temporary-construction noise table for these periods only (weekends include legal holidays); pile drivers, impulsive sources and jackhammers are barred on Sundays and holidays unless the Building Official approves. Ask the Building Official about work outside the table's periods.",
         "sourceCitation": "Municipal Code 9.52.110",
         "sourceQuote": "Table: \"Weekdays, 7:00 a.m. to 7:00 p.m.\" and \"Weekends, including legal holidays 9:00 a.m. to 8:00 p.m.\" Use of pile drivers, sources of impulsive sound and jack hammers shall be prohibited on Sundays and holidays, except for emergencies or as approved in advance by the Building Official."
+      },
+      "formGuide": {
+        "portal": "Richmond iMS request portal",
+        "access": "Tap \"Continue as Guest\". No account needed.",
+        "steps": [
+          "Location",
+          "Complaint Details",
+          "Complaint Type",
+          "Photos",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Number (address search)",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type the house number, pick the address from the list."
+          },
+          {
+            "label": "Complaint Details",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Complaint Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Details (required box under the type)",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Upload photos or documents",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
       }
     },
     {
@@ -825,7 +1783,77 @@
       "actionUri": "tel:4087307110",
       "officialSourceLabel": "Sunnyvale Municipal Code § 6.02.040(a)(7)",
       "officialSourceUrl": "https://ecode360.com/42712445",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "formGuide": {
+        "portal": "MySunnyvale",
+        "access": "No sign-in needed. You can submit anonymously.",
+        "steps": [
+          "Source",
+          "Location",
+          "Intake Questions",
+          "Photos",
+          "Contact",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "What is the source of the noise disturbance?",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Loud Animal"
+          },
+          {
+            "label": "Select Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it from the list."
+          },
+          {
+            "label": "Additional Information",
+            "required": false,
+            "answer": "ADDRESS",
+            "maxLength": 2000,
+            "hint": "Where exactly, e.g. \"back yard, next door\"."
+          },
+          {
+            "label": "Describe the source of the noise and the issue.",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 2000
+          },
+          {
+            "label": "Is the issue happening now?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Date of noise",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Photos",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "Up to 4 photos and 1 video."
+          },
+          {
+            "label": "Would you like to request a follow-up?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Full Name / Email / Phone Number",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Or check \"Submit Anonymously\"."
+          }
+        ]
+      },
+      "secondaryActionLabel": "File Written Complaint Online",
+      "secondaryActionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale/request-intake?type-code=a0Ocs000011gKe1EAE"
     },
     {
       "id": "sunnyvale-party_music",
@@ -842,7 +1870,7 @@
       "officialSourceLabel": "Sunnyvale Municipal Code §19.42.030",
       "officialSourceUrl": "https://ecode360.com/42730931",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale",
+      "secondaryActionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale/request-intake?type-code=a0Ocs000011gKe1EAE",
       "secondaryActionLabel": "File Written Complaint Online",
       "meterLimit": {
         "daytimeMaximumDb": 60,
@@ -850,6 +1878,74 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 22,
         "comparisonContext": "Sunnyvale 19.42.030(a)(1) limit at a single-family or duplex property line; multifamily open space is 65/55 and corridor or mixed-use residential 70/60. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "MySunnyvale",
+        "access": "No sign-in needed. You can submit anonymously.",
+        "steps": [
+          "Source",
+          "Location",
+          "Intake Questions",
+          "Photos",
+          "Contact",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "What is the source of the noise disturbance?",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Loud Noise"
+          },
+          {
+            "label": "Select Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it from the list."
+          },
+          {
+            "label": "Additional Information",
+            "required": false,
+            "answer": "ADDRESS",
+            "maxLength": 2000,
+            "hint": "Where exactly, e.g. \"back yard, next door\"."
+          },
+          {
+            "label": "Describe the source of the noise and the issue.",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 2000
+          },
+          {
+            "label": "Is the issue happening now?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Date of noise",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Photos",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "Up to 4 photos and 1 video."
+          },
+          {
+            "label": "Would you like to request a follow-up?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Full Name / Email / Phone Number",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Or check \"Submit Anonymously\"."
+          }
+        ]
       }
     },
     {
@@ -863,7 +1959,7 @@
       "requiredIncidentCount": null,
       "nextAction": "Submit a written neighborhood or construction complaint through MySunnyvale. For a disturbance needing immediate Public Safety assistance, call 408-730-7180.",
       "actionLabel": "File Written Complaint Online",
-      "actionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale",
+      "actionUri": "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale/request-intake?type-code=a0Ocs000011gKe1EAE",
       "officialSourceLabel": "Sunnyvale Municipal Code §16.08.030",
       "officialSourceUrl": "https://ecode360.com/42720745",
       "verifiedDate": "2026-07-29",
@@ -884,6 +1980,74 @@
         "context": "Municipal Code 16.08.030: no construction on Sundays or federal holidays when city offices are closed. An owner working on their own detached single-family home may work weekdays 7:00 AM-7:00 PM, Saturdays 8:00 AM-7:00 PM and Sundays or holidays 9:00 AM-6:00 PM.",
         "sourceCitation": "Municipal Code 16.08.030",
         "sourceQuote": "Construction activity shall be permitted between the hours of seven a.m. and six p.m. daily Monday through Friday. Saturday hours of operation shall be between eight a.m. and five p.m. There shall be no construction activity on Sunday or federal holidays when city offices are closed."
+      },
+      "formGuide": {
+        "portal": "MySunnyvale",
+        "access": "No sign-in needed. You can submit anonymously.",
+        "steps": [
+          "Source",
+          "Location",
+          "Intake Questions",
+          "Photos",
+          "Contact",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "What is the source of the noise disturbance?",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Construction"
+          },
+          {
+            "label": "Select Address",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it from the list."
+          },
+          {
+            "label": "Additional Information",
+            "required": false,
+            "answer": "ADDRESS",
+            "maxLength": 2000,
+            "hint": "Where exactly, e.g. \"back yard, next door\"."
+          },
+          {
+            "label": "Describe the issue.",
+            "required": true,
+            "answer": "DESCRIPTION",
+            "maxLength": 2000
+          },
+          {
+            "label": "Is the issue happening now?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Date of noise",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Photos",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "Up to 4 photos and 1 video."
+          },
+          {
+            "label": "Would you like to request a follow-up?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "Full Name / Email / Phone Number",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Or check \"Submit Anonymously\"."
+          }
+        ]
       }
     },
     {
@@ -920,7 +2084,68 @@
       "officialSourceUrl": "https://ecode360.com/42965677",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "https://www.srcity.org/FormCenter/Housing-and-Community-Services-14/Code-Investigation-Request-Form-74",
-      "secondaryActionLabel": "File Code Investigation Request"
+      "secondaryActionLabel": "File Code Investigation Request",
+      "formGuide": {
+        "portal": "Santa Rosa Code Investigation Request",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Date/time",
+            "required": false,
+            "answer": "DATE"
+          },
+          {
+            "label": "Address to be Investigated",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "City",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Santa Rosa"
+          },
+          {
+            "label": "Zip Code",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "The zip of the noise address."
+          },
+          {
+            "label": "Nature of Complaint (please be specific)",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Your Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Address, City, State, Zip Code",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Phone Number",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Upload photograph",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
     },
     {
       "id": "santa-rosa-construction",
@@ -938,7 +2163,68 @@
       "officialSourceUrl": "https://ecode360.com/42965677",
       "verifiedDate": "2026-07-29",
       "secondaryActionUri": "tel:7075285222",
-      "secondaryActionLabel": "Call Police for Active Disturbance"
+      "secondaryActionLabel": "Call Police for Active Disturbance",
+      "formGuide": {
+        "portal": "Santa Rosa Code Investigation Request",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Date/time",
+            "required": false,
+            "answer": "DATE"
+          },
+          {
+            "label": "Address to be Investigated",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "City",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Santa Rosa"
+          },
+          {
+            "label": "Zip Code",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "The zip of the noise address."
+          },
+          {
+            "label": "Nature of Complaint (please be specific)",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Your Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Address, City, State, Zip Code",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your Phone Number",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Upload photograph",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
     },
     {
       "id": "fremont-barking-dog",
@@ -954,7 +2240,90 @@
       "actionUri": "https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/report/barking",
       "officialSourceLabel": "Report a Barking Dog - City of Fremont",
       "officialSourceUrl": "https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/report/barking",
-      "verifiedDate": "2026-07-29"
+      "verifiedDate": "2026-07-29",
+      "formGuide": {
+        "portal": "Fremont Animal Services barking form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "First Name / Last Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Street Number and Name, City, Postal/ZIP Code",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Your own address."
+          },
+          {
+            "label": "Name of owner if known",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 200
+          },
+          {
+            "label": "Address where barking comes from",
+            "required": true,
+            "answer": "ADDRESS",
+            "maxLength": 200
+          },
+          {
+            "label": "Have you spoken with the owner? Yes / No",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Times barking occurs (please be specific)",
+            "required": true,
+            "answer": "TIME_RANGE",
+            "maxLength": 200
+          },
+          {
+            "label": "Days barking occurs",
+            "required": true,
+            "answer": "DAY",
+            "maxLength": 200
+          },
+          {
+            "label": "How long has the barking been an issue?",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 200,
+            "hint": "e.g. \"Since August 2026\"."
+          },
+          {
+            "label": "How many dog(s)?",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 200
+          },
+          {
+            "label": "Description/Comments",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 200
+          },
+          {
+            "label": "Upload file",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
+      }
     },
     {
       "id": "fremont-party-music",
@@ -1017,6 +2386,46 @@
         "context": "Municipal Code 18.160.010(a) for development projects within 500 feet of a residence; holidays use the Saturday hours. A homeowner working on their own detached house may work weekdays 7:00 AM-8:00 PM and weekends 8:00 AM-8:00 PM; projects farther than 500 feet from homes and city-approved exceptions have other hours.",
         "sourceCitation": "Municipal Code 18.160.010(a)",
         "sourceQuote": "Except as modified herein, construction activity for development projects in any zoning district on any property within 500 feet of one or more residences, lodging facilities, nursing homes or inpatient hospitals shall be limited to the weekday hours of 7:00 a.m. to 7:00 p.m. and the Saturday or holiday hours of 9:00 a.m. to 6:00 p.m., while Sunday construction is not allowed."
+      },
+      "formGuide": {
+        "portal": "Fremont App (CitySourced)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Photo",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address or move the pin."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Description",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Photo",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Name, email, phone",
+            "required": false,
+            "answer": "YOURS"
+          }
+        ]
       }
     },
     {
@@ -1057,6 +2466,80 @@
         "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot, and never below 35 dBA indoors or 45 dBA elsewhere. The residential limit is 5 dBA above that ambient at the property plane.",
         "sourceCitation": "Police Code Article 29, Sections 2901(a) and 2909(a)",
         "sourceQuote": "\"Ambient\" means LAeq and LCeq values produced during a minimum ten-minute period as measured with a type 1, precision level sound meter, using \"A\" and \"C\" frequency weighting. The minimum sound level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue. However, for purposes of this Article 29, in no case shall the ambient be considered or determined to be less than: (1) 35 dBA for interior residential noise, and (2) 45 dBA in all other locations. … No person shall produce or allow to be produced by any machine, or device, music or entertainment or any combination of same, on residential property over which the person has ownership or control, a noise level more than five dBA above the ambient at any point outside of the property plane."
+      },
+      "formGuide": {
+        "portal": "SF311 noise report",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Location",
+          "Request",
+          "Contact",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Find address or place",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it from the list."
+          },
+          {
+            "label": "Location description",
+            "required": false,
+            "answer": "ADDRESS",
+            "maxLength": 500
+          },
+          {
+            "label": "What is your request regarding?",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Amplified sound, electronic, or audiovisual sources"
+          },
+          {
+            "label": "Request description",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 4000
+          },
+          {
+            "label": "Incident date",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Incident time",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Permit or truck number (if applicable)",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Would you like to be contacted? Yes / No, I want to remain anonymous",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First name / Last name",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 50
+          },
+          {
+            "label": "Phone",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 50
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 50
+          }
+        ]
       }
     },
     {
@@ -1094,6 +2577,80 @@
         "note": "San Francisco Police Code Article 29 measures ambient as the LAeq over at least ten minutes with a Type 1 meter, source silent, same spot. Between 8:00 PM and 7:00 AM construction may not exceed that ambient by 5 dBA at the nearest property plane without a special permit.",
         "sourceCitation": "Police Code Article 29, Section 2901(a)",
         "sourceQuote": "\"Ambient\" means LAeq and LCeq values produced during a minimum ten-minute period as measured with a type 1, precision level sound meter, using \"A\" and \"C\" frequency weighting. The minimum sound level shall be determined with the noise source at issue silent, and in the same location as the measurement of the noise level of the source or sources at issue."
+      },
+      "formGuide": {
+        "portal": "SF311 noise report",
+        "access": "No sign-in needed.",
+        "steps": [
+          "Location",
+          "Request",
+          "Contact",
+          "Review"
+        ],
+        "fields": [
+          {
+            "label": "Find address or place",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Type it, pick it from the list."
+          },
+          {
+            "label": "Location description",
+            "required": false,
+            "answer": "ADDRESS",
+            "maxLength": 500
+          },
+          {
+            "label": "What is your request regarding?",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Construction - private property (DBI-BI)"
+          },
+          {
+            "label": "Request description",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 4000
+          },
+          {
+            "label": "Incident date",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Incident time",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Permit or truck number (if applicable)",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Would you like to be contacted? Yes / No, I want to remain anonymous",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First name / Last name",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 50
+          },
+          {
+            "label": "Phone",
+            "required": false,
+            "answer": "YOURS",
+            "maxLength": 50
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS",
+            "maxLength": 50
+          }
+        ]
       }
     },
     {
@@ -1127,8 +2684,8 @@
       "officialSourceLabel": "Daly City Municipal Code §§ 9.22.010–9.22.030",
       "officialSourceUrl": "https://library.municode.com/ca/daly_city/codes/code_of_ordinances?nodeId=TIT9PUPEMOWE_IVOFAGPUPE_CH9.22DIPE",
       "verifiedDate": "2026-07-29",
-      "secondaryActionUri": "https://www.dalycity.org/439/Daly-City-iHelp",
-      "secondaryActionLabel": "Open Daly City iHelp",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/fU9JVVMeoe8PLt9cSeHac56Z/report/category/122394/location",
+      "secondaryActionLabel": "File Police Report Online",
       "hoursRule": {
         "kind": "QUIET",
         "windows": [
@@ -1141,6 +2698,56 @@
         "context": "Municipal Code 9.22.030: in these hours no noise, music or sound may be heard beyond the property line or disturb another person. Outside them the general disturbing-the-peace rule still applies.",
         "sourceCitation": "Municipal Code 9.22.030",
         "sourceQuote": "Between the hours of ten p.m. and six a.m. of the following day, no person shall cause, create or permit any noise, music, sound or other disturbance upon his property which may be heard by, or which noise disturbs or harasses, any other person beyond the confines of the property, quarters or apartment from which the noise, music, sound or disturbance emanates."
+      },
+      "formGuide": {
+        "portal": "Daly City SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Police / Traffic Enforcement (Non-Emergency)"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Please provide specific details",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
       }
     },
     {
@@ -1153,8 +2760,8 @@
       "captureInstruction": "Record the address, whether work is outdoors on private property and requires a building permit, date, daylight-saving or standard time, activity and equipment, deliveries or staging, exact start and stop times, distance from the equipment, posted-hours sign, permit conditions, and any posted exemption. Preserve audio, video, and readings from a documented position.",
       "requiredIncidentCount": null,
       "nextAction": "Report the construction violation to Code Enforcement through Daly City iHelp, email codeenforcement@dalycity.org, or call 650-991-8260. For a disturbing violation actively occurring during the 10:00 p.m.–6:00 a.m. police-noise period, call 24-hour dispatch at 650-992-1225.",
-      "actionLabel": "Open Daly City iHelp",
-      "actionUri": "https://www.dalycity.org/439/Daly-City-iHelp",
+      "actionLabel": "File Code Complaint Online",
+      "actionUri": "https://seeclickfix.com/web_portal/fU9JVVMeoe8PLt9cSeHac56Z/report/category/122398/location",
       "officialSourceLabel": "Daly City Municipal Code Chapter 15.09 / Official Construction Hours Handout",
       "officialSourceUrl": "https://www.dalycity.org/DocumentCenter/View/13099/Construction-Hours-Handout",
       "verifiedDate": "2026-07-29",
@@ -1182,6 +2789,56 @@
         "context": "Municipal Code Chapter 15.09 handout, daylight-saving-time hours; in standard time (early November to mid-March) work must stop at 6:30 PM. Applies to outdoor work on private property under a building permit; no work on federal holidays unless the Building Official grants an exemption.",
         "sourceCitation": "Municipal Code Chapter 15.09, Construction Hours handout",
         "sourceQuote": "General construction hours for work performed outdoors on private property for project requiring a building permit are limited to weekdays from 8:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time), and Saturdays and Sundays from 9:00 a.m. to 6:30 p.m. (8:30 p.m. Daylight Savings Time); construction work during Federal Holidays shall be prohibited unless exemptions are granted in accordance with this section by the Building Official or their designee, at his or her sole discretion."
+      },
+      "formGuide": {
+        "portal": "Daly City SeeClickFix",
+        "access": "Sign in or continue as a guest.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Private Property Nuisance Abatement"
+          },
+          {
+            "label": "Issue Title",
+            "required": true,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Please provide specific details",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
       }
     },
     {
@@ -1223,6 +2880,46 @@
         "daytimeStartsHour": 7,
         "nighttimeStartsHour": 22,
         "comparisonContext": "Santa Clara Schedule A residential receiving level (55 dBA day, 50 night) less the 5 dBA reduction the chapter applies to music or speech, measured on the affected property; fixed sources only. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Santa Clara online service request (PublicStuff)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Type of request",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Address",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Contact Information (Email or Phone Number)",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Photo",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
       }
     },
     {
@@ -1257,6 +2954,46 @@
         "context": "City Code Chapter 9.10 for construction within 300 feet of residentially zoned property; no work on Sundays or on the listed state holidays; a permit can set other hours.",
         "sourceCitation": "City Code Chapter 9.10",
         "sourceQuote": "… on or to a construction site within three hundred (300) feet of any residentially zoned property except within the hours of 7:00 A.M. to 6:00 P.M. following on weekdays other than holidays, Monday through Friday, inclusive; and within the hours of 9:00 A.M. to 6:00 P.M. following, inclusive, on any Saturday which is not a holiday."
+      },
+      "formGuide": {
+        "portal": "Santa Clara online service request (PublicStuff)",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Type of request",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement"
+          },
+          {
+            "label": "Address",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Contact Information (Email or Phone Number)",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Photo",
+            "required": false,
+            "answer": "PHOTOS"
+          }
+        ]
       }
     }
   ]

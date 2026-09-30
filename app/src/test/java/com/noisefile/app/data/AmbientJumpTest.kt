@@ -153,15 +153,14 @@ class AmbientJumpTest {
             ambientSeconds = 360L,
         )
         val draft = buildComplaintDraft(incident, rule, ZoneId.of("America/Los_Angeles"))
-        assertTrue(draft, draft.contains("Quiet baseline at the same spot with the source silent: 47 dB over 6:00"))
-        assertTrue(draft, draft.contains("averaged 8 dB above that baseline and peaked 14 dB above it"))
+        assertTrue(draft, draft.contains("Quiet at the same spot with the source silent: 47 dB, so the noise peaked 14 dB above quiet."))
 
         val report = buildIncidentHistoryReport(listOf(incident), generatedAtLabel = "test", zoneId = ZoneId.of("America/Los_Angeles"))
         assertTrue(report, report.contains("Quiet baseline: 47 dB over 360 sec"))
         assertTrue(report, report.contains("8 dB above it on average, 14 dB above at peak"))
 
         val plain = incident.copy(ambientDb = null, ambientSeconds = null)
-        assertFalse(buildComplaintDraft(plain, rule, ZoneId.of("America/Los_Angeles")).contains("Quiet baseline"))
+        assertFalse(buildComplaintDraft(plain, rule, ZoneId.of("America/Los_Angeles")).contains("Quiet at the same spot"))
         assertFalse(buildIncidentHistoryReport(listOf(plain), generatedAtLabel = "test").contains("Quiet baseline"))
     }
 }

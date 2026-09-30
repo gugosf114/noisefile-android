@@ -1,5 +1,8 @@
 package com.noisefile.app.data
 
+import com.noisefile.app.model.FormAnswer
+import com.noisefile.app.model.FormField
+import com.noisefile.app.model.FormGuide
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
@@ -18,14 +21,67 @@ class ComplaintDraftTest {
             zoneId = ZoneOffset.UTC,
         )
 
-        assertTrue(draft.contains("Location of disturbance: 440 Price Avenue"))
-        assertTrue(draft.contains("Bass was vibrating the bedroom window."))
-        assertTrue(draft.contains("Interrupted rest or quiet use"))
-        assertTrue(draft.contains("58 dB average"))
-        assertTrue(draft.contains("Official source: City noise code"))
-        assertTrue(draft.contains("https://city.example.gov/noise-code"))
-        assertTrue(draft.contains("estimates from my phone"))
+        assertTrue(draft, draft.startsWith("Loud noise from 440 Price Avenue."))
+        assertTrue(draft, draft.contains("Thursday, January 1, 1970, 12:00 AM to 12:00 AM (1 min)."))
+        assertTrue(draft, draft.contains("highest 67 dB, average 58 dB"))
+        assertTrue(draft, draft.contains("Impact: Interrupted rest or quiet use."))
+        assertTrue(draft, draft.contains("Bass was vibrating the bedroom window."))
+        assertTrue(draft, draft.contains("Phone estimate at my spot"))
+        assertTrue(draft, draft.endsWith("available on request."))
+        // The rule text and the sources belong to the PDF, not the form box.
+        assertFalse(draft.contains("Official source"))
+        assertFalse(draft.contains("https://"))
         assertFalse(draft.contains("violation occurred", ignoreCase = true))
+        assertTrue(draft, draft.length < 500)
+    }
+
+    @Test
+    fun draftShrinksToFitTheFormBox() {
+        val longNotes = incident().copy(notes = "x".repeat(300))
+        val full = buildComplaintDraft(longNotes, rule(), ZoneOffset.UTC)
+        assertTrue(full.contains("xxxx"))
+
+        val fitted = buildComplaintDraft(longNotes, rule(), ZoneOffset.UTC, maxChars = 200)
+        assertTrue(fitted, fitted.length <= 200)
+        assertFalse(fitted.contains("xxxx"))
+        assertTrue(fitted, fitted.contains("Impact:"))
+
+        val tiny = buildComplaintDraft(longNotes, rule(), ZoneOffset.UTC, maxChars = 60)
+        assertTrue(tiny, tiny.length <= 60)
+        assertTrue(tiny, tiny.endsWith("\u2026"))
+    }
+
+    @Test
+    fun formAnswersFollowTheGuide() {
+        val guide = FormGuide(
+            portal = "Example 311",
+            access = "No sign-in needed.",
+            steps = listOf("Details", "Contact"),
+            fields = listOf(
+                FormField(label = "Issue Title", required = true, answer = FormAnswer.TITLE),
+                FormField(label = "Description", maxLength = 120, answer = FormAnswer.DESCRIPTION),
+                FormField(label = "Address", required = true, answer = FormAnswer.ADDRESS),
+                FormField(label = "Date", answer = FormAnswer.DATE),
+                FormField(label = "Times", answer = FormAnswer.TIME_RANGE),
+                FormField(label = "Category", answer = FormAnswer.FIXED, fixedText = "Code Enforcement"),
+                FormField(label = "Your name", required = true, answer = FormAnswer.YOURS),
+                FormField(label = "Photo", answer = FormAnswer.PHOTOS),
+            ),
+        )
+        val rows = formAnswers(incident(), rule(), guide, ZoneOffset.UTC)
+
+        assertEquals("Loud noise at 440 Price Avenue, Jan 1, 12:00 AM", rows[0].text)
+        assertTrue(rows[1].text!!, rows[1].text!!.length <= 120)
+        assertEquals("440 Price Avenue", rows[2].text)
+        assertEquals("01/01/1970", rows[3].text)
+        assertEquals("12:00 AM to 12:00 AM", rows[4].text)
+        assertEquals("Code Enforcement", rows[5].text)
+        assertTrue(rows[5].isChoice)
+        assertEquals(null, rows[6].text)
+        assertEquals("Only you know this. Type it in.", rows[6].hint)
+        assertTrue(rows[6].required)
+        assertEquals(null, rows[7].text)
+        assertEquals("No photos on this incident.", rows[7].hint)
     }
 
     @Test

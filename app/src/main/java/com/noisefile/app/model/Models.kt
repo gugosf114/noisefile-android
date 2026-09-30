@@ -33,7 +33,90 @@ data class RuleWorkflow(
     val meterLimit: MeterLimit? = null,
     val hoursRule: HoursRule? = null,
     val ambientRecipe: AmbientRecipe? = null,
+    /** What the city's own web form (or packet) asks for, read from that form. Null when the city takes calls only. */
+    val formGuide: FormGuide? = null,
 )
+
+/** Where the app's ready answer for one form box comes from. */
+enum class FormAnswer {
+    /** A one-line title for the report. */
+    TITLE,
+
+    /** The short complaint text, sized to fit the box. */
+    DESCRIPTION,
+
+    /** The address of the noise, as the user typed it on the incident. */
+    ADDRESS,
+
+    /** The incident's date. */
+    DATE,
+
+    /** The incident's start time. */
+    START_TIME,
+
+    /** The incident's end time. */
+    END_TIME,
+
+    /** Start and end together, e.g. "10:40 PM to 11:05 PM". */
+    TIME_RANGE,
+
+    /** The day of the week. */
+    DAY,
+
+    /** Minutes documented. */
+    DURATION,
+
+    /** The impact line the user picked. */
+    IMPACT,
+
+    /** The saved photos, if any. */
+    PHOTOS,
+
+    /** A fixed choice from the form's own list; the text is in [FormField.fixedText]. */
+    FIXED,
+
+    /** Something only the user knows, e.g. their name. */
+    YOURS,
+}
+
+data class FormField(
+    /** The box's label exactly as the city form shows it. */
+    val label: String,
+    val required: Boolean = false,
+    val maxLength: Int? = null,
+    val answer: FormAnswer,
+    /** For FIXED: the option to pick or the words to type. */
+    val fixedText: String? = null,
+    /** A short hint shown under the answer. */
+    val hint: String? = null,
+) {
+    init {
+        require(label.isNotBlank())
+        require(answer != FormAnswer.FIXED || !fixedText.isNullOrBlank()) {
+            "A fixed answer needs its text."
+        }
+        require(maxLength == null || maxLength > 0)
+    }
+}
+
+data class FormGuide(
+    /** The portal in the city's words, e.g. "Berkeley 311". */
+    val portal: String,
+    /** One line about signing in, e.g. "No sign-in needed." */
+    val access: String,
+    /** The screens in order, as the form names them. */
+    val steps: List<String>,
+    val fields: List<FormField>,
+    /** Things the form does not say, learned by walking it. */
+    val tips: List<String> = emptyList(),
+) {
+    init {
+        require(portal.isNotBlank())
+        require(access.isNotBlank())
+        require(steps.isNotEmpty())
+        require(fields.isNotEmpty())
+    }
+}
 
 data class MeterLimit(
     val fixedMaximumDb: Double? = null,

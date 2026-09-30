@@ -1,5 +1,6 @@
 package com.noisefile.app.data
 
+import com.noisefile.app.model.FormAnswer
 import com.noisefile.app.model.NoiseType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -180,7 +181,7 @@ class RuleCatalogTest {
             catalog.retrieve("santa-clara", it) ?: error("Missing Santa Clara $it rule")
         }
         val mySunnyvale =
-            "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale"
+            "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale/request-intake?type-code=a0Ocs000011gKe1EAE"
         val mySantaClara =
             "https://www.santaclaraca.gov/services/make-a-service-request/submit-a-request-online"
 
@@ -372,7 +373,8 @@ class RuleCatalogTest {
         assertTrue(noise.summary.contains("Police Chief permit"))
         assertTrue(noise.summary.contains("does not require a preliminary warning"))
         assertEquals("tel:6509921225", noise.actionUri)
-        assertTrue(noise.secondaryActionUri?.endsWith("/439/Daly-City-iHelp") == true)
+        assertTrue(noise.secondaryActionUri?.endsWith("/report/category/122394/location") == true)
+        assertEquals("Daly City SeeClickFix", noise.formGuide?.portal)
         assertNull(noise.meterLimit)
 
         assertTrue(construction.summary.contains("outdoor work on private property"))
@@ -385,8 +387,9 @@ class RuleCatalogTest {
         assertTrue(construction.summary.contains("80–105 dBA at 50 feet"))
         assertTrue(construction.summary.contains("not a mandatory prerequisite"))
         assertNull(construction.meterLimit)
-        assertTrue(construction.actionUri.endsWith("/439/Daly-City-iHelp"))
+        assertTrue(construction.actionUri.endsWith("/report/category/122398/location"))
         assertEquals("mailto:codeenforcement@dalycity.org", construction.secondaryActionUri)
+        assertEquals("Private Property Nuisance Abatement", construction.formGuide?.fields?.first { it.label == "Category" }?.fixedText)
     }
 
     @Test
@@ -533,7 +536,7 @@ class RuleCatalogTest {
     fun sunnyvaleAndSantaClaraUseTheirCurrentOnlineRequestPages() {
         val catalog = catalog()
         val mySunnyvale =
-            "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale"
+            "https://www.sunnyvale.ca.gov/city-services/online-services/mysunnyvale/request-intake?type-code=a0Ocs000011gKe1EAE"
         val mySantaClara =
             "https://www.santaclaraca.gov/services/make-a-service-request/submit-a-request-online"
 
@@ -636,5 +639,21 @@ class RuleCatalogTest {
         assertThrows(IllegalArgumentException::class.java) {
             RuleCatalog.fromJson(root.toString())
         }
+    }
+
+    @Test
+    fun everyWebFormCarriesAGuideWithADescriptionBox() {
+        val catalog = catalog()
+        val webRules = catalog.rules.filter { rule ->
+            complaintDestination(rule).let { it.isOnlineForm || it.isDocumentPacket }
+        }
+        assertTrue(webRules.size >= 30)
+        webRules.forEach { rule ->
+            val guide = rule.formGuide ?: error("${rule.id} opens a web form but has no form guide")
+            assertTrue(rule.id, guide.fields.any { it.answer == FormAnswer.DESCRIPTION })
+            assertTrue(rule.id, guide.fields.any { it.answer == FormAnswer.ADDRESS })
+        }
+        // Call-only rules carry no guide.
+        assertNull(catalog.retrieve("fremont", NoiseType.PARTY_MUSIC)?.formGuide)
     }
 }

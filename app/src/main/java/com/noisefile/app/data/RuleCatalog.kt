@@ -3,6 +3,9 @@ package com.noisefile.app.data
 import android.content.Context
 import com.noisefile.app.model.AmbientRecipe
 import com.noisefile.app.model.DayGroup
+import com.noisefile.app.model.FormAnswer
+import com.noisefile.app.model.FormField
+import com.noisefile.app.model.FormGuide
 import com.noisefile.app.model.HoursKind
 import com.noisefile.app.model.HoursRule
 import com.noisefile.app.model.HoursWindow
@@ -251,6 +254,24 @@ class RuleCatalog private constructor(
                                 sourceCitation = recipe.getString("sourceCitation"),
                             )
                         },
+                        formGuide = item.optJSONObject("formGuide")?.let { guide ->
+                            FormGuide(
+                                portal = guide.getString("portal"),
+                                access = guide.getString("access"),
+                                steps = guide.getJSONArray("steps").mapStrings(),
+                                fields = guide.getJSONArray("fields").mapObjects { field ->
+                                    FormField(
+                                        label = field.getString("label"),
+                                        required = field.optBoolean("required", false),
+                                        maxLength = field.optionalInt("maxLength"),
+                                        answer = FormAnswer.valueOf(field.getString("answer")),
+                                        fixedText = if (field.isNull("fixedText")) null else field.getString("fixedText"),
+                                        hint = if (field.isNull("hint")) null else field.getString("hint"),
+                                    )
+                                },
+                                tips = guide.optJSONArray("tips")?.mapStrings() ?: emptyList(),
+                            )
+                        },
                     )
                 },
             )
@@ -274,6 +295,13 @@ class RuleCatalog private constructor(
 
         private fun String.hasSupportedActionScheme(): Boolean =
             startsWith("https://") || startsWith("tel:") || startsWith("mailto:")
+
+        private fun JSONArray.mapStrings(): List<String> =
+            buildList {
+                for (index in 0 until length()) {
+                    add(getString(index))
+                }
+            }
 
         private inline fun <T> JSONArray.mapObjects(transform: (JSONObject) -> T): List<T> =
             buildList {
