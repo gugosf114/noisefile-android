@@ -144,7 +144,7 @@ class HoursRuleTest {
             assertTrue("${rule.id} cites the section", rule.hoursRule!!.sourceCitation.isNotBlank())
         }
         catalog.rules.mapNotNull { it.ambientRecipe }.forEach { recipe ->
-            assertTrue(recipe.sourceQuote.contains("Ambient"))
+            assertTrue(recipe.sourceQuote.contains("ambient", ignoreCase = true))
             assertTrue(recipe.sourceCitation.isNotBlank())
         }
         // Santa Rosa construction has no schedule: the corpus holds no section for it.
