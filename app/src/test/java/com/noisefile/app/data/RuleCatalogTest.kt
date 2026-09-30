@@ -163,9 +163,11 @@ class RuleCatalogTest {
         assertTrue(sanMateoNoise.summary.contains("six-minute ambient"))
         assertTrue(sanMateoNoise.captureInstruction.contains("Type 1 precision meter"))
         assertEquals("tel:6505227700", sanMateoNoise.actionUri)
+        assertEquals("mailto:police@cityofsanmateo.org", sanMateoNoise.secondaryActionUri)
         assertTrue(sanMateoConstruction.summary.contains("requires at least one of two 90 dB conditions"))
         assertTrue(sanMateoConstruction.summary.contains("approved exception permits"))
         assertEquals("tel:6505227700", sanMateoConstruction.actionUri)
+        assertEquals("mailto:police@cityofsanmateo.org", sanMateoConstruction.secondaryActionUri)
     }
 
     @Test
@@ -235,6 +237,7 @@ class RuleCatalogTest {
         assertTrue(berkeleyAnimal.summary.contains("separate residences"))
         assertTrue(berkeleyAnimal.summary.contains("recurs within eight hours"))
         assertEquals("tel:5109816600", berkeleyAnimal.actionUri)
+        assertEquals("mailto:animalservices@berkeleyca.gov", berkeleyAnimal.secondaryActionUri)
         assertTrue(berkeleyNoise.summary.contains("55 dBA"))
         assertTrue(berkeleyNoise.summary.contains("Inside neighboring multifamily units"))
         assertTrue(berkeleyConstruction.summary.contains("short-term mobile equipment"))
@@ -332,7 +335,9 @@ class RuleCatalogTest {
         assertTrue(animal.summary.contains("no fixed minute or dB threshold"))
         assertTrue(animal.summary.contains("two-week barking journal"))
         assertEquals("tel:7077844733", animal.actionUri)
-        assertEquals("tel:7074217090", animal.secondaryActionUri)
+        assertEquals("mailto:SheriffACO@solanocounty.com", animal.secondaryActionUri)
+        assertTrue(animal.nextAction.contains("707-421-7090"))
+        assertTrue(complaintDestination(animal).isEmail)
 
         assertTrue(noise.summary.contains("more than 30 minutes per hour"))
         assertTrue(noise.summary.contains("50 dBA or ambient"))
@@ -407,8 +412,9 @@ class RuleCatalogTest {
         assertTrue(animal.summary.contains("sends the owner a letter"))
         assertTrue(animal.summary.contains("not the legal definition"))
         assertEquals("tel:7075657100", animal.actionUri)
-        assertTrue(animal.secondaryActionUri?.contains("report-an-issue-to-animal-services") == true)
-        assertEquals("tel:7075657100", complaintDestination(animal).uri)
+        assertEquals("mailto:theanimalshelter@sonomacounty.gov", animal.secondaryActionUri)
+        assertEquals("mailto:theanimalshelter@sonomacounty.gov", complaintDestination(animal).uri)
+        assertTrue(complaintDestination(animal).isEmail)
         assertFalse(complaintDestination(animal).isOnlineForm)
         assertNull(animal.meterLimit)
 
@@ -655,5 +661,24 @@ class RuleCatalogTest {
         }
         // Call-only rules carry no guide.
         assertNull(catalog.retrieve("fremont", NoiseType.PARTY_MUSIC)?.formGuide)
+    }
+
+    @Test
+    fun theSixEmailRoutesAreExactlyTheVerifiedMailboxes() {
+        val catalog = catalog()
+        val emails = catalog.rules
+            .filter { complaintDestination(it).isEmail }
+            .associate { it.id to complaintDestination(it).uri }
+        assertEquals(
+            mapOf(
+                "berkeley-barking_dog" to "mailto:animalservices@berkeleyca.gov",
+                "vallejo-barking_dog" to "mailto:SheriffACO@solanocounty.com",
+                "santa-rosa-barking_dog" to "mailto:theanimalshelter@sonomacounty.gov",
+                "san-mateo-party_music" to "mailto:police@cityofsanmateo.org",
+                "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
+                "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
+            ),
+            emails,
+        )
     }
 }

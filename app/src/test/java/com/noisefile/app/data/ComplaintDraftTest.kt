@@ -99,6 +99,27 @@ class ComplaintDraftTest {
     }
 
     @Test
+    fun emailBeatsPhoneWhenThereIsNoForm() {
+        val destination = complaintDestination(
+            rule(
+                actionUri = "tel:311",
+                secondaryActionUri = "mailto:animals@city.example.gov",
+                secondaryActionLabel = "Email Animal Services",
+            ),
+        )
+
+        assertTrue(destination.isEmail)
+        assertFalse(destination.isOnlineForm)
+        assertEquals("mailto:animals@city.example.gov", destination.uri)
+
+        val uri = buildComplaintEmailUri(incident(), rule(), destination.uri, ZoneOffset.UTC)
+        assertTrue(uri, uri.startsWith("mailto:animals@city.example.gov?subject=Loud%20noise%20at%20440%20Price%20Avenue"))
+        assertTrue(uri, uri.contains("&body=Loud%20noise%20from%20440%20Price%20Avenue."))
+        assertTrue(uri, uri.endsWith("My%20name%3A%0AMy%20phone%3A%0AMy%20address%3A%0A"))
+        assertFalse(uri.contains("+"))
+    }
+
+    @Test
     fun phoneRouteIsUsedWhenNoOnlineFormExists() {
         val destination = complaintDestination(
             rule(
