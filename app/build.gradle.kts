@@ -110,7 +110,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // The one paid thing: a single one-time product. Play Billing talks to the Play Store app, not the internet.
-    implementation("com.android.billingclient:billing-ktx:7.1.1")
+    implementation("com.android.billingclient:billing-ktx:8.0.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
