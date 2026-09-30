@@ -670,6 +670,12 @@
             "answer": "ADDRESS"
           },
           {
+            "label": "Description of the barking",
+            "required": false,
+            "answer": "DESCRIPTION",
+            "maxLength": 400
+          },
+          {
             "label": "Date / Day",
             "required": true,
             "answer": "DATE"
