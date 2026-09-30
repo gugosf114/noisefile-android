@@ -107,9 +107,10 @@ class UnlockStore(context: Context) {
                 ),
             )
             .build()
-        client.queryProductDetailsAsync(params) { result, list ->
+        client.queryProductDetailsAsync(params) { result, queryResult ->
             if (result.responseCode != BillingClient.BillingResponseCode.OK) return@queryProductDetailsAsync
-            val details = list.firstOrNull { it.productId == UnlockDecision.PRODUCT_ID } ?: return@queryProductDetailsAsync
+            val details = queryResult.productDetailsList.firstOrNull { it.productId == UnlockDecision.PRODUCT_ID }
+                ?: return@queryProductDetailsAsync
             product = details
             _state.update { it.copy(priceText = details.oneTimePurchaseOfferDetails?.formattedPrice) }
         }
