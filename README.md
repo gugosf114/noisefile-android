@@ -1,6 +1,6 @@
 # NoiseFile
 
-### ▶ [Download NoiseFile — 2026-09-30 (v0.22.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
+### ▶ [Download NoiseFile — 2026-09-30 (v0.23.0)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
 
 **Know the rule. Log the noise. File the complaint.**
 
@@ -8,8 +8,8 @@ NoiseFile is an Android app that explains the local noise process before a
 resident files, measures and documents an active disturbance, maintains the
 required incident history, and prepares the correct next action.
 
-The verified catalog covers 87 animal, general-noise, and construction
-workflows across 29 Bay Area cities:
+The verified catalog covers 108 animal, general-noise, and construction
+workflows across 36 Bay Area cities:
 
 - the official five-incident documentation requirement;
 - active party or amplified-music reporting;
@@ -43,12 +43,13 @@ built offline in two stages, and only the second stage ships in the app:
    no legal interpretation — see
    [`legal-corpus/acquisition-report.md`](legal-corpus/acquisition-report.md)
    for what was retrieved, what's URL-only, and what's flagged for review per
-   city. 29 Bay Area cities are covered as of 2026-09-30: San Jose, San
+   city. 36 Bay Area cities are covered as of 2026-09-30: San Jose, San
    Francisco, Oakland, Fremont, Santa Rosa, Hayward, Concord, Sunnyvale, Santa
    Clara, Vallejo, Berkeley, Richmond, Antioch, Daly City, San Mateo, San
    Leandro, Livermore, Redwood City, Mountain View, Milpitas, Pleasanton,
    Alameda, Palo Alto, South San Francisco, San Bruno, Union City, Walnut
-   Creek, Pittsburg, and Cupertino.
+   Creek, Pittsburg, Cupertino, Napa, Vacaville, Fairfield, San Rafael,
+   Petaluma, Dublin, and Newark.
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
    one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
@@ -114,7 +115,7 @@ source and the live Play Console state. The audit covered:
 - every product claim against the code that performs it;
 - microphone permission handling, estimated sound-level measurement, error
   handling, local incident storage, privacy, sharing, and complaint actions;
-- the complete offline ordinance catalog: 29 cities, 87 city-and-noise-type
+- the complete offline ordinance catalog: 36 cities, 108 city-and-noise-type
   workflows, and 52 archived official sources whose stored hashes matched;
 - unit tests, Android lint, debug compilation, signed Play bundle creation,
   bundle contents, package identity, version data, permissions, and signing;
