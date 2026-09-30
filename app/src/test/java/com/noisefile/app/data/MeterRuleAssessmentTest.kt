@@ -179,11 +179,11 @@ class MeterRuleAssessmentTest {
         }
 
         assertEquals(
-            62,
+            75,
             assessments.count { it.status == MeterAssessmentStatus.NEEDS_INFORMATION },
         )
         assertEquals(
-            24,
+            32,
             assessments.count { it.status == MeterAssessmentStatus.REACHES_LISTED_CONDITION },
         )
         assertEquals(
