@@ -6,6 +6,7 @@ import com.noisefile.app.model.HoursKind
 import com.noisefile.app.model.NoiseType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
@@ -59,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(29, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(87, catalog.rules.size)
+        assertEquals(36, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(108, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -83,6 +84,10 @@ class RuleCatalogTest {
                 "san-bruno-construction", "san-bruno-party_music",
                 "south-san-francisco-construction", "south-san-francisco-party_music",
                 "union-city-construction",
+                "newark-party_music", "newark-construction",
+                "san-rafael-party_music", "san-rafael-construction",
+                "fairfield-party_music", "fairfield-construction",
+                "petaluma-party_music", "petaluma-construction",
             ),
             limitedRules,
         )
@@ -674,7 +679,7 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theTwentyThreeEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theTwentyNineEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
@@ -704,6 +709,12 @@ class RuleCatalogTest {
                 "walnut-creek-party_music" to "mailto:CodeEnforcement@walnut-creek.org",
                 "pittsburg-party_music" to "mailto:ce@pittsburgca.gov",
                 "pittsburg-construction" to "mailto:ce@pittsburgca.gov",
+                "napa-party_music" to "mailto:codeenforcement@cityofnapa.org",
+                "napa-construction" to "mailto:codeenforcement@cityofnapa.org",
+                "vacaville-party_music" to "mailto:Code.Enforcement@cityofvacaville.gov",
+                "vacaville-construction" to "mailto:Code.Enforcement@cityofvacaville.gov",
+                "fairfield-party_music" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
+                "fairfield-construction" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
             ),
             emails,
         )
@@ -860,5 +871,78 @@ class RuleCatalogTest {
         assertEquals(80.0, catalog.retrieve("cupertino", NoiseType.CONSTRUCTION)!!.meterLimit?.fixedMaximumDb)
         assertEquals("Barking Dog", catalog.retrieve("cupertino", NoiseType.BARKING_DOG)!!.formGuide?.fields?.get(2)?.fixedText)
         assertTrue(complaintDestination(catalog.retrieve("cupertino", NoiseType.BARKING_DOG)!!).isOnlineForm)
+    }
+
+    @Test
+    fun theNorthBayAndTriValleySevenReadTheirCurrentCodes() {
+        val catalog = catalog()
+
+        // Newark: property-line dB table, SeeClickFix-free web form.
+        val nwNoise = catalog.retrieve("newark", NoiseType.PARTY_MUSIC)!!
+        assertNotNull(nwNoise.meterLimit)
+        assertTrue(complaintDestination(nwNoise).isOnlineForm)
+        assertNotNull(catalog.retrieve("newark", NoiseType.CONSTRUCTION)!!.hoursRule)
+
+        // San Rafael: Table 8.13-1 intermittent 60/50, daytime end shifts on weekends.
+        val srNoise = catalog.retrieve("san-rafael", NoiseType.PARTY_MUSIC)!!
+        assertEquals(60.0, srNoise.meterLimit?.daytimeMaximumDb)
+        assertEquals(50.0, srNoise.meterLimit?.nighttimeMaximumDb)
+        assertTrue(complaintDestination(srNoise).isOnlineForm)
+
+        // Dublin: one SeeClickFix category for all three, direct link.
+        NoiseType.entries.forEach { type ->
+            val rule = catalog.retrieve("dublin", type)!!
+            assertTrue(rule.id, complaintDestination(rule).uri.startsWith("https://seeclickfix.com/web_portal/"))
+            assertNotNull(rule.id, rule.formGuide)
+        }
+
+        // Napa: hours-only construction with the 8 a.m. machine start; police + code-enforcement mailbox.
+        val napaBuild = catalog.retrieve("napa", NoiseType.CONSTRUCTION)!!
+        assertEquals(HoursKind.ALLOWED, napaBuild.hoursRule?.kind)
+        assertTrue(napaBuild.summary.contains("no machine or equipment start-up before 8:00 a.m."))
+        assertTrue(complaintDestination(napaBuild).isEmail)
+        assertTrue(catalog.retrieve("napa", NoiseType.BARKING_DOG)!!.summary.contains("two citizens"))
+
+        // Vacaville: nuisance chapter, three-household written request, 7-to-7 Monday-Saturday.
+        val vacNoise = catalog.retrieve("vacaville", NoiseType.PARTY_MUSIC)!!
+        assertTrue(vacNoise.summary.contains("three or more persons having separate residences"))
+        assertNull(vacNoise.meterLimit)
+        assertEquals("tel:7074495200", vacNoise.actionUri)
+        val vacBuild = catalog.retrieve("vacaville", NoiseType.CONSTRUCTION)!!
+        assertEquals(HoursKind.ALLOWED, vacBuild.hoursRule?.kind)
+        assertEquals(setOf(DayGroup.WEEKDAY, DayGroup.SATURDAY), vacBuild.hoursRule!!.windows.map { it.days }.toSet())
+        assertEquals("mailto:Code.Enforcement@cityofvacaville.gov", complaintDestination(vacBuild).uri)
+        val vacAnimal = catalog.retrieve("vacaville", NoiseType.BARKING_DOG)!!
+        assertEquals("tel:7074491700", vacAnimal.actionUri)
+        assertTrue(vacAnimal.summary.contains("two-week noise log"))
+        assertFalse(complaintDestination(vacAnimal).isOnlineForm)
+
+        // Fairfield: Table 25.1401 with the 5 dB music cut; night ban 10-to-7 every day; portal says call.
+        val ffNoise = catalog.retrieve("fairfield", NoiseType.PARTY_MUSIC)!!
+        assertEquals(45.0, ffNoise.meterLimit?.daytimeMaximumDb)
+        assertEquals(40.0, ffNoise.meterLimit?.nighttimeMaximumDb)
+        assertNotNull(ffNoise.ambientRecipe)
+        assertEquals("tel:7074287300", ffNoise.actionUri)
+        assertTrue(ffNoise.nextAction.contains("option 8"))
+        val ffBuild = catalog.retrieve("fairfield", NoiseType.CONSTRUCTION)!!
+        assertEquals(HoursKind.ALLOWED, ffBuild.hoursRule?.kind)
+        assertEquals(listOf(DayGroup.ALL), ffBuild.hoursRule!!.windows.map { it.days })
+        assertEquals(50.0, ffBuild.meterLimit?.daytimeMaximumDb)
+        assertEquals("tel:7074491700", catalog.retrieve("fairfield", NoiseType.BARKING_DOG)!!.actionUri)
+
+        // Petaluma: quiet city, Table 21.1 70/65, ten minutes an hour for animals, Gravity Forms guide.
+        val petNoise = catalog.retrieve("petaluma", NoiseType.PARTY_MUSIC)!!
+        assertEquals(70.0, petNoise.meterLimit?.daytimeMaximumDb)
+        assertEquals(65.0, petNoise.meterLimit?.nighttimeMaximumDb)
+        assertTrue(petNoise.summary.contains("quiet city"))
+        assertTrue(complaintDestination(petNoise).isOnlineForm)
+        assertEquals(200, petNoise.formGuide?.fields?.first { it.answer == FormAnswer.ADDRESS }?.maxLength)
+        val petBuild = catalog.retrieve("petaluma", NoiseType.CONSTRUCTION)!!
+        assertEquals(HoursKind.ALLOWED, petBuild.hoursRule?.kind)
+        assertEquals(9 * 60, petBuild.hoursRule!!.windows.first { it.days == DayGroup.SUNDAY }.startMinuteOfDay)
+        val petAnimal = catalog.retrieve("petaluma", NoiseType.BARKING_DOG)!!
+        assertTrue(petAnimal.summary.contains("ten minutes or more in any one-hour period"))
+        assertEquals("tel:4158834621", petAnimal.actionUri)
+        assertFalse(complaintDestination(petAnimal).isOnlineForm)
     }
 }

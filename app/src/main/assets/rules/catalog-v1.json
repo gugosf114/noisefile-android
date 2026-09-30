@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-09-30.1",
+  "catalogVersion": "2026-09-30.2",
   "jurisdictions": [
     {
       "id": "antioch",
@@ -173,6 +173,48 @@
     {
       "id": "cupertino",
       "displayName": "Cupertino",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "newark",
+      "displayName": "Newark",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "san-rafael",
+      "displayName": "San Rafael",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "dublin",
+      "displayName": "Dublin",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "napa",
+      "displayName": "Napa",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "vacaville",
+      "displayName": "Vacaville",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "fairfield",
+      "displayName": "Fairfield",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "petaluma",
+      "displayName": "Petaluma",
       "region": "Bay Area",
       "available": true
     }
@@ -5329,6 +5371,1103 @@
         "tips": [
           "Pick Commercial Construction if the site is a business.",
           "Requests are read Monday–Friday. After hours, Santa Clara County Communications 408-299-2507 can call out staff."
+        ]
+      }
+    },
+    {
+      "id": "newark-barking_dog",
+      "jurisdictionId": "newark",
+      "jurisdiction": "Newark, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Newark has no barking section; the noise rule and its 70/60 line carry the case",
+      "summary": "Newark's animal title (Title 6) has no barking or noisy-animal section; it covers licensing, animals at large, bites, humane care and tethering. Animal noise is reached by the zoning noise rule: it is unlawful to disturb the peace, quiet and comfort of the community or a neighborhood by creating any unreasonable noise (§17.24.100(A)), and any source on residential property, which the section says includes machines, devices and combinations of them, may not exceed 70 dBA outside the property plane from 7:00 a.m. to 9:00 p.m. or 60 dBA from 9:00 p.m. to 7:00 a.m. (§17.24.100(A)(2)(a)). A violation is an infraction; a code enforcement officer or police officer who finds a violation may issue an administrative citation, and a new citation may issue each time police respond to the same address (§17.24.100(A)(4)–(6)). Newark Police handle animal control; the department's page gives its non-emergency line.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how often it recurs, and how it disturbed you. Measure near the source's property line when you safely can, because the 70/60 line is taken at the property plane; a phone estimate is supporting evidence, not the officer's meter reading. A dated pattern shows unreasonableness.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Newark Police non-emergency at 510-578-4237, the number on the Police Department page, with the dog's exact address and your name and number, and ask that the complaint be logged; a citation can follow each police response. For the written pattern, file the City's Code Enforcement Complaint form with 'Other' as the violation type and the log in the text box.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:5105784237",
+      "secondaryActionLabel": "File Code Enforcement Complaint",
+      "secondaryActionUri": "https://www.newarkca.gov/departments/community-development/community-preservation/report-a-code-violation",
+      "officialSourceLabel": "Newark Municipal Code §17.24.100",
+      "officialSourceUrl": "https://library.municode.com/ca/newark/codes/code_of_ordinances?nodeId=CD_ORD_TIT17ZO_DIVIIICIRE_CH17.24PEST_17.24.100NO",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Newark Code Enforcement Complaint form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page on the Community Preservation site"
+        ],
+        "fields": [
+          {
+            "label": "Email",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your relationship to the property",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Neighbor"
+          },
+          {
+            "label": "Date of Violation",
+            "required": false,
+            "answer": "DATE"
+          },
+          {
+            "label": "Time of Violation",
+            "required": false,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Location of Violation",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Violation type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other (Please Specify)"
+          },
+          {
+            "label": "If other, type text here",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Primary Phone #",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First Name / Last Name",
+            "required": false,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Construction in progress goes to the Building Division by phone, the form itself says."
+        ]
+      }
+    },
+    {
+      "id": "newark-party_music",
+      "jurisdictionId": "newark",
+      "jurisdiction": "Newark, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 70 dBA by day and 60 at night at the property line",
+      "summary": "Newark Municipal Code §17.24.100 makes it unlawful to disturb the peace, quiet and comfort of the community or a neighborhood by creating any unreasonable noise, and sets numbers: noise produced by human voice, machine or device on residential property may not exceed 70 dBA at any point outside the property plane between 7:00 a.m. and 9:00 p.m., or 60 dBA between 9:00 p.m. and 7:00 a.m.; on multifamily property it may not exceed 60 dBA three feet from any wall, floor or ceiling inside another unit with doors and windows closed. Commercial and industrial property is capped at 70 dBA, or the residential limits where it abuts homes; public property at 60 dBA at 25 feet. Alarms, emergency response, unamplified lawful events, medical and outage generators and permitted temporary uses are exempt. A violation is an infraction. A code enforcement or police officer who finds a violation may issue an administrative citation under Chapter 7.18, and a new citation may be issued each time police return to the same address and find a violation. Loud and unruly gatherings are also addressed in the nuisance title (Chapter 7.08).",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure as close to the source's property line as you safely can, because the City's number is taken at the property plane; a phone estimate is supporting evidence, not the officer's meter reading. After 9:00 p.m. the 60 dBA night line applies.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Newark Police non-emergency at 510-578-4237 so an officer can hear it; each response can bring its own citation. For a repeat address, file the City's Code Enforcement Complaint form with the address, dates and the PDF; the police mailbox police@newarkca.gov is read in business hours only.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:5105784237",
+      "secondaryActionLabel": "File Code Enforcement Complaint",
+      "secondaryActionUri": "https://www.newarkca.gov/departments/community-development/community-preservation/report-a-code-violation",
+      "officialSourceLabel": "Newark Municipal Code §17.24.100(A)(2), (4)–(6)",
+      "officialSourceUrl": "https://library.municode.com/ca/newark/codes/code_of_ordinances?nodeId=CD_ORD_TIT17ZO_DIVIIICIRE_CH17.24PEST_17.24.100NO",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 60,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 21,
+        "comparisonContext": "Newark Code 17.24.100(A)(2)(a): noise from residential property may not exceed 70 dBA at any point outside the property plane from 7 a.m. to 9 p.m., or 60 dBA from 9 p.m. to 7 a.m.; inside another unit of a multifamily building the cap is 60 dBA. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Newark Code Enforcement Complaint form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page on the Community Preservation site"
+        ],
+        "fields": [
+          {
+            "label": "Email",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your relationship to the property",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Neighbor"
+          },
+          {
+            "label": "Date of Violation",
+            "required": false,
+            "answer": "DATE"
+          },
+          {
+            "label": "Time of Violation",
+            "required": false,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Location of Violation",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Violation type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other (Please Specify)"
+          },
+          {
+            "label": "If other, type text here",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Primary Phone #",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First Name / Last Name",
+            "required": false,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Construction in progress goes to the Building Division by phone, the form itself says."
+        ]
+      }
+    },
+    {
+      "id": "newark-construction",
+      "jurisdictionId": "newark",
+      "jurisdiction": "Newark, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Check the hours and the 83/86 dBA limits; off hours fall to 70/60",
+      "summary": "Newark Municipal Code §17.24.100(A)(3) lets construction, alteration or repair of structures and landscaping work run at up to 83 dBA per piece of equipment at 25 feet (measured outside any structure as near 25 feet as possible) or 86 dBA at any point outside the property plane, between 7:00 a.m. and 7:00 p.m. on weekdays and Saturdays and 10:00 a.m.–6:00 p.m. on Sundays and holidays, unless a permit or condition of approval sets other hours. At all other times the ordinary limits control instead of a ban: 70 dBA at the property plane by day and 60 dBA from 9:00 p.m. to 7:00 a.m. for residential property. Emergency response and permitted temporary uses are exempt. A violation is an infraction; a code enforcement or police officer may issue an administrative citation, and a new one each time police return and find a violation.",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, the exact start and stop times, and the equipment running. Inside the window, a reading near 25 feet from one machine and a reading at the property line map onto the two limits; outside the window, the 70/60 line is the test. A phone estimate is supporting evidence, not the officer's meter reading. Note the permit number from the posted card if visible, since a permit can set other hours.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call Newark Police non-emergency at 510-578-4237. For a project that keeps doing it, file the City's Code Enforcement Complaint form with the address, dates, the level trace and the PDF; the form notes that construction in progress should also be reported to the Building Division.",
+      "actionLabel": "File Code Enforcement Complaint",
+      "actionUri": "https://www.newarkca.gov/departments/community-development/community-preservation/report-a-code-violation",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:5105784237",
+      "officialSourceLabel": "Newark Municipal Code §17.24.100(A)(3)",
+      "officialSourceUrl": "https://library.municode.com/ca/newark/codes/code_of_ordinances?nodeId=CD_ORD_TIT17ZO_DIVIIICIRE_CH17.24PEST_17.24.100NO",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "10:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Newark Code 17.24.100(A)(3): inside these hours construction may run up to 83 dBA per machine at 25 feet or 86 dBA at the property plane; outside them the 70/60 residential limits apply instead of a ban. Holidays use the Sunday hours; a permit can set other hours.",
+        "sourceCitation": "Newark Municipal Code 17.24.100(A)(3)",
+        "sourceQuote": "Unless otherwise provided pursuant to a duly-issued permit or a condition of approval of a land use entitlement, the construction, alteration, or repair of structures and any landscaping activities, occurring between the hours of 10:00 a.m. and 6:00 p.m. on Sundays and holidays, and 7:00 a.m. and 7:00 p.m. on other days, shall be subject to the following: a. No individual device or piece of equipment shall produce a noise level exceeding 83 dBA at a distance of twenty-five feet from the source. … b. The noise level at any point outside of the property plane shall not exceed 86 dBA. During all other times, the decibel levels set forth in Subsection 17.24.100.A.2, Noise Restriction by Decibel, control."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 86,
+        "comparisonContext": "Newark Code 17.24.100(A)(3): during construction hours, project noise may not exceed 86 dBA at any point outside the property plane (or 83 dBA per machine at 25 feet); outside those hours the 70/60 residential limits apply. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "Newark Code Enforcement Complaint form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One page on the Community Preservation site"
+        ],
+        "fields": [
+          {
+            "label": "Email",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your relationship to the property",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Neighbor"
+          },
+          {
+            "label": "Date of Violation",
+            "required": false,
+            "answer": "DATE"
+          },
+          {
+            "label": "Time of Violation",
+            "required": false,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Location of Violation",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Violation type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other (Please Specify)"
+          },
+          {
+            "label": "If other, type text here",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Primary Phone #",
+            "required": false,
+            "answer": "YOURS"
+          },
+          {
+            "label": "First Name / Last Name",
+            "required": false,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Construction in progress goes to the Building Division by phone, the form itself says."
+        ]
+      }
+    },
+    {
+      "id": "san-rafael-barking_dog",
+      "jurisdictionId": "san-rafael",
+      "jurisdiction": "San Rafael, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Habitual barking under the County rule; half an hour straight earns the citation",
+      "summary": "San Rafael Municipal Code §6.10.010 adopts Marin County Code Chapters 8.04, 8.08 and 8.12 and has the San Rafael Police Department or its designee enforce them. County Code §8.04.179 makes it unlawful to suffer or permit any dog, cat, fowl or other animal to habitually bark, yelp, howl or create noise in a manner that unreasonably disturbs the peace of any person. The procedure is written into the section: on a first complaint the officer notifies the keeper (or posts a written notice on the door if nobody is home); on a second complaint from anyone within 30 days, a citation may issue if there is probable cause that the noise ran continuously for half an hour or more; mediation may be offered. A first citable offense is an infraction, later ones misdemeanors. San Rafael's own noise chapter adds numbers that apply to animals too: on a receiving residential property, intermittent noise such as barking may not exceed 60 dBA by day or 50 dBA at night (§8.13.040), and any raucous or nerve-wracking noise that disturbs the peace violates §8.13.030 regardless of level.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, and whether the barking ran a full half hour without a real break; the level trace shows the run. Note the date of the first complaint and any notice on the owner's door, because the citation clock is 30 days from that notice. A phone estimate at your property is supporting evidence for the 60/50 line, not the officer's meter reading.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call San Rafael Police dispatch at 415-485-3000, the 24-hour number the City's own Noise Complaint page gives, with the dog's exact address and your name and number; ask that the first complaint and the owner's notice be logged, then call again within 30 days if it continues. Marin Humane (415-883-4621) handles other animal services but sends barking to the local police.",
+      "actionLabel": "Call Police Dispatch",
+      "actionUri": "tel:4154853000",
+      "officialSourceLabel": "San Rafael Municipal Code §6.10.010; Marin County Code §8.04.179; SRMC §8.13.040",
+      "officialSourceUrl": "https://library.municode.com/ca/marin_county/codes/municipal_code?nodeId=TIT8AN_CH8.04ANCO_8.04.179PRHAANNOWHUNDIPE",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "san-rafael-party_music",
+      "jurisdictionId": "san-rafael",
+      "jurisdiction": "San Rafael, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check 60 by day and 50 at night on the neighbor's property; music counts as intermittent",
+      "summary": "San Rafael Municipal Code Chapter 8.13 sets limits measured at any point on the receiving property. On residential property the limit is 60 dBA for intermittent noise and 50 dBA for constant noise in the daytime, and 50 dBA intermittent or 40 dBA constant at night (§8.13.040(A), Table 8.13-1); mixed-use property is 5 dBA higher, commercial 65/55 and industrial 70/60 at all hours. Daytime runs 7:00 a.m.–9:00 p.m. Sunday through Thursday and 7:00 a.m.–10:00 p.m. Friday and Saturday. Inside a multifamily building, noise through a shared wall, floor or ceiling may not exceed 40 dBA intermittent or 35 constant by day and 35 or 30 at night. 'Intermittent' means repetitive noise with a clear onset and decay, such as hammering or barking; 'constant' means steady noise such as air conditioners and pool equipment. Measurements use a Type 1 or 2 meter, A-weighted, fast response and the one-second Lmax for intermittent sound, Leq for constant sound. Independently, any raucous or nerve-wracking noise that disturbs the peace or comfort of anyone is a violation even inside the limits (§8.13.030). Sound performances in public are capped at 80 dBA at 50 feet and banned 10:00 p.m.–10:00 a.m. without a permit. Violations are infractions or misdemeanors (§8.13.080).",
+      "captureInstruction": "Record the source address, exact times, duration, and how it disturbed you. Measure at your own property, because the City's number is taken on the receiving property; a phone estimate is supporting evidence, not the Type 1 or 2 meter reading. After 9:00 p.m. (10:00 p.m. on Friday and Saturday) the 50 dBA night line applies to music and 40 dBA to steady hums.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call San Rafael Police dispatch at 415-485-3000 while it is happening; the City's Noise Complaint page says noise complaints are time-sensitive and go straight to the 24-hour dispatch. For a repeat address, file the Code Enforcement complaint form with 'Other' as the type, the dates and the PDF; Code Enforcement is 415-485-3097.",
+      "actionLabel": "Call Police Dispatch",
+      "actionUri": "tel:4154853000",
+      "secondaryActionLabel": "File Code Enforcement Complaint",
+      "secondaryActionUri": "https://www.cityofsanrafael.org/issues/zoning-housing-code-violation/",
+      "officialSourceLabel": "San Rafael Municipal Code §§8.13.020–8.13.040, 8.13.080",
+      "officialSourceUrl": "https://library.municode.com/ca/san_rafael/codes/code_of_ordinances?nodeId=TIT8MOCO_CH8.13NO",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 21,
+        "comparisonContext": "San Rafael Code 8.13.040 Table 8.13-1: on a receiving residential property, intermittent noise such as music beats, hammering or barking may not exceed 60 dBA by day or 50 dBA at night (Lmax, fast response), and constant noise such as pumps and air conditioners 50 by day or 40 at night (Leq); daytime ends at 9 p.m. Sunday–Thursday and 10 p.m. Friday–Saturday. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "San Rafael Code Enforcement complaint form",
+        "access": "No sign-in needed. Name, email, phone and your address are required; the City keeps your identity confidential.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Date",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Address in Violation: Street Address / City / ZIP",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Type of Complaint",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Other"
+          },
+          {
+            "label": "Complainant's Name / Email / Phone / Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Description of Complaint",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Upload any relevant documents",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "Up to 100 MB."
+          }
+        ],
+        "tips": [
+          "Code Enforcement: 415-485-3097, weekdays 8:30–5."
+        ]
+      }
+    },
+    {
+      "id": "san-rafael-construction",
+      "jurisdictionId": "san-rafael",
+      "jurisdiction": "San Rafael, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Weekdays 7 to 6, Saturday 9 to 6, never Sundays or holidays; 90 dBA cap",
+      "summary": "San Rafael Municipal Code §8.13.050(A) allows construction, alteration, demolition, equipment maintenance, deliveries and repair work only between 7:00 a.m. and 6:00 p.m. Monday through Friday and 9:00 a.m.–6:00 p.m. on Saturdays, with the noise at any point outside the project's property plane held to 90 dBA; all such work is prohibited on Sundays and holidays, which are the federal holidays plus the day after Thanksgiving, unless the Planning Commission or City Council set other hours for the project. New-building projects must post a sign with those hours at every entrance. A violation can be charged as an infraction or misdemeanor, by administrative citation or civil action, and the Chief Building Official may stop the work for up to two days per violation. A homeowner, family member or friend doing the owner's own work, and residential power equipment such as saws, mowers, blowers and trimmers, get a wider window: 8:00 a.m.–8:00 p.m. weekdays and 9:00 a.m.–6:00 p.m. on Saturdays, Sundays and holidays, also at 90 dBA (§8.13.050(B)). Outside these exceptions the ordinary limits apply: 60 dBA intermittent by day and 50 at night on a receiving residential property. Emergency repairs and City capital work are exempt; the Community Development Director may issue an exception permit of up to six months after notifying owners within 300 feet.",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, the exact start and stop times, and whether a contractor was on site (the owner-work window is wider). Deliveries count. For a reading, the City's cap is 90 dBA at the property plane during the window and 60/50 on your property outside it; a phone estimate is supporting evidence, not the meter reading. Note whether the required hours sign is posted.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call San Rafael Police dispatch at 415-485-3000. For a project that keeps doing it, file the Code Enforcement complaint form with 'Illegal construction activity' checked, the dates, the level trace and the PDF; Code Enforcement is 415-485-3097 and can bring the Chief Building Official's stop-work order.",
+      "actionLabel": "File Code Enforcement Complaint",
+      "actionUri": "https://www.cityofsanrafael.org/issues/zoning-housing-code-violation/",
+      "secondaryActionLabel": "Call Police Dispatch",
+      "secondaryActionUri": "tel:4154853000",
+      "officialSourceLabel": "San Rafael Municipal Code §8.13.050(A)–(B)",
+      "officialSourceUrl": "https://library.municode.com/ca/san_rafael/codes/code_of_ordinances?nodeId=TIT8MOCO_CH8.13NO",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "18:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "San Rafael Code 8.13.050(A): construction, including deliveries, is allowed only inside these hours at up to 90 dBA at the property plane; none on Sundays or holidays. An owner doing their own work, and residential power tools, may run 8–8 weekdays and 9–6 weekends (8.13.050(B)).",
+        "sourceCitation": "San Rafael Municipal Code 8.13.050(A)",
+        "sourceQuote": "construction, alteration, demolition, maintenance of construction equipment, deliveries of materials or equipment, or repair activities otherwise allowed under applicable law shall be allowed between the hours of seven a.m. (7:00 a.m.) and six p.m. (6:00 p.m.), Monday through Friday, and nine a.m. (9:00 a.m.) and six p.m. (6:00 p.m.) on Saturdays, provided that the noise level at any point outside of the property plane of the project shall not exceed ninety (90) dBA. All such activities shall be precluded on Sundays and holidays."
+      },
+      "meterLimit": {
+        "fixedMaximumDb": 90,
+        "comparisonContext": "San Rafael Code 8.13.050: during construction hours the noise at any point outside the project's property plane may not exceed 90 dBA; outside those hours the 60/50 residential limits apply. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "formGuide": {
+        "portal": "San Rafael Code Enforcement complaint form",
+        "access": "No sign-in needed. Name, email, phone and your address are required; the City keeps your identity confidential.",
+        "steps": [
+          "One page"
+        ],
+        "fields": [
+          {
+            "label": "Date",
+            "required": true,
+            "answer": "DATE"
+          },
+          {
+            "label": "Address in Violation: Street Address / City / ZIP",
+            "required": true,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Type of Complaint",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Illegal construction activity"
+          },
+          {
+            "label": "Complainant's Name / Email / Phone / Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Description of Complaint",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Upload any relevant documents",
+            "required": false,
+            "answer": "PHOTOS",
+            "hint": "Up to 100 MB."
+          }
+        ],
+        "tips": [
+          "Code Enforcement: 415-485-3097, weekdays 8:30–5."
+        ]
+      }
+    },
+    {
+      "id": "dublin-barking_dog",
+      "jurisdictionId": "dublin",
+      "jurisdiction": "Dublin, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Document habitual animal noise; the County takes dog complaints",
+      "summary": "Dublin Municipal Code §5.28.020 makes it unlawful and a nuisance for any person in the City to persistently permit any animal they own or control to make any loud, disturbing, unnecessary, unusual or habitual noise, or any noise that annoys, disturbs, injures or endangers the health, repose, peace or safety of a reasonable person of normal sensitivity present in the area. Whether a noise crosses the line is judged by its level, intensity, character and duration, the background noise, the time, place and zoning, closeness to bedrooms, and whether it is recurrent, intermittent or constant. The chapter sets no minute or dB threshold. Each violation is a separate misdemeanor punishable by up to a $500 fine and 30 days in jail (§5.28.030). Dublin's animal chapter (5.36) covers licensing, dangerous dogs and nuisances but has no barking section. The City's Complaints and Contacts page sends animal control and dog problems to Alameda County Animal Control.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how often it recurs, and how it disturbed you; the code's own factors are duration, time, closeness to bedrooms and recurrence. A pattern across days shows 'habitual'. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Alameda County Animal Control at 925-667-7763, the number the City's Complaints and Contacts page gives for dog problems, with the dog's exact address and your name and number. For barking happening now that needs a deputy, Dublin Police Services (Alameda County Sheriff) is 925-833-6670. For the written pattern, file a Noise report in Fix It Dublin with the log and PDF.",
+      "actionLabel": "Call County Animal Control",
+      "actionUri": "tel:9256677763",
+      "secondaryActionLabel": "File Fix It Dublin Noise Report",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/7eSAJxz4VXcQaNyQZrqooAsC/report/category/92196/location",
+      "officialSourceLabel": "Dublin Municipal Code §§5.28.020–5.28.030",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Dublin/html/Dublin05/Dublin0528.html",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Fix It Dublin (SeeClickFix)",
+        "access": "Sign in or continue as a guest; choose Anonymous if you do not want your name shown. The description is public.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ],
+        "tips": [
+          "The description is visible to the public; keep names out of it."
+        ]
+      }
+    },
+    {
+      "id": "dublin-party_music",
+      "jurisdictionId": "dublin",
+      "jurisdiction": "Dublin, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Unreasonable noise is a misdemeanor at any hour; the City sets no decibel number",
+      "summary": "Dublin Municipal Code Chapter 5.28 has one rule and no numbers. It is unlawful and a nuisance for any person to persistently make, cause or permit any loud, disturbing, unnecessary, unusual or habitual noise, or any noise that annoys, disturbs, injures or endangers the health, repose, peace or safety of a reasonable person of normal sensitivity present in the area (§5.28.020(A)). The standards for deciding a violation are the level, intensity, character and duration of the noise; the level and character of the background noise; the time, place and zoning district; closeness to residential sleeping facilities; and whether the noise is recurrent, intermittent or constant (§5.28.020(B)). There is no dB limit and no quiet-hours clock; the time of night is one factor among five. Each violation is a separate misdemeanor punishable by a fine of up to $500, up to 30 days in jail, or both (§5.28.030). Dublin's police are provided by the Alameda County Sheriff as Dublin Police Services.",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, whether it recurred, and how it disturbed you; those are the code's own factors. Measure the noise and the quiet with the source silent, because 'background noise' is one of the five standards. The code names no meter or number, so a phone estimate is supporting evidence of level and intensity.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Dublin Police Services at 925-833-6670, the department number on the City's site, so a deputy can hear it. For a repeat address, file a Noise report in Fix It Dublin, the City's SeeClickFix, with the dates and the PDF; Code Enforcement is 925-833-6620.",
+      "actionLabel": "Call Police Services",
+      "actionUri": "tel:9258336670",
+      "secondaryActionLabel": "File Fix It Dublin Noise Report",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/7eSAJxz4VXcQaNyQZrqooAsC/report/category/92196/location",
+      "officialSourceLabel": "Dublin Municipal Code §§5.28.020–5.28.030",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Dublin/html/Dublin05/Dublin0528.html",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Fix It Dublin (SeeClickFix)",
+        "access": "Sign in or continue as a guest; choose Anonymous if you do not want your name shown. The description is public.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ],
+        "tips": [
+          "The description is visible to the public; keep names out of it."
+        ]
+      }
+    },
+    {
+      "id": "dublin-construction",
+      "jurisdictionId": "dublin",
+      "jurisdiction": "Dublin, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Dublin sets construction hours in the permit, not the code; the noise rule still applies",
+      "summary": "Dublin's Municipal Code has no construction-hours section. The noise chapter (5.28) bans any loud, disturbing, unnecessary, unusual or habitual noise that disturbs a reasonable person, judged by level, duration, background, time and place, closeness to bedrooms and recurrence, and makes each violation a misdemeanor (§§5.28.020–030). The grading chapter (7.16) lets the City write noise control and hours of operation into each grading permit, and Dublin's building and planning approvals carry construction-hour conditions for each project. So the hours that bind a Dublin site are the ones on its permit and conditions of approval, and off-hours work is enforced as a permit violation and, if it disturbs neighbors, as unreasonable noise. The code sets no dB limit.",
+      "captureInstruction": "Record the site address, the day, the exact start and stop times, and the equipment running. Ask Code Enforcement for the hours in the project's permit or conditions of approval, or read them off the posted permit card, and log work outside them. A time-stamped photo or short clip is strong here. A phone estimate is supporting evidence of level under the unreasonable-noise rule; no City number decides it.",
+      "requiredIncidentCount": null,
+      "nextAction": "File a Noise report in Fix It Dublin with the address, the dates and times, and the PDF; the City's Filing a Complaint page lists Fix It Dublin first, then Code Enforcement at 925-833-6620, which can check the permit's hours. For work going on at night, Dublin Police Services is 925-833-6670.",
+      "actionLabel": "File Fix It Dublin Noise Report",
+      "actionUri": "https://seeclickfix.com/web_portal/7eSAJxz4VXcQaNyQZrqooAsC/report/category/92196/location",
+      "secondaryActionLabel": "Call Code Enforcement",
+      "secondaryActionUri": "tel:9258336620",
+      "officialSourceLabel": "Dublin Municipal Code §5.28.020; §7.16 (grading permit conditions)",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/Dublin/html/Dublin05/Dublin0528.html",
+      "verifiedDate": "2026-09-30",
+      "formGuide": {
+        "portal": "Fix It Dublin (SeeClickFix)",
+        "access": "Sign in or continue as a guest; choose Anonymous if you do not want your name shown. The description is public.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Noise"
+          },
+          {
+            "label": "Issue Title",
+            "required": false,
+            "answer": "TITLE"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ],
+        "tips": [
+          "The description is visible to the public; keep names out of it."
+        ]
+      }
+    },
+    {
+      "id": "napa-barking_dog",
+      "jurisdictionId": "napa",
+      "jurisdiction": "Napa, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Habitual barking: police warning, then two complaints or an officer's own ears",
+      "summary": "Napa Municipal Code §6.04.220 makes it unlawful to knowingly keep a dog that habitually barks, howls or yelps to the great discomfort of the peace and quiet of the neighborhood, or so as to materially disturb or annoy people of ordinary sensibilities; such dogs are declared a public nuisance. The section writes out the process: when someone complains to the Police Department, police notify the owner to take whatever steps are needed. If the warning does not work, either a verified complaint from at least two citizens who are not from the same family is presented to the Police Department, or an officer personally observes and confirms the barking after the department has received at least two complaints within any 30-day period; the police then inform the owner and cite. The rule sets no minute or dB threshold. Napa's noise chapter (8.08) has no animal section.",
+      "captureInstruction": "For each incident record the dog's address, the date, exact start and stop times, how often it recurs, and how it disturbed you. Note the date of your first complaint to the police and of the owner's warning, because the citation path needs either a second household to sign a verified complaint or two complaints inside 30 days plus an officer's own confirmation. A neighbor from another household who hears it is worth asking now. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Napa Police non-emergency dispatch at 707-257-9223 with the dog's exact address and your name and number; that first complaint triggers the owner's warning. If the barking continues, call again within 30 days so an officer can confirm it, or bring a second household in on a verified complaint. Napa County Animal Services handles other animal matters under a City-County contract.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7072579223",
+      "officialSourceLabel": "Napa Municipal Code §6.04.220",
+      "officialSourceUrl": "https://ecode360.com/43391246",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "napa-party_music",
+      "jurisdictionId": "napa",
+      "jurisdiction": "Napa, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Amplified sound heard outside needs a permit; loud parties fall to state law",
+      "summary": "Napa's noise chapter (8.08) has no residential decibel limit and no general loud-noise rule. What it does say: it is unlawful to operate a loudspeaker, public address or sound amplification system that can be heard outside any building without the City Manager's approval, except for permitted parades, filming and zoning-permitted uses (§8.08.010), and the Police Department says it issues amplified-noise permits on a one-time basis for events. Commercial activity that can be heard at a residential property line between 9:00 p.m. and 7:00 a.m. needs a permit (§8.08.020). Chapter 9.70 lets the City bill police response costs and civil penalties of $500 to $1,000 for parties where minors drink. A loud party or music that disturbs neighbors is otherwise handled by Napa Police under California Penal Code §415, which makes maliciously and willfully disturbing another person by loud and unreasonable noise an offense at any hour, with no dB cutoff.",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, whether it was amplified and audible outside the building, and how it disturbed you. Note whether it continued after a request to stop, because willfulness matters under Penal Code §415. A phone estimate is supporting evidence of how loud it was; no City number decides a party complaint.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Napa Police non-emergency dispatch at 707-257-9223 so an officer can hear it. For a repeat address, email Code Enforcement at codeenforcement@cityofnapa.org, the mailbox in the City directory (707-257-9646), with the dates and the PDF; ask whether the source holds an amplified-sound permit.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7072579223",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:codeenforcement@cityofnapa.org",
+      "officialSourceLabel": "Napa Municipal Code §§8.08.010–8.08.020; California Penal Code §415",
+      "officialSourceUrl": "https://ecode360.com/43391410",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "napa-construction",
+      "jurisdictionId": "napa",
+      "jurisdiction": "Napa, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Weekdays 7 to 7 with a late machine start; weekends and holidays 8 to 4",
+      "summary": "Napa Municipal Code §8.08.025 limits construction activity, other than work an owner or renter does on their own existing home, to 7:00 a.m.–7:00 p.m. Monday through Friday, with finer lines inside that window: no machine or equipment start-up before 8:00 a.m., no deliveries before 7:30 a.m. or after 5:00 p.m., no cleaning of equipment after 6:00 p.m., and no servicing after 6:45 p.m. Weekend and legal-holiday work is limited to 8:00 a.m.–4:00 p.m. Other hours need a City Manager permit, granted for emergencies, for work that will not be unreasonably offensive to neighbors, or to protect public health and safety, and the permit must be posted on site (§8.08.050). Mufflers must be maintained, equipment next to developed areas needs acoustical shielding, and idle equipment must be shut down. Public-agency work needed to keep a public project going is exempt. The rule sets no dB limit. Police or the Code Enforcement Officer may post a stop-work order that takes effect immediately.",
+      "captureInstruction": "Record the site address, the day, whether it was a weekend or legal holiday, and the exact start and stop times; note separately any machine start before 8:00 a.m., deliveries before 7:30 a.m. or after 5:00 p.m., and equipment cleaning or servicing after 6:00 or 6:45 p.m., because each has its own line. Note whether a City Manager permit is posted and whether idle machines were left running. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on outside the hours, call Napa Police non-emergency dispatch at 707-257-9223; police can post a stop-work order. For a project that keeps doing it, email Code Enforcement at codeenforcement@cityofnapa.org (707-257-9646) with the dated log and PDF; the City's mySERVICECENTER also takes anonymous requests.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7072579223",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:codeenforcement@cityofnapa.org",
+      "officialSourceLabel": "Napa Municipal Code §8.08.025",
+      "officialSourceUrl": "https://ecode360.com/43391410",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "08:00",
+            "end": "16:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "08:00",
+            "end": "16:00"
+          }
+        ],
+        "context": "Napa Code 8.08.025: construction is allowed 7:00 a.m.–7:00 p.m. Monday–Friday (machines start no earlier than 8:00 a.m., deliveries 7:30–5:00, cleaning by 6:00, servicing by 6:45) and 8:00 a.m.–4:00 p.m. on weekends and legal holidays, unless a City Manager permit says otherwise. An owner or renter working on their own existing home is exempt. The rule is hours-only, with no dB limit.",
+        "sourceCitation": "Napa Municipal Code 8.08.025(A)",
+        "sourceQuote": "Construction activities throughout the entire duration of the project shall be limited to the hours of 7:00 a.m. to 7:00 p.m., Monday through Friday. There will be no start up of machines nor equipment prior to 8:00 a.m., Monday through Friday; no delivery of materials nor equipment prior to 7:30 a.m. nor past 5:00 p.m., Monday through Friday; no cleaning of machines nor equipment past 6:00 p.m., Monday through Friday; no servicing of equipment past 6:45 p.m., Monday through Friday; and construction on weekends or legal holidays shall be limited to the hours of 8:00 a.m. to 4:00 p.m., unless a permit shall first have been secured from the City Manager, or designee, pursuant to Section 8.08.050 of this code."
+      }
+    },
+    {
+      "id": "vacaville-barking_dog",
+      "jurisdictionId": "vacaville",
+      "jurisdiction": "Vacaville, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Habitual barking: an officer's visit first, then a three-household petition with two-week logs",
+      "summary": "Vacaville Municipal Code Chapter 6.20 declares any dog, cat or other animal whose habitual howling, yelping, barking or other noise disturbs the comfort, peace or quiet of nearby property, or would annoy a reasonable person of normal sensitivity, a public nuisance (§6.20.010). The chapter runs on a petition (§6.20.020): a writing signed by three or more persons from separate residences in the neighborhood, or by one or more residents who show the animal control officer a good-faith effort to get other signatures (or that there are fewer than three occupied homes nearby) plus adequate evidence. Vacaville contracts animal control to Humane Animal Services, which says it first sends an officer to talk to the owner as a courtesy; if the barking continues you request the Petition for Abatement of Animal as a Public Nuisance, which needs at least three signatures from different residences and a two-week noise log from each signer. The officer then issues a seven-day abatement notice, and a still-noisy animal goes to the City's hearing officer. Provoked barking does not count. The rule sets no minute or dB threshold.",
+      "captureInstruction": "Log every episode with the animal's address, the date, exact start and stop times, and how it disturbed you; keep it going for at least two straight weeks, because each petition signer must hand in a two-week log. Note the date of your first call and of the officer's visit to the owner. Line up two neighbors from other households now; their logs must cover the same stretch. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Humane Animal Services at 707-449-1700 (8:00 a.m.–5:00 p.m., seven days) with the animal's exact address, when it barks and your name and number; an officer will speak with the owner. If it continues, ask them for the Petition for Abatement, gather three households' signatures and two-week logs, and return it. After hours, Vacaville Police non-emergency 707-449-5200 can dispatch them.",
+      "actionLabel": "Call Humane Animal Services",
+      "actionUri": "tel:7074491700",
+      "secondaryActionLabel": "Open Official Barking Procedure",
+      "secondaryActionUri": "https://humaneanimalservices.org/noisy-animals/",
+      "officialSourceLabel": "Vacaville Municipal Code Chapter 6.20 (§§6.20.010–6.20.020)",
+      "officialSourceUrl": "https://ecode360.com/48405080",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "vacaville-party_music",
+      "jurisdictionId": "vacaville",
+      "jurisdiction": "Vacaville, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Excessive noise is a nuisance, but the City opens a file only on three households' written request",
+      "summary": "Vacaville has no stand-alone noise chapter and no residential decibel limit. Its nuisance chapter makes excessive noise in a residential neighborhood that disturbs the peace or quiet of nearby properties, or would annoy reasonable persons of normal sensitivity, a public nuisance (§8.10.060(M)). The same paragraph says the City is not required to investigate such a complaint unless it receives a written request to abate signed by three or more persons having separate residences in the neighborhood; it may still act on a writing from fewer residents who show a good-faith effort to get the other signatures or that fewer than three homes are occupied nearby. A separate line bans commercial equipment such as parking-lot sweepers, leaf blowers and mowers within 500 feet of an occupied residence 7:00 p.m.–7:00 a.m. Monday through Saturday and all day Sundays and holidays (§8.10.060(N)). Loudspeakers and amplifiers on streets, parks and other public property need a police registration and may run only 9:00 a.m.–6:00 p.m., never commercially on Sundays or holidays (Chapter 9.16). A loud party on private property while it is happening is a police matter under California Penal Code §415, which makes maliciously and willfully disturbing another person by loud and unreasonable noise an offense at any hour, with no dB cutoff.",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, whether it was amplified, and how it disturbed you. Note whether it continued after a request to stop, because willfulness matters under Penal Code §415. Because the City wants three households' signatures before it must investigate, ask two neighbors from other homes to keep their own dates. A phone estimate shows how loud it was; no City number decides this rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Vacaville Police non-emergency at 707-449-5200 so an officer can hear it. For a repeat address, email Code Enforcement at Code.Enforcement@cityofvacaville.gov (707-449-5693, 8:00 a.m.–5:30 p.m. weekdays, closed every other Friday) with the dates and the PDF as a written request to abate; a request signed by three households obliges the City to investigate.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7074495200",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:Code.Enforcement@cityofvacaville.gov",
+      "officialSourceLabel": "Vacaville Municipal Code §8.10.060(M)–(N); Chapter 9.16; California Penal Code §415",
+      "officialSourceUrl": "https://ecode360.com/48405589#48405621",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "vacaville-construction",
+      "jurisdictionId": "vacaville",
+      "jurisdiction": "Vacaville, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Within 500 feet of a home: 7 a.m. to 7 p.m. Monday through Saturday, nothing on Sundays or holidays",
+      "summary": "Vacaville Municipal Code §8.10.060(O) declares construction, repair work or grading within 500 feet of any occupied residence between 7:00 p.m. and 7:00 a.m. Monday through Saturday a public nuisance, and allows no such work at all on Sundays or holidays. Three carve-outs: City projects; an exception granted by the Department of Public Works for emergency work, to offset weather delays, for 24-hour projects or similar; and interior work or construction, repair or grading that a homeowner does or directs at their own residence on a Sunday or holiday, which is allowed only 8:00 a.m.–7:00 p.m. The rule sets no dB limit. Code Enforcement (part of the Fire Department) enforces the nuisance chapter and can issue a notice to abate and administrative fines (§8.10.070).",
+      "captureInstruction": "Record the site address, the day, whether it was a Sunday or holiday, and the exact start and stop times; note whether it was outdoor construction, repair or grading and whether the site is within 500 feet of an occupied home (it usually is if you can hear it from yours). Note any posted Public Works exception and whether the work was a homeowner's own Sunday job. A time-stamped photo or short clip is strong here because the rule turns on the clock, not on dB.",
+      "requiredIncidentCount": null,
+      "nextAction": "Email Code Enforcement at Code.Enforcement@cityofvacaville.gov with the site address, the dates and times and the PDF, or call 707-449-5693 (8:00 a.m.–5:30 p.m. weekdays, closed every other Friday); an inspection is scheduled as soon as possible. For work going on right now outside the hours, at night or on a Sunday, call Vacaville Police non-emergency at 707-449-5200.",
+      "actionLabel": "Email Code Enforcement",
+      "actionUri": "mailto:Code.Enforcement@cityofvacaville.gov",
+      "secondaryActionLabel": "Call Code Enforcement",
+      "secondaryActionUri": "tel:7074495693",
+      "officialSourceLabel": "Vacaville Municipal Code §8.10.060(O)",
+      "officialSourceUrl": "https://ecode360.com/48405589#48405621",
+      "verifiedDate": "2026-09-30",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "07:00",
+            "end": "19:00"
+          }
+        ],
+        "context": "Vacaville Code 8.10.060(O): construction, repair work or grading within 500 feet of an occupied residence is a nuisance between 7:00 p.m. and 7:00 a.m. Monday through Saturday, and is not allowed on Sundays or holidays, except City projects, a Public Works exception, or a homeowner's own Sunday/holiday work 8:00 a.m.–7:00 p.m. The rule is hours-only, with no dB limit.",
+        "sourceCitation": "Vacaville Municipal Code 8.10.060(O)",
+        "sourceQuote": "Construction, repair work or grading within 500 feet from any occupied residence between the hours of seven o'clock p.m. and seven o'clock a.m. Monday through Saturday. No such construction, repair work or grading activities shall be allowed on Sundays or holidays."
+      }
+    },
+    {
+      "id": "fairfield-barking_dog",
+      "jurisdictionId": "fairfield",
+      "jurisdiction": "Fairfield, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Persistent barking is banned; the fix runs through a three-household petition",
+      "summary": "Fairfield bans keeping any animal, crowing rooster or fowl which by any persistent sound or cry disturbs a reasonable person owning, using or occupying property in the neighborhood (City Code §25.1404, Animals and fowl), and its Table 25.1401 residential limits do not exempt barking dogs (§25.1405(A)). The abatement path is Chapter 3, Article V: an animal whose habitual howling, yelping, barking or other noise disturbs the comfort, peace or quiet of nearby property is a public nuisance (§3.60), started by a petition (§3.61(f)): a writing signed by three or more persons from separate residences in the neighborhood, or by one or more residents who show the animal control officer a good-faith effort to get other signatures (or that three or fewer homes are occupied nearby) plus adequate evidence. Fairfield contracts animal control to Humane Animal Services, which says it first sends an officer to speak with the owner; if it continues you request the Petition for Abatement, which needs at least three signatures from different residences and a two-week noise log from each signer, then a seven-day abatement notice, then the City's hearing officer. Provoked barking does not count. No minute or dB threshold decides it.",
+      "captureInstruction": "Log every episode with the animal's address, the date, exact start and stop times, and how it disturbed you; keep it going for at least two straight weeks, because each petition signer must hand in a two-week log. Note the date of your first call and of the officer's visit to the owner. Line up two neighbors from other households now; their logs must cover the same stretch. A phone dB estimate does not decide this no-threshold rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Humane Animal Services at 707-449-1700 (8:00 a.m.–5:00 p.m., seven days) with the animal's exact address, when it barks and your name and number; an officer will speak with the owner. If it continues, ask them for the Petition for Abatement, gather three households' signatures and two-week logs, and return it. After hours, Fairfield Police non-emergency 707-428-7300 can dispatch them.",
+      "actionLabel": "Call Humane Animal Services",
+      "actionUri": "tel:7074491700",
+      "secondaryActionLabel": "Open Official Barking Procedure",
+      "secondaryActionUri": "https://humaneanimalservices.org/noisy-animals/",
+      "officialSourceLabel": "Fairfield City Code §§3.60–3.62; §25.1404",
+      "officialSourceUrl": "https://ecode360.com/50424195",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "fairfield-party_music",
+      "jurisdictionId": "fairfield",
+      "jurisdiction": "Fairfield, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "At the property line: 50 dB by day, 45 dB at night, and 5 dB lower for music",
+      "summary": "Fairfield City Code §25.1403 makes it unlawful to create noise anywhere in the City that exposes other properties to more than Table 25.1401. For a residential receiver, measured at the property line of the receiving property, the exterior limits are 50 dB Leq by day (7:00 a.m.–10:00 p.m.) and 45 dB Leq at night (10:00 p.m.–7:00 a.m.), with maximum levels (Lmax) of 70 dB by day and 65 dB at night; each limit drops 5 dB for simple tones, noise consisting primarily of speech or music, or recurring impulsive noise, so a party's music is held to 45 Leq by day and 40 Leq at night. Leq is defined as the energy average over a sample period, typically one hour. Where the existing ambient already exceeds the table, a new source must be mitigated down to the ambient. Separately, §25.1404 bans using any musical instrument, amplifier or sound device so that a reasonable person owning, using or occupying property in the neighborhood is disturbed, with no number at all, and §12.8 bans unnecessary noises annoying to persons of ordinary sensitiveness. Chapter 12, Article VII lets police bill a responsible person for repeat responses to a loud party. Enforcement is by administrative citation (§25.1413). Property-maintenance tools are exempt 7:00 a.m.–10:00 p.m., and permitted special events are exempt in the same hours.",
+      "captureInstruction": "Record the source address, exact times, duration, what was heard, whether it was music or speech (that triggers the 5 dB lower limit), and how it disturbed you. Measure from your own property line facing the source if you can, and note where you stood; the City's limit is read at the receiving property line with a sound level meter. If the source falls quiet, capture the quiet level at the same spot, because the ambient sets the floor. Note whether it continued after a request to stop.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Fairfield Police non-emergency at 707-428-7300 and press option 8 for a dispatcher; the City's own MyFairfieldCA portal says noise complaints go to that line. For a repeat address, email Code Enforcement at fpdcodeenforcement@fairfield.ca.gov (707-428-7587) with the dates, times and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7074287300",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:fpdcodeenforcement@fairfield.ca.gov",
+      "officialSourceLabel": "Fairfield City Code §§25.1403–25.1405; §12.8",
+      "officialSourceUrl": "https://ecode360.com/50782594#50782616",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 45,
+        "nighttimeMaximumDb": 40,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Fairfield Code Table 25.1401: a residential property line may receive 50 dB Leq by day (7 a.m.–10 p.m.) and 45 dB Leq at night, each lowered by 5 dB for noise that is mostly speech or music, so music is held to 45 by day and 40 at night; Lmax limits are 70 by day and 65 at night, also 5 dB lower for music. Leq is an energy average over a sample period, typically one hour, read at the receiving property line. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "ambientRecipe": {
+        "minutes": 1,
+        "note": "Fairfield reads its limits as an hour-long energy average and says a new source only has to come down to the existing ambient where the ambient is already above the table. Capture the quiet level at your property line with the source silent so the PDF shows the floor the City would use.",
+        "sourceQuote": "In situations where the existing ambient noise level exceeds the noise levels indicated in the above table, any new noise source must include mitigation that reduces the noise level to the existing ambient level.",
+        "sourceCitation": "Fairfield City Code Table 25.1401, notes"
+      }
+    },
+    {
+      "id": "fairfield-construction",
+      "jurisdictionId": "fairfield",
+      "jurisdiction": "Fairfield, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Construction tools are silent 10 p.m. to 7 a.m. every day, unless Public Works says otherwise in writing",
+      "summary": "Fairfield City Code §25.1404 (Construction activities) bans operating, or permitting the operation of, any tools or equipment used in construction, grading or demolition between 10:00 p.m. and 7:00 a.m., except by written permission of the Director of Public Works. The ban runs every day of the week; the code sets no separate weekend or holiday hours. Inside 7:00 a.m.–10:00 p.m. construction still has to meet the residential property-line limits of Table 25.1401 (50 dB Leq and 70 dB Lmax by day, 5 dB lower for impulsive noise), and large-truck deliveries and loading next to homes 10:00 p.m.–7:00 a.m. may not exceed the Lmax limits. Property-maintenance tools such as mowers, blowers and power tools are exempt 7:00 a.m.–10:00 p.m. (§25.1405(B)). Enforcement is by administrative citation under Chapter 1, Article II (§25.1413).",
+      "captureInstruction": "Record the site address, the day, and the exact start and stop times; the clock decides this rule, so any work before 7:00 a.m. or after 10:00 p.m. is the fact that matters. Note whether it was construction, grading or demolition tools rather than yard tools, and whether a Public Works permission is posted. A time-stamped photo or short clip is strong here. For daytime work that is very loud, a reading at your property line matters against the 70 dB Lmax and 50 dB Leq lines.",
+      "requiredIncidentCount": null,
+      "nextAction": "For work going on right now between 10:00 p.m. and 7:00 a.m., call Fairfield Police non-emergency at 707-428-7300, option 8. For a project that keeps doing it, email Code Enforcement at fpdcodeenforcement@fairfield.ca.gov (707-428-7587) with the site address, the dated log and the PDF; ask whether the project holds written permission from Public Works.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7074287300",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:fpdcodeenforcement@fairfield.ca.gov",
+      "officialSourceLabel": "Fairfield City Code §25.1404 (Construction activities)",
+      "officialSourceUrl": "https://ecode360.com/50782594#50782617",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 50,
+        "nighttimeMaximumDb": 45,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Fairfield Code Table 25.1401: a residential property line may receive 50 dB Leq by day (7 a.m.–10 p.m.) and 45 dB Leq at night, with Lmax limits of 70 by day and 65 at night, read at the receiving property line; night construction is banned outright by 25.1404 regardless of level. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "07:00",
+            "end": "22:00"
+          }
+        ],
+        "context": "Fairfield Code 25.1404: no tools or equipment used in construction, grading or demolition may run between 10:00 p.m. and 7:00 a.m. on any day, except by written permission of the Director of Public Works.",
+        "sourceCitation": "Fairfield City Code 25.1404 (Construction activities)",
+        "sourceQuote": "Construction activities - Operating or permitting the operation of any tools or equipment used in construction, grading or demolition works between the hours of 10:00 p.m. and 7:00 a.m. except by written permission of the Director of Public Works."
+      }
+    },
+    {
+      "id": "petaluma-barking_dog",
+      "jurisdictionId": "petaluma",
+      "jurisdiction": "Petaluma, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Ten minutes of noise in any hour is the line; two households or an officer's ears prove it",
+      "summary": "Petaluma Municipal Code §9.08.180 bans keeping any animal on premises in the city that continuously and incessantly produces noise at any time of day or night to the disturbance of any other person. Continuous and incessant means noise for an aggregate period of ten minutes or more in any one-hour period that disturbs the peace of another person, including barking, howling, crying, baying or squealing, provided nobody was trespassing or threatening to trespass on the owner's property and the animal was not being teased or provoked. An animal control officer investigates every reported incident, writes a report signed under penalty of perjury, appends the signed statements of witnesses, victims and the owner, and requires each of them to keep a bark/noise log listing times and durations, also signed under penalty of perjury. A rebuttable presumption of a public nuisance exists when at least two individuals from separate residences sign a declaration under penalty of perjury to facts showing a violation, or a law enforcement or animal control officer personally witnesses one. Each day the noise continues is a separate offense. The City contracts its animal services to Marin Humane, which took over on April 1. The rule sets no dB level.",
+      "captureInstruction": "For each incident record the animal's address, the date, the exact start and stop times, and how many minutes of noise fell inside each clock hour; ten aggregate minutes in one hour is the City's line, so an hour with 6 minutes, then 3, then 2 counts. Note whether anyone was near the owner's fence or provoking the animal, because that defeats the rule. Keep the log going after your first call, since the officer will ask you to sign it under penalty of perjury; a neighbor from a second household who hears it and will sign a declaration makes the case presumptive. A phone dB estimate does not decide this minutes-based rule.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Marin Humane at 415-883-4621 with the animal's exact address, the dates and times, and your name and number; the City's own answer page sends barking complaints there. An animal control officer will open a report and ask you and any witnesses to keep a signed bark/noise log; hand over the PDF log with it.",
+      "actionLabel": "Call Marin Humane (Petaluma Animal Services)",
+      "actionUri": "tel:4158834621",
+      "secondaryActionLabel": "Open Official Barking Procedure",
+      "secondaryActionUri": "https://cityofpetaluma.org/question/pet-complaint/",
+      "officialSourceLabel": "Petaluma Municipal Code §9.08.180",
+      "officialSourceUrl": "https://petaluma.municipal.codes/Code/9.08.180",
+      "verifiedDate": "2026-09-30"
+    },
+    {
+      "id": "petaluma-party_music",
+      "jurisdictionId": "petaluma",
+      "jurisdiction": "Petaluma, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "A quiet city by law: 70 dB by day, 65 at night, read on your own property over 15 minutes",
+      "summary": "Petaluma's Implementing Zoning Ordinance §21.040(A) declares Petaluma a quiet city and sets Table 21.1, Maximum Exterior Noise Exposure in Leq dBA, measured on the property where the noise disturbance is being experienced, in its outdoor spaces (§21.040(A)(4)(c)). Night runs 10:00 p.m.–7:00 a.m. Monday through Friday and 10:00 p.m.–8:00 a.m. on Saturdays, Sundays and holidays. Noise lasting a cumulative 15 minutes or more in an hour may not exceed 65 dBA at night or 70 by day; 5 minutes or more, 70 at night or 75 by day; 1 minute or more, 75 at night or 80 by day; the General Plan ambient line is 60. If the measured ambient is above 60 dB the standard is raised in 5 dB steps to cover it, never above 75; at an ambient of 70 or more the ambient itself becomes the limit. Separately, using any loudspeaker or similar device so as to create a noise disturbance is a public nuisance at any hour (§21.040(A)(3)(a)(9)), and a public address system may run only 10:00 a.m.–7:00 p.m. and no more than 5 dBA above ambient (§21.040(A)(3)(d)). The Noise Control Officer is the Community Development Director together with the Police Chief.",
+      "captureInstruction": "Measure from your own property, outdoors, with the phone about four to five feet off the ground and at least ten feet from walls or fences; that is where the City's meter would sit. Let the meter run at least 15 minutes when you can, because the strictest line is the 15-minute cumulative average. Record the source address, exact times, whether it was a weekday or a weekend/holiday, whether it was amplified, and how it disturbed you. If the source pauses, capture the quiet level at the same spot, because the ambient can raise the limit.",
+      "requiredIncidentCount": null,
+      "nextAction": "While it is happening, call Petaluma Police non-emergency at 707-778-4372 so an officer can hear it. For a repeat address, file the Code Enforcement complaint form on the City site (Neighborhood Preservation, 707-778-4469, codeenforcement@cityofpetaluma.org, Monday–Thursday) with the dates, times and the PDF.",
+      "actionLabel": "Call Police Non-Emergency",
+      "actionUri": "tel:7077784372",
+      "secondaryActionLabel": "File Code Enforcement Complaint",
+      "secondaryActionUri": "https://cityofpetaluma.org/code-violation-nuisance/",
+      "officialSourceLabel": "Petaluma Implementing Zoning Ordinance §21.040(A)(3)–(4), Table 21.1",
+      "officialSourceUrl": "https://petaluma.municipal.codes/ZoningOrds/21.040",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 65,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Petaluma IZO Table 21.1: on the receiving property's outdoor space, noise lasting 15 or more cumulative minutes in an hour may not exceed 70 dBA Leq by day (7 a.m.–10 p.m. weekdays; 8 a.m.–10 p.m. weekends and holidays) or 65 at night; shorter bursts get 5 dB more per step (5 minutes: 75/70, 1 minute: 80/75); an ambient above 60 raises the line in 5 dB steps, never past 75. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "ambientRecipe": {
+        "minutes": 1,
+        "note": "Petaluma's measurement rule reads the ambient first, on the receiver's property, A-weighted, slow response, microphone four to five feet up and ten feet or more from any reflective surface, with the offending source shut off if possible. An ambient above 60 dB raises Table 21.1 in 5 dB steps, never above 75. Capture the quiet level at the same spot with the source silent so the PDF shows the floor the City would use.",
+        "sourceQuote": "Utilizing the “A” weighting scale of a sound level meter and the “slow” meter response (use “fast” response for impulsive type sounds), the ambient noise level shall first be measured at a position or positions at any point on the receiver’s property which can include private and public property. In general, the microphone shall be located four to five feet above the ground; ten feet or more from the nearest reflective surface where possible. If possible, the ambient noise shall be measured with the alleged offending noise source inoperative.",
+        "sourceCitation": "Petaluma IZO 21.040(A)(4)"
+      },
+      "formGuide": {
+        "portal": "Petaluma Code Enforcement complaint form",
+        "access": "No sign-in needed. Your name, address, email and phone are required, and there is a CAPTCHA. The City keeps the reporting party confidential.",
+        "steps": [
+          "One form on the Code Enforcement page, under \"Submit a Complaint\""
+        ],
+        "fields": [
+          {
+            "label": "Name (First, Last)",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Address (yours: street, city, state, ZIP, country)",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Your own address, not the noise address."
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Location of Code Violation (address, if known)",
+            "required": true,
+            "maxLength": 200,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Details of Violation",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "What do you think the violation is?",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Noise above the Table 21.1 limits or a loudspeaker noise disturbance, IZO 21.040(A)"
+          },
+          {
+            "label": "Where is the alleged violation located on the property?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Say where the noise comes from: back yard, garage, driveway, the whole lot."
+          },
+          {
+            "label": "To your knowledge, how long has the violation existed on the property?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "First date you logged it, and how often since."
+          },
+          {
+            "label": "CAPTCHA",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Code Enforcement staff answer by phone, email or appointment 8–5 Monday through Thursday, closed Fridays: 707-778-4469, codeenforcement@cityofpetaluma.org. For noise going on right now, Petaluma Police non-emergency is 707-778-4372."
+        ]
+      }
+    },
+    {
+      "id": "petaluma-construction",
+      "jurisdictionId": "petaluma",
+      "jurisdiction": "Petaluma, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Tools and construction: 7 a.m. to 10 p.m. weekdays, 9 a.m. to 10 p.m. weekends and holidays",
+      "summary": "Petaluma's Implementing Zoning Ordinance §21.040(A)(3)(a) declares it a public nuisance to operate, before 7:00 a.m. or after 10:00 p.m. daily, and before 9:00 a.m. or after 10:00 p.m. on Saturdays, Sundays and state, federal or local holidays, any of a listed set of sources: a hammer or anything used to repeatedly pound or strike; impact wrenches and compressed-air tools; any internal-combustion tool such as a chain saw, backpack blower or lawn mower; any electric or battery tool for cutting, drilling or shaping such as a saw, drill, lathe or router; heavy equipment, drilling and boring rigs, cranes, generators and pumps, pavement breakers, pile drivers, rollers, sand blasters, trenchers and concrete trucks, including loading and unloading them; and construction, demolition, excavation, erection, alteration or repair activity itself. The Noise Control Officer may issue an urgent-necessity exemption permit for up to ten working days, renewable to 90 days. Inside the allowed hours, Table 21.1 still caps the noise on the receiving property at 70 dBA Leq by day for 15 cumulative minutes an hour (75 for 5 minutes, 80 for 1 minute), 5 dB lower at night. Emergency responses, airport, river and railroad operations, garbage and utility vehicles, and uses with their own conditions of approval are exempt.",
+      "captureInstruction": "Record the site address, the day, whether it was a weekend or holiday, and the exact start and stop times; the clock decides this rule, so any tool before 7:00 a.m. (9:00 a.m. on weekends and holidays) or after 10:00 p.m. is the fact that matters. Name the tool or machine you heard, since the ordinance lists them. Note whether an exemption permit is posted. A time-stamped photo or short clip is strong here. For loud daytime work, a 15-minute reading from your own property matters against the 70 dBA line.",
+      "requiredIncidentCount": null,
+      "nextAction": "File the Code Enforcement complaint form on the City site with the site address, the dates and times and the PDF; Neighborhood Preservation staff answer 707-778-4469 and codeenforcement@cityofpetaluma.org Monday through Thursday. For work going on right now outside the hours, call Petaluma Police non-emergency at 707-778-4372.",
+      "actionLabel": "File Code Enforcement Complaint",
+      "actionUri": "https://cityofpetaluma.org/code-violation-nuisance/",
+      "secondaryActionLabel": "Call Police Non-Emergency",
+      "secondaryActionUri": "tel:7077784372",
+      "officialSourceLabel": "Petaluma Implementing Zoning Ordinance §21.040(A)(3)(a)",
+      "officialSourceUrl": "https://petaluma.municipal.codes/ZoningOrds/21.040",
+      "verifiedDate": "2026-09-30",
+      "meterLimit": {
+        "daytimeMaximumDb": 70,
+        "nighttimeMaximumDb": 65,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Petaluma IZO Table 21.1: on the receiving property's outdoor space, noise lasting 15 or more cumulative minutes in an hour may not exceed 70 dBA Leq by day or 65 at night, with 5 dB more allowed for 5-minute and 1-minute bursts; night starts at 10 p.m. and ends at 7 a.m. weekdays or 8 a.m. weekends and holidays. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      },
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "22:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "22:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "09:00",
+            "end": "22:00"
+          }
+        ],
+        "context": "Petaluma Zoning Code (IZO) 21.040(A)(3)(a): hammers, air tools, engine-powered and electric power tools, heavy equipment and construction, demolition, excavation, erection, alteration or repair activity are public nuisances before 7:00 a.m. or after 10:00 p.m. daily, and before 9:00 a.m. or after 10:00 p.m. on Saturdays, Sundays and holidays, unless the Noise Control Officer issues an urgent-necessity exemption permit.",
+        "sourceCitation": "Petaluma IZO 21.040(A)(3)(a)(1) and (7)",
+        "sourceQuote": "The operation or use of any of the following before 7:00 a.m. or after 10:00 p.m. daily (except Saturday, Sunday and State, Federal or Local Holidays, when the prohibited time shall be before 9:00 a.m. and after 10:00 p.m.): … Construction, demolition, excavation, erection, alteration or repair activity."
+      },
+      "formGuide": {
+        "portal": "Petaluma Code Enforcement complaint form",
+        "access": "No sign-in needed. Your name, address, email and phone are required, and there is a CAPTCHA. The City keeps the reporting party confidential.",
+        "steps": [
+          "One form on the Code Enforcement page, under \"Submit a Complaint\""
+        ],
+        "fields": [
+          {
+            "label": "Name (First, Last)",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Address (yours: street, city, state, ZIP, country)",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Your own address, not the noise address."
+          },
+          {
+            "label": "Email",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Location of Code Violation (address, if known)",
+            "required": true,
+            "maxLength": 200,
+            "answer": "ADDRESS"
+          },
+          {
+            "label": "Details of Violation",
+            "required": true,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "What do you think the violation is?",
+            "required": false,
+            "answer": "FIXED",
+            "fixedText": "Construction or power-tool noise outside the allowed hours, IZO 21.040(A)(3)"
+          },
+          {
+            "label": "Where is the alleged violation located on the property?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Say where the noise comes from: back yard, garage, driveway, the whole lot."
+          },
+          {
+            "label": "To your knowledge, how long has the violation existed on the property?",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "First date you logged it, and how often since."
+          },
+          {
+            "label": "CAPTCHA",
+            "required": true,
+            "answer": "YOURS"
+          }
+        ],
+        "tips": [
+          "Code Enforcement staff answer by phone, email or appointment 8–5 Monday through Thursday, closed Fridays: 707-778-4469, codeenforcement@cityofpetaluma.org. For noise going on right now, Petaluma Police non-emergency is 707-778-4372."
         ]
       }
     }
