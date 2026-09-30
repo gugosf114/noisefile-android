@@ -17,6 +17,7 @@ import com.noisefile.app.model.Incident
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.CaptureStage
+import com.noisefile.app.ui.FormGuideScreen
 import com.noisefile.app.ui.HistoryScreen
 import com.noisefile.app.ui.HomeScreen
 import com.noisefile.app.ui.MeterScreen
@@ -142,6 +143,17 @@ class StoreScreenshots {
             workflows = catalog.forJurisdiction("daly-city"), selectedRule = rule,
             selectedJurisdiction = catalog.jurisdictions.first { it.id == "daly-city" }, incidentCount = 0,
             onSelectRule = {}, onShowCityPicker = {}, onOpenUri = {}, nav = nav,
+        )
+    }
+
+    @Test fun s07_form_guide() = shot("07-form-guide") {
+        val rule = catalog.retrieve("san-francisco", NoiseType.PARTY_MUSIC)!!
+        FormGuideScreen(
+            incident = incidents().first().copy(ruleId = rule.id),
+            rule = rule,
+            nav = nav,
+            onBack = {},
+            onOpenForm = {},
         )
     }
 
