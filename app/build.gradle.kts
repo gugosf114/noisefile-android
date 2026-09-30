@@ -25,8 +25,8 @@ android {
         applicationId = "com.wimlabs.noisefile"
         minSdk = 26
         targetSdk = 36
-        versionCode = 38
-        versionName = "0.20.0"
+        versionCode = 39
+        versionName = "0.21.0"
 
         vectorDrawables {
             useSupportLibrary = true

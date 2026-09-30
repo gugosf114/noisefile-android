@@ -59,8 +59,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(18, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(54, catalog.rules.size)
+        assertEquals(22, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(66, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -76,6 +76,9 @@ class RuleCatalogTest {
                 "sunnyvale-party_music", "san-mateo-party_music", "richmond-party_music",
                 "hayward-construction", "san-mateo-construction",
                 "san-leandro-party_music", "redwood-city-construction",
+                "mountain-view-construction", "milpitas-party_music",
+                "pleasanton-party_music", "pleasanton-construction",
+                "alameda-party_music", "alameda-construction",
             ),
             limitedRules,
         )
@@ -667,7 +670,7 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theSevenEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theTwelveEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
@@ -681,6 +684,11 @@ class RuleCatalogTest {
                 "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
                 "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
                 "san-leandro-construction" to "mailto:BuildingInspections@SanLeandro.org",
+                "mountain-view-barking_dog" to "mailto:staff@svaca.com",
+                "mountain-view-construction" to "mailto:cmvworkrequest@mountainview.gov",
+                "milpitas-barking_dog" to "mailto:Code_Enforcement@milpitas.gov",
+                "milpitas-party_music" to "mailto:Code_Enforcement@milpitas.gov",
+                "milpitas-construction" to "mailto:Code_Enforcement@milpitas.gov",
             ),
             emails,
         )
@@ -731,5 +739,60 @@ class RuleCatalogTest {
         assertTrue(complaintDestination(rwcBuild).isOnlineForm)
         assertEquals("Construction Noise", rwcBuild.formGuide?.fields?.get(1)?.fixedText)
         assertEquals("Residential Noise", rwcNoise.formGuide?.fields?.get(1)?.fixedText)
+    }
+
+    @Test
+    fun mountainViewMilpitasPleasantonAndAlamedaReadTheirCurrentCodes() {
+        val catalog = catalog()
+
+        val mvAnimal = catalog.retrieve("mountain-view", NoiseType.BARKING_DOG)!!
+        val mvNoise = catalog.retrieve("mountain-view", NoiseType.PARTY_MUSIC)!!
+        val mvBuild = catalog.retrieve("mountain-view", NoiseType.CONSTRUCTION)!!
+        assertTrue(mvAnimal.summary.contains("ten minutes"))
+        assertTrue(mvAnimal.summary.contains("one-half hour"))
+        assertEquals("tel:4087640344", mvAnimal.actionUri)
+        assertTrue(mvNoise.summary.contains("Penal Code"))
+        assertNull(mvNoise.meterLimit)
+        assertTrue(complaintDestination(mvNoise).isOnlineForm)
+        assertEquals("Police Department", mvNoise.formGuide?.fields?.first()?.fixedText)
+        assertEquals(HoursKind.ALLOWED, mvBuild.hoursRule?.kind)
+        assertTrue(mvBuild.hoursRule!!.windows.all { it.days == DayGroup.WEEKDAY })
+        assertEquals(55.0, mvBuild.meterLimit?.daytimeMaximumDb)
+        assertEquals(50.0, mvBuild.meterLimit?.nighttimeMaximumDb)
+
+        val milAnimal = catalog.retrieve("milpitas", NoiseType.BARKING_DOG)!!
+        val milNoise = catalog.retrieve("milpitas", NoiseType.PARTY_MUSIC)!!
+        val milBuild = catalog.retrieve("milpitas", NoiseType.CONSTRUCTION)!!
+        assertTrue(milAnimal.summary.contains("300 yards"))
+        assertEquals("tel:4085863071", milAnimal.actionUri)
+        assertEquals(65.0, milNoise.meterLimit?.fixedMaximumDb)
+        assertEquals(3, milNoise.ambientRecipe?.minutes)
+        assertEquals(HoursKind.QUIET, milNoise.hoursRule?.kind)
+        assertTrue(milBuild.hoursRule!!.windows.single().days == DayGroup.ALL)
+        assertTrue(milBuild.summary.contains("Thanksgiving Day and Christmas Day"))
+        assertTrue(complaintDestination(milBuild).isEmail)
+
+        val plAnimal = catalog.retrieve("pleasanton", NoiseType.BARKING_DOG)!!
+        val plNoise = catalog.retrieve("pleasanton", NoiseType.PARTY_MUSIC)!!
+        val plBuild = catalog.retrieve("pleasanton", NoiseType.CONSTRUCTION)!!
+        assertTrue(plAnimal.summary.contains("loudness, duration and location"))
+        assertEquals("tel:9259315100", plAnimal.actionUri)
+        assertEquals(60.0, plNoise.meterLimit?.fixedMaximumDb)
+        assertNull(plNoise.hoursRule)
+        assertEquals(86.0, plBuild.meterLimit?.fixedMaximumDb)
+        assertEquals(3, plBuild.hoursRule?.windows?.size)
+        assertTrue(complaintDestination(plBuild).isOnlineForm)
+        assertTrue(plBuild.formGuide!!.fields.any { it.answer == FormAnswer.ADDRESS })
+
+        val alAnimal = catalog.retrieve("alameda", NoiseType.BARKING_DOG)!!
+        val alNoise = catalog.retrieve("alameda", NoiseType.PARTY_MUSIC)!!
+        val alBuild = catalog.retrieve("alameda", NoiseType.CONSTRUCTION)!!
+        assertTrue(alAnimal.summary.contains("ten minutes"))
+        assertEquals("tel:5103378340", alAnimal.actionUri)
+        assertEquals(55.0, alNoise.meterLimit?.daytimeMaximumDb)
+        assertTrue(alNoise.meterLimit!!.comparisonContext.contains("30 minutes in an hour"))
+        assertTrue(alBuild.hoursRule!!.windows.none { it.days == DayGroup.SUNDAY })
+        assertEquals("Construction Noise", alBuild.formGuide?.fields?.first { it.label.startsWith("Please choose") }?.fixedText)
+        assertTrue(complaintDestination(alBuild).isOnlineForm)
     }
 }
