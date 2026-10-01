@@ -289,7 +289,7 @@ internal fun HomeScreen(
             }
 
             item {
-                DeckCard(modifier = Modifier.tourTarget(TourStep.QUIET)) {
+                DeckCard {
                     Text("Quiet baseline (the codes call it ambient)", style = MaterialTheme.typography.titleMedium)
                     Text(
                         text = baselineRuleLine(selectedRule, ambientTargetSeconds / 60),
@@ -321,7 +321,7 @@ internal fun HomeScreen(
                         color = if (roomBaseline != null) Chalk else Muted,
                     )
                     OutlinedButton(
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        modifier = Modifier.fillMaxWidth().height(52.dp).tourTarget(TourStep.QUIET),
                         onClick = onBeginAmbient,
                         enabled = state.quietRoom != null,
                         shape = RoundedCornerShape(16.dp),
