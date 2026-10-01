@@ -75,6 +75,7 @@ import com.noisefile.app.ui.theme.DeckHigh
 import com.noisefile.app.ui.theme.Hairline
 import com.noisefile.app.ui.theme.Ink
 import com.noisefile.app.ui.theme.Line
+import com.noisefile.app.ui.theme.Cobalt
 import com.noisefile.app.ui.theme.Muted
 import com.noisefile.app.ui.theme.PaperBlue
 import com.noisefile.app.ui.theme.PaperGreen
@@ -187,6 +188,8 @@ internal fun HomeScreen(
     onBeginSelfTest: () -> Unit,
     nav: NavActions,
     listState: LazyListState = rememberLazyListState(),
+    onAttachQuiet: () -> Unit = {},
+    onDismissQuietAttach: () -> Unit = {},
 ) {
     val city = selectedJurisdiction.displayName
     val limit = limitAt(selectedRule, LocalTime.now().hour)
@@ -207,6 +210,27 @@ internal fun HomeScreen(
             }
             if (state.showCalibrationPrompt) {
                 item { CalibrationPromptCard(onCalibrate = onBeginSelfTest, onSkip = onSkipCalibrationPrompt) }
+            }
+            if (state.quietAttachCount > 0 && state.ambient != null) {
+                item {
+                    DeckCard {
+                        Text("Same spot as your earlier incidents?", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = "You have ${state.quietAttachCount} saved incident${if (state.quietAttachCount == 1) "" else "s"} in $city with no quiet level. " +
+                                "If you measured this quiet where those happened, attach it. The report will say it was measured later.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Muted,
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Button(
+                                onClick = onAttachQuiet,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White),
+                            ) { Text("Attach it") }
+                            TextButton(onClick = onDismissQuietAttach) { Text("Different spot", color = Muted) }
+                        }
+                    }
+                }
             }
 
             item {

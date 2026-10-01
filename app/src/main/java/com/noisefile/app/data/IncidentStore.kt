@@ -40,6 +40,19 @@ class IncidentStore(context: Context) {
     }
 
     @Synchronized
+    /** Attach a quiet measured later to every incident in [jurisdictionId] that has no quiet of its own. */
+    fun attachLaterQuiet(jurisdictionId: String, db: Double, seconds: Long, atEpochMillis: Long): List<Incident> {
+        val incidents = load().map { incident ->
+            if (incident.ruleId.startsWith("$jurisdictionId-") && incident.ambientDb == null) {
+                incident.copy(laterQuietDb = db, laterQuietSeconds = seconds, laterQuietAtEpochMillis = atEpochMillis)
+            } else {
+                incident
+            }
+        }
+        persist(incidents)
+        return incidents
+    }
+
     fun updateDetails(
         incidentId: Long,
         details: IncidentDetails,
@@ -88,6 +101,9 @@ internal fun Incident.toJson(): JSONObject = JSONObject()
     .put("soundKind", soundKind ?: JSONObject.NULL)
     .put("ambientDb", ambientDb ?: JSONObject.NULL)
     .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
+    .put("laterQuietDb", laterQuietDb ?: JSONObject.NULL)
+    .put("laterQuietSeconds", laterQuietSeconds ?: JSONObject.NULL)
+    .put("laterQuietAtEpochMillis", laterQuietAtEpochMillis ?: JSONObject.NULL)
     .put("levelNote", levelNote ?: JSONObject.NULL)
     .put("levelTrace", JSONArray().also { array -> levelTrace.forEach { array.put(it) } })
     .put("traceSecondsPerSample", traceSecondsPerSample)
@@ -125,6 +141,9 @@ private fun JSONObject.toIncident(): Incident = Incident(
     soundKind = if (has("soundKind") && !isNull("soundKind")) getString("soundKind") else null,
     ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
     ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
+    laterQuietDb = if (has("laterQuietDb") && !isNull("laterQuietDb")) getDouble("laterQuietDb") else null,
+    laterQuietSeconds = if (has("laterQuietSeconds") && !isNull("laterQuietSeconds")) getLong("laterQuietSeconds") else null,
+    laterQuietAtEpochMillis = if (has("laterQuietAtEpochMillis") && !isNull("laterQuietAtEpochMillis")) getLong("laterQuietAtEpochMillis") else null,
     levelNote = if (has("levelNote") && !isNull("levelNote")) getString("levelNote") else null,
     levelTrace = optJSONArray("levelTrace")?.let { array -> List(array.length()) { array.getInt(it) } } ?: emptyList(),
     traceSecondsPerSample = optInt("traceSecondsPerSample", 1),

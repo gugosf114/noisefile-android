@@ -3,6 +3,9 @@ package com.noisefile.app.data
 import android.content.Context
 import android.graphics.BitmapFactory
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.quietDb
+import com.noisefile.app.model.quietSeconds
+import com.noisefile.app.model.quietWasLater
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.DashPathEffect
@@ -258,7 +261,8 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
             "Highest" to "${inc.maximumDb.roundToInt()} dB",
             "Average" to "${inc.averageDb.roundToInt()} dB",
             "Lowest" to "${inc.minimumDb.roundToInt()} dB",
-            "Quiet baseline" to (inc.ambientDb?.let { "${it.roundToInt()} dB over ${lengthWords(inc.ambientSeconds ?: 0L)}" } ?: "not taken"),
+            (if (inc.quietWasLater) "Quiet, measured later" else "Quiet baseline") to
+                (inc.quietDb?.let { "${it.roundToInt()} dB over ${lengthWords(inc.quietSeconds ?: 0L)}" } ?: "not taken"),
         )
         need(34f)
         var x = margin
@@ -360,12 +364,12 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
                 c.drawText(listOf("lowest", "average", "highest")[i], bx, bot + 10f, paint(7.5f, muted))
             }
         }
-        inc.ambientDb?.let { c.drawLine(left, yFor(it), right, yFor(it), Paint().apply { color = Color.rgb(60, 160, 90); strokeWidth = 1f; pathEffect = DashPathEffect(floatArrayOf(3f, 3f), 0f) }) }
+        inc.quietDb?.let { c.drawLine(left, yFor(it), right, yFor(it), Paint().apply { color = Color.rgb(60, 160, 90); strokeWidth = 1f; pathEffect = DashPathEffect(floatArrayOf(3f, 3f), 0f) }) }
         limit?.let { c.drawLine(left, yFor(it), right, yFor(it), Paint().apply { color = danger; strokeWidth = 1.2f; pathEffect = DashPathEffect(floatArrayOf(6f, 4f), 0f) }) }
         y = bot + 4f
         val legend = buildString {
             append(if (trace.size >= 2) "Blue: highest estimate each ${if (inc.traceSecondsPerSample == 1) "second" else "${inc.traceSecondsPerSample} seconds"}" else "Bars: lowest, average, highest estimate")
-            inc.ambientDb?.let { append(" · green dashes: quiet baseline ${it.roundToInt()} dB") }
+            inc.quietDb?.let { append(" · green dashes: quiet ${if (inc.quietWasLater) "measured later, " else ""}${it.roundToInt()} dB") }
             limit?.let { append(" · red dashes: city's listed limit ${it.roundToInt()} dB") }
         }
         text(legend, 7.5f, muted); gap(2f)

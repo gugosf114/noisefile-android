@@ -1,6 +1,9 @@
 package com.noisefile.app.data
 
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.quietDb
+import com.noisefile.app.model.quietSeconds
+import com.noisefile.app.model.quietWasLater
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -30,11 +33,12 @@ fun buildIncidentHistoryReport(
             "Levels: ${incident.averageDb.toInt()} dB avg / " +
                 "${incident.maximumDb.toInt()} dB max",
         )
-        val baselineDb = incident.ambientDb
-        val baselineSeconds = incident.ambientSeconds
+        val baselineDb = incident.quietDb
+        val baselineSeconds = incident.quietSeconds
         if (baselineDb != null && baselineSeconds != null) {
             appendLine(
-                "Quiet baseline: ${baselineDb.toInt()} dB over $baselineSeconds sec at the same spot; " +
+                "Quiet baseline${if (incident.quietWasLater) " (measured later, same spot, source silent)" else ""}: " +
+                    "${baselineDb.toInt()} dB over $baselineSeconds sec at the same spot; " +
                     "disturbance ${(incident.averageDb - baselineDb).toInt()} dB above it on average, " +
                     "${(incident.maximumDb - baselineDb).toInt()} dB above at peak",
             )

@@ -50,6 +50,15 @@ class IncidentStoreTest {
         assertEquals("Hammering or banging", back[0].soundKind)
     }
 
+    @Test
+    fun laterQuietRoundTrips() {
+        val j = incidentJson(id = 7L, startedAt = 700L).put("laterQuietDb", 33.0).put("laterQuietSeconds", 300L).put("laterQuietAtEpochMillis", 9L)
+        val back = parseIncidents(JSONArray().put(parseIncidents(JSONArray().put(j).toString())[0].toJson()).toString())[0]
+        assertEquals(33.0, back.laterQuietDb!!, 0.0)
+        assertEquals(300L, back.laterQuietSeconds)
+        assertEquals(9L, back.laterQuietAtEpochMillis)
+    }
+
     private fun incidentJson(id: Long, startedAt: Long): JSONObject = JSONObject()
         .put("id", id)
         .put("ruleId", "san-jose-party_music")

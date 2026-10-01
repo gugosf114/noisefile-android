@@ -58,6 +58,16 @@ class ComplaintDraftTest {
     }
 
     @Test
+    fun aQuietMeasuredLaterIsUsedAndSaidSo() {
+        val later = incident().copy(laterQuietDb = 34.0, laterQuietSeconds = 300L, laterQuietAtEpochMillis = 86_400_000L)
+        val draft = buildComplaintDraft(later, rule(), ZoneOffset.UTC)
+        assertTrue(draft, draft.contains("Quiet at the same spot with the source silent (measured later, on Jan 2): 34 dB, so the noise peaked 33 dB above quiet."))
+        // A quiet taken with the incident wins over a later one.
+        val both = later.copy(ambientDb = 40.0, ambientSeconds = 300L)
+        assertTrue(buildComplaintDraft(both, rule(), ZoneOffset.UTC).contains("source silent: 40 dB"))
+    }
+
+    @Test
     fun draftShrinksToFitTheFormBox() {
         val longNotes = incident().copy(notes = "x".repeat(300))
         val full = buildComplaintDraft(longNotes, rule(), ZoneOffset.UTC)
