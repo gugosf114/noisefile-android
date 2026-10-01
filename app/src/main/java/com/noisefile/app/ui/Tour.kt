@@ -131,7 +131,7 @@ internal fun TourOverlay(
     ) {
         val screenHeightPx = with(density) { maxHeight.toPx() }
         val cardMargin = with(density) { 18.dp.toPx() }
-        val cardHeightGuess = with(density) { (if (step == TourStep.QUIET) 480.dp else 230.dp).toPx() }
+        val cardHeightGuess = with(density) { (if (step == TourStep.QUIET) 600.dp else 230.dp).toPx() }
         // The card sits under the hole when there is room, else above it.
         val cardTop = when {
             hole == null -> screenHeightPx * 0.4f
