@@ -280,7 +280,7 @@ internal fun HomeScreen(
 
             item {
                 DeckCard(modifier = Modifier.tourTarget(TourStep.QUIET)) {
-                    Text("Quiet baseline", style = MaterialTheme.typography.titleMedium)
+                    Text("Quiet baseline (the codes call it ambient)", style = MaterialTheme.typography.titleMedium)
                     Text(
                         text = state.ambient?.let {
                             "Ready: ${it.db.roundToInt()} dB over ${formatElapsed(it.seconds * 1_000L)}. " +

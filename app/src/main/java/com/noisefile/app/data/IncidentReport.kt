@@ -37,7 +37,7 @@ fun buildIncidentHistoryReport(
         val baselineSeconds = incident.quietSeconds
         if (baselineDb != null && baselineSeconds != null) {
             appendLine(
-                "Quiet baseline${if (incident.quietWasLater) " (measured later, same spot, source silent)" else ""}: " +
+                "Quiet baseline (ambient)${if (incident.quietWasLater) ", measured later, same spot, source silent" else ""}: " +
                     "${baselineDb.toInt()} dB over $baselineSeconds sec at the same spot; " +
                     "disturbance ${(incident.averageDb - baselineDb).toInt()} dB above it on average, " +
                     "${(incident.maximumDb - baselineDb).toInt()} dB above at peak",
