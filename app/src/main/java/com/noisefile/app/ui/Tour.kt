@@ -131,7 +131,7 @@ internal fun TourOverlay(
     ) {
         val screenHeightPx = with(density) { maxHeight.toPx() }
         val cardMargin = with(density) { 18.dp.toPx() }
-        val cardHeightGuess = with(density) { 230.dp.toPx() }
+        val cardHeightGuess = with(density) { (if (step == TourStep.QUIET) 480.dp else 230.dp).toPx() }
         // The card sits under the hole when there is room, else above it.
         val cardTop = when {
             hole == null -> screenHeightPx * 0.4f
@@ -159,6 +159,7 @@ internal fun TourOverlay(
                 style = MaterialTheme.typography.headlineSmall,
                 color = Chalk,
             )
+            if (step == TourStep.QUIET) BaselineDemo()
             Text(step.body(priceText), style = MaterialTheme.typography.bodyLarge, color = Chalk)
             Spacer(Modifier.height(2.dp))
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
