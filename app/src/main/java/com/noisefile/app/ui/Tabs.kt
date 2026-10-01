@@ -192,6 +192,8 @@ internal fun HomeScreen(
     onAttachQuiet: () -> Unit = {},
     onDismissQuietAttach: () -> Unit = {},
     onPickQuietRoom: (String) -> Unit = {},
+    onScrollToQuiet: () -> Unit = {},
+    sweepSteps: Boolean = false,
 ) {
     val city = selectedJurisdiction.displayName
     val roomBaseline = state.quietRoom?.let { r -> state.baselines.firstOrNull { it.room.equals(r, ignoreCase = true) } }
@@ -268,8 +270,11 @@ internal fun HomeScreen(
 
             item {
                 StepsStrip(
-                    baselineDone = roomBaseline != null,
-                    recordDone = state.incidents.isNotEmpty(),
+                    steps = CaseSteps.of(baselineDone = roomBaseline != null, incidents = state.incidents),
+                    onBaseline = onScrollToQuiet,
+                    onRecord = onBeginCapture,
+                    onFile = nav.incidents,
+                    sweepOnce = sweepSteps,
                 )
             }
 
@@ -560,30 +565,6 @@ internal fun MoreScreen(
     }
 }
 
-
-/** 1 Baseline · 2 Record · 3 File, with a check on what is done. */
-@Composable
-internal fun StepsStrip(baselineDone: Boolean, recordDone: Boolean) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        listOf("Baseline" to baselineDone, "Record" to recordDone, "File" to false).forEachIndexed { i, (name, done) ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = if (done) "\u2713" else "${i + 1}",
-                    color = if (done) Brass else Muted,
-                    fontFamily = BarlowCondensed,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(name, color = if (done) Chalk else Muted, style = MaterialTheme.typography.labelLarge)
-            }
-        }
-    }
-}
 
 internal fun shortDate(epochMillis: Long): String =
     java.time.format.DateTimeFormatter.ofPattern("MMM d", java.util.Locale.US)

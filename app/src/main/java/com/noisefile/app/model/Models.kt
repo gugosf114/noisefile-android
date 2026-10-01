@@ -245,6 +245,8 @@ data class Incident(
     val soundKind: String? = null,
     /** Where the person stood (Bedroom, Back yard, ...). Their own word, outside the seal; the room's baseline is what [ambientDb] came from. */
     val room: String? = null,
+    /** When the person said they filed this with the city. The app cannot see the city's inbox; the person marks it. Outside the seal. */
+    val filedAtEpochMillis: Long? = null,
     val ambientDb: Double? = null,
     val ambientSeconds: Long? = null,
     /**

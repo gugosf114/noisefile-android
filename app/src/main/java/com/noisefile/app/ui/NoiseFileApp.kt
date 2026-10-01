@@ -177,6 +177,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private val impactOptions = listOf(
@@ -195,6 +196,10 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val unlock by viewModel.unlock.collectAsStateWithLifecycle()
     var showUnlock by remember { mutableStateOf(false) }
     val tourTargets = remember { newTourTargets() }
+    // The brass sweep over 1 · 2 · 3 runs once per app open, the first time Home shows.
+    var sweepSteps by remember { mutableStateOf(true) }
+    LaunchedEffect(state.screen) { if (state.screen == AppScreen.HOME) { kotlinx.coroutines.delay(2_200); sweepSteps = false } }
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     val homeListState = androidx.compose.foundation.lazy.rememberLazyListState()
     // The quiet card sits low on Home; scroll it into the light for its stop, back to the top for the rest.
     LaunchedEffect(state.tourStep) {
@@ -270,6 +275,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onAttachQuiet = viewModel::attachQuietToEarlierIncidents,
             onDismissQuietAttach = viewModel::dismissQuietAttach,
             onPickQuietRoom = viewModel::setQuietRoom,
+            onScrollToQuiet = { scope.launch { homeListState.animateScrollToItem(homeListState.layoutInfo.totalItemsCount.coerceAtLeast(1) - 1) } },
+            sweepSteps = sweepSteps,
         )
 
         AppScreen.RULES -> RulesScreen(
@@ -332,7 +339,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onDropClip = viewModel::dropDraftClip,
                 onSaveAndPrepare = {
                     viewModel.saveIncident()?.let { incident ->
-                        gated { prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
+                        gated { viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
                     }
                 },
                 onDiscard = viewModel::showHome,
@@ -350,10 +357,11 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onExportPdf = { gated { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) } },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
-                gated { prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
+                gated { viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
             },
             baselines = state.baselines,
             onRemeasure = { room -> viewModel.setQuietRoom(room); beginAmbient() },
+            onMarkFiled = viewModel::markFiled,
         )
 
         AppScreen.FORM_GUIDE -> {
@@ -367,7 +375,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                     rule = rule,
                     nav = nav,
                     onBack = viewModel::showHistory,
-                    onOpenForm = { copyComplaintAndOpenDestination(context, incident, rule) },
+                    onOpenForm = { viewModel.noteFileAttempt(incident.id); copyComplaintAndOpenDestination(context, incident, rule) },
                 )
             }
         }
@@ -382,6 +390,27 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
         )
     }
     }
+    }
+
+    // Back from the city's form, email or phone: ask once whether it went out.
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    var showFiledAsk by remember { mutableStateOf(false) }
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner, state.askFiledIncidentId) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME && state.askFiledIncidentId != null) showFiledAsk = true
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+    val askId = state.askFiledIncidentId
+    if (showFiledAsk && askId != null) {
+        AlertDialog(
+            onDismissRequest = { showFiledAsk = false; viewModel.dismissFiledAsk() },
+            title = { Text("Did you file it with the city?") },
+            text = { Text("The app cannot see the city's inbox. Mark it filed and the next case starts fresh. You can change this on the incident card.") },
+            confirmButton = { TextButton(onClick = { showFiledAsk = false; viewModel.markFiled(askId, true) }) { Text("Yes, mark it filed") } },
+            dismissButton = { TextButton(onClick = { showFiledAsk = false; viewModel.dismissFiledAsk() }) { Text("Not yet") } },
+        )
     }
 
     if (showUnlock) {
@@ -1540,6 +1569,7 @@ internal fun HistoryScreen(
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
     baselines: List<com.noisefile.app.data.Baseline> = emptyList(),
     onRemeasure: (String) -> Unit = {},
+    onMarkFiled: (Long, Boolean) -> Unit = { _, _ -> },
 ) {
     AppScaffold(selectedScreen = AppScreen.HISTORY, nav = nav) { contentPadding ->
         LazyColumn(
@@ -1619,6 +1649,7 @@ internal fun HistoryScreen(
                         fileFor = fileFor,
                         onUpdateDetails = onUpdateDetails,
                         onPrepareComplaint = onPrepareComplaint,
+                        onMarkFiled = onMarkFiled,
                     )
                 }
             }
@@ -1734,6 +1765,7 @@ private fun IncidentCard(
     onUpdateDetails: (Long, IncidentDetails) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
     fileFor: (Incident, String) -> File = { _, name -> File(name) },
+    onMarkFiled: (Long, Boolean) -> Unit = { _, _ -> },
 ) {
     var isEditingDetails by remember(incident.id) { mutableStateOf(false) }
     var locationDraft by remember(incident.id, incident.location) { mutableStateOf(incident.location) }
@@ -1764,6 +1796,14 @@ private fun IncidentCard(
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(date, color = PaperMuted, style = MaterialTheme.typography.bodyMedium)
+                    incident.filedAtEpochMillis?.let { filed ->
+                        Text(
+                            text = "Filed " + DateTimeFormatter.ofPattern("MMM d", Locale.US).format(Instant.ofEpochMilli(filed).atZone(ZoneId.systemDefault())),
+                            color = PaperBlue,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
@@ -1903,6 +1943,12 @@ private fun IncidentCard(
                         },
                         style = MaterialTheme.typography.titleSmall,
                     )
+                }
+                TextButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { onMarkFiled(incident.id, incident.filedAtEpochMillis == null) },
+                ) {
+                    Text(if (incident.filedAtEpochMillis == null) "Mark as filed" else "Not filed after all")
                 }
                 if (incident.location.isBlank()) {
                     Text(

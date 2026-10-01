@@ -88,6 +88,8 @@ data class NoiseFileUiState(
     val quietAttachCount: Int = 0,
     /** Every room's quiet, measured once and kept. */
     val baselines: List<Baseline> = emptyList(),
+    /** After a file-it tap: the incident to ask about when the person comes back. */
+    val askFiledIncidentId: Long? = null,
     /** The room picked on the quiet card, and the room picked on the review screen. */
     val quietRoom: String? = null,
     val draftRoom: String? = null,
@@ -150,6 +152,16 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun dismissQuietAttach() = _uiState.update { it.copy(quietAttachCount = 0) }
+
+    /** Remember which incident went out the door, so the app can ask "did you file it?" on return. */
+    fun noteFileAttempt(incidentId: Long) = _uiState.update { it.copy(askFiledIncidentId = incidentId) }
+
+    fun markFiled(incidentId: Long, filed: Boolean) {
+        val incidents = incidentStore.markFiled(incidentId, if (filed) System.currentTimeMillis() else null)
+        _uiState.update { it.copy(incidents = incidents, askFiledIncidentId = null, message = if (filed) "Marked as filed. The next case starts fresh." else null) }
+    }
+
+    fun dismissFiledAsk() = _uiState.update { it.copy(askFiledIncidentId = null) }
 
     fun setQuietRoom(room: String) {
         baselineStore.rememberRoom(room)
