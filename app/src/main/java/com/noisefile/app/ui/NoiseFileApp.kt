@@ -150,6 +150,7 @@ import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.IncidentDetails
 import com.noisefile.app.model.NoiseKinds
 import com.noisefile.app.model.NoiseType
+import com.noisefile.app.ui.TourStep
 import com.noisefile.app.model.RuleWorkflow
 import com.noisefile.app.ui.theme.Brass
 import com.noisefile.app.ui.theme.Chalk
@@ -193,6 +194,16 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     var showCityPicker by remember { mutableStateOf(false) }
     val unlock by viewModel.unlock.collectAsStateWithLifecycle()
     var showUnlock by remember { mutableStateOf(false) }
+    val tourTargets = remember { newTourTargets() }
+    val homeListState = androidx.compose.foundation.lazy.rememberLazyListState()
+    // The quiet card sits low on Home; scroll it into the light for its stop, back to the top for the rest.
+    LaunchedEffect(state.tourStep) {
+        when (state.tourStep) {
+            TourStep.QUIET -> homeListState.animateScrollToItem(homeListState.layoutInfo.totalItemsCount.coerceAtLeast(1) - 1)
+            null -> Unit
+            else -> homeListState.animateScrollToItem(0)
+        }
+    }
     // A locked door opens the unlock card instead; the tap is not remembered, the person taps again after buying.
     val gated: (() -> Unit) -> Unit = { action -> if (viewModel.isUnlocked()) action() else showUnlock = true }
     var pendingStage by remember { mutableStateOf(CaptureStage.NOISE) }
@@ -239,6 +250,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
         more = viewModel::showMore,
     )
 
+    androidx.compose.runtime.CompositionLocalProvider(LocalTourTargets provides tourTargets) {
+    androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
     when (state.screen) {
         AppScreen.HOME -> HomeScreen(
             state = state,
@@ -253,6 +266,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onSkipCalibrationPrompt = viewModel::skipCalibrationPrompt,
             onBeginSelfTest = beginSelfTest,
             nav = nav,
+            listState = homeListState,
         )
 
         AppScreen.RULES -> RulesScreen(
@@ -278,6 +292,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             unlocked = viewModel.isUnlocked(),
             unlockPriceText = unlock.priceText,
             onShowUnlock = { showUnlock = true },
+            onStartTour = viewModel::startTour,
             nav = nav,
         )
 
@@ -349,6 +364,17 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 )
             }
         }
+    }
+    state.tourStep?.let { step ->
+        TourOverlay(
+            step = step,
+            priceText = unlock.priceText,
+            targets = tourTargets,
+            onNext = viewModel::tourNext,
+            onSkip = viewModel::endTour,
+        )
+    }
+    }
     }
 
     if (showUnlock) {

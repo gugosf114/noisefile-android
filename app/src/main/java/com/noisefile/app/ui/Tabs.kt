@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Shield
@@ -146,6 +149,7 @@ internal fun BrandHeader(
         val chip = RoundedCornerShape(50)
         Surface(
             modifier = Modifier
+                .tourTarget(TourStep.CITY)
                 .clip(chip)
                 .then(if (onCityClick != null) Modifier.clickable(onClickLabel = "Change city", onClick = onCityClick) else Modifier),
             shape = chip,
@@ -182,11 +186,13 @@ internal fun HomeScreen(
     onSkipCalibrationPrompt: () -> Unit,
     onBeginSelfTest: () -> Unit,
     nav: NavActions,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     val city = selectedJurisdiction.displayName
     val limit = limitAt(selectedRule, LocalTime.now().hour)
     AppScaffold(selectedScreen = AppScreen.HOME, nav = nav) { contentPadding ->
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize().padding(contentPadding),
             contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp),
@@ -204,7 +210,7 @@ internal fun HomeScreen(
             }
 
             item {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.tourTarget(TourStep.TYPES)) {
                     Text("What are you hearing?", style = MaterialTheme.typography.headlineMedium, color = Chalk)
                     Segmented(
                         options = workflows.map { shortName(it.noiseType) },
@@ -249,7 +255,7 @@ internal fun HomeScreen(
             }
 
             item {
-                DeckCard {
+                DeckCard(modifier = Modifier.tourTarget(TourStep.QUIET)) {
                     Text("Quiet baseline", style = MaterialTheme.typography.titleMedium)
                     Text(
                         text = state.ambient?.let {
@@ -387,6 +393,7 @@ internal fun MoreScreen(
     unlocked: Boolean,
     unlockPriceText: String?,
     onShowUnlock: () -> Unit,
+    onStartTour: () -> Unit,
     nav: NavActions,
 ) {
     val context = LocalContext.current
@@ -425,6 +432,8 @@ internal fun MoreScreen(
                         },
                         onShowUnlock,
                     )
+                    HorizontalDivider(color = Hairline)
+                    SettingRow(Icons.Default.TouchApp, "Show me around", "The five-stop tour, again", onStartTour)
                 }
             }
 
