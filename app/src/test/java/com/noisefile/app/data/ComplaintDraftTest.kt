@@ -58,6 +58,12 @@ class ComplaintDraftTest {
     }
 
     @Test
+    fun theRoomRidesAlongInTheComplaint() {
+        val draft = buildComplaintDraft(incident().copy(room = "Bedroom"), rule(), ZoneOffset.UTC)
+        assertTrue(draft, draft.startsWith("Loud noise from 440 Price Avenue, heard from my bedroom. "))
+    }
+
+    @Test
     fun aQuietMeasuredLaterIsUsedAndSaidSo() {
         val later = incident().copy(laterQuietDb = 34.0, laterQuietSeconds = 300L, laterQuietAtEpochMillis = 86_400_000L)
         val draft = buildComplaintDraft(later, rule(), ZoneOffset.UTC)

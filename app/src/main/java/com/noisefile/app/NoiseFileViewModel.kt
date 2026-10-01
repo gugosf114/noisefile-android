@@ -14,6 +14,8 @@ import com.noisefile.app.audio.SelfTestOutcome
 import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.data.IncidentFiles
 import com.noisefile.app.data.IncidentStore
+import com.noisefile.app.data.Baseline
+import com.noisefile.app.data.BaselineStore
 import android.net.Uri
 import java.io.File
 import com.noisefile.app.data.LevelTraceRecorder
@@ -82,8 +84,13 @@ data class NoiseFileUiState(
     val showCalibrationPrompt: Boolean = false,
     /** The finger that points: which stop of the first-run tour is lit, or null. */
     val tourStep: TourStep? = null,
-    /** After a quiet run: how many earlier incidents in this city have no quiet and could take this one. */
+    /** After a quiet run: how many earlier incidents in this room have no quiet and could take this one. */
     val quietAttachCount: Int = 0,
+    /** Every room's quiet, measured once and kept. */
+    val baselines: List<Baseline> = emptyList(),
+    /** The room picked on the quiet card, and the room picked on the review screen. */
+    val quietRoom: String? = null,
+    val draftRoom: String? = null,
     val selfTestRunning: Boolean = false,
     /** Which of the six tones is playing, 1..6. */
     val selfTestStep: Int = 0,
@@ -110,6 +117,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         get() = ruleCatalog.forJurisdiction(_uiState.value.selectedJurisdictionId)
 
     private val incidentStore = IncidentStore(application)
+    private val baselineStore = BaselineStore(application)
     private val trace = LevelTraceRecorder()
     /** The quiet run's own second-by-second trace; its 10th percentile is the baseline. */
     private val quietTrace = LevelTraceRecorder()
@@ -119,6 +127,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     private val _uiState = MutableStateFlow(
         NoiseFileUiState(
             incidents = incidentStore.load(),
+            baselines = baselineStore.load(),
+            quietRoom = baselineStore.lastRoom,
+            draftRoom = baselineStore.lastRoom,
             // First open ever: the tour runs once on its own. After that, only from More.
             tourStep = if (tourPrefs.getBoolean(KEY_TOUR_SEEN, false)) null else TourStep.CITY,
         ),
@@ -130,7 +141,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         val state = _uiState.value
         val ambient = state.ambient ?: return
         val incidents = incidentStore.attachLaterQuiet(
-            jurisdictionId = state.selectedJurisdictionId,
+            room = state.quietRoom ?: "Home",
             db = ambient.db,
             seconds = ambient.seconds,
             atEpochMillis = System.currentTimeMillis(),
@@ -139,6 +150,19 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun dismissQuietAttach() = _uiState.update { it.copy(quietAttachCount = 0) }
+
+    fun setQuietRoom(room: String) {
+        baselineStore.rememberRoom(room)
+        _uiState.update { it.copy(quietRoom = room, draftRoom = it.draftRoom ?: room) }
+    }
+
+    fun setDraftRoom(room: String) {
+        baselineStore.rememberRoom(room)
+        _uiState.update { it.copy(draftRoom = room) }
+    }
+
+    /** The quiet on file for a room, if any. */
+    fun baselineFor(room: String?): Baseline? = room?.let { r -> _uiState.value.baselines.firstOrNull { it.room.equals(r, ignoreCase = true) } }
 
     fun startTour() {
         _uiState.update { it.copy(screen = AppScreen.HOME, tourStep = TourStep.CITY) }
@@ -347,17 +371,29 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             sampleWindows = reading.sampleWindows,
             calibration = reading.calibration,
         )
-        val cityId = _uiState.value.selectedJurisdictionId
-        val attachable = _uiState.value.incidents.count { it.ruleId.startsWith("$cityId-") && it.ambientDb == null }
+        val room = _uiState.value.quietRoom ?: "Home"
+        val rule = selectedRule()
+        val baselines = baselineStore.save(
+            Baseline(
+                room = room,
+                db = ambient.db,
+                seconds = ambient.seconds,
+                measuredAtEpochMillis = System.currentTimeMillis(),
+                codeMinutes = rule.ambientRecipe?.minutes,
+                cityName = selectedJurisdiction().displayName,
+            ),
+        )
+        val attachable = _uiState.value.incidents.count { it.room.equals(room, ignoreCase = true) && it.ambientDb == null }
         _uiState.update {
             it.copy(
                 screen = AppScreen.HOME,
                 captureStage = CaptureStage.NOISE,
                 ambient = ambient,
+                baselines = baselines,
                 quietAttachCount = attachable,
                 meterReading = MeterReading(),
                 measurementStartedAt = null,
-                message = "Quiet baseline saved: ${ambient.db.roundToInt()} dB over " +
+                message = "$room baseline saved: ${ambient.db.roundToInt()} dB over " +
                     "${ambient.seconds / 60}:${"%02d".format(ambient.seconds % 60)}. " +
                     "Now record the noise from the same spot.",
                 error = null,
@@ -676,8 +712,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             impact = state.draftImpact,
             notes = state.draftNotes.trim(),
             soundKind = state.draftSoundKind,
-            ambientDb = state.ambient?.db,
-            ambientSeconds = state.ambient?.seconds,
+            room = state.draftRoom,
+            ambientDb = baselineFor(state.draftRoom)?.db,
+            ambientSeconds = baselineFor(state.draftRoom)?.seconds,
             levelNote = levelNoteFor(reading),
             levelTrace = trace.snapshot(),
             traceSecondsPerSample = trace.secondsPerSample,
@@ -757,7 +794,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         super.onCleared()
     }
 
-    private companion object {
+    companion object {
         /** Used when the city's code states no ambient recipe. */
         const val DEFAULT_AMBIENT_MINUTES = 5
         const val KEY_TOUR_SEEN = "seen"

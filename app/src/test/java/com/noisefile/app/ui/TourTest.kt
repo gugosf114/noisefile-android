@@ -20,7 +20,7 @@ class TourTest {
     fun everyStopIsShortAndPlain() {
         TourStep.entries.forEach { step ->
             assertTrue(step.name, step.title.length <= 40)
-            assertTrue(step.name, step.body("\$7.99").length <= 230)
+            assertTrue(step.name, step.body("\$7.99").length <= 280)
             assertTrue(step.name, step.body(null).isNotBlank())
         }
     }

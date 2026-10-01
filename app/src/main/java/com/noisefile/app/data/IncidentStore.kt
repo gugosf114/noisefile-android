@@ -40,10 +40,10 @@ class IncidentStore(context: Context) {
     }
 
     @Synchronized
-    /** Attach a quiet measured later to every incident in [jurisdictionId] that has no quiet of its own. */
-    fun attachLaterQuiet(jurisdictionId: String, db: Double, seconds: Long, atEpochMillis: Long): List<Incident> {
+    /** Attach a quiet measured later to every incident taken in [room] that has no quiet of its own. */
+    fun attachLaterQuiet(room: String, db: Double, seconds: Long, atEpochMillis: Long): List<Incident> {
         val incidents = load().map { incident ->
-            if (incident.ruleId.startsWith("$jurisdictionId-") && incident.ambientDb == null) {
+            if (incident.room.equals(room, ignoreCase = true) && incident.ambientDb == null) {
                 incident.copy(laterQuietDb = db, laterQuietSeconds = seconds, laterQuietAtEpochMillis = atEpochMillis)
             } else {
                 incident
@@ -64,6 +64,7 @@ class IncidentStore(context: Context) {
                     notes = details.notes.trim(),
                     impact = details.impact.trim().ifBlank { incident.impact },
                     soundKind = details.soundKind?.trim()?.ifBlank { null },
+                    room = details.room?.trim()?.ifBlank { null },
                 )
             } else {
                 incident
@@ -99,6 +100,7 @@ internal fun Incident.toJson(): JSONObject = JSONObject()
     .put("impact", impact)
     .put("notes", notes)
     .put("soundKind", soundKind ?: JSONObject.NULL)
+    .put("room", room ?: JSONObject.NULL)
     .put("ambientDb", ambientDb ?: JSONObject.NULL)
     .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
     .put("laterQuietDb", laterQuietDb ?: JSONObject.NULL)
@@ -139,6 +141,7 @@ private fun JSONObject.toIncident(): Incident = Incident(
     impact = getString("impact"),
     notes = optString("notes"),
     soundKind = if (has("soundKind") && !isNull("soundKind")) getString("soundKind") else null,
+    room = if (has("room") && !isNull("room")) getString("room") else null,
     ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
     ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
     laterQuietDb = if (has("laterQuietDb") && !isNull("laterQuietDb")) getDouble("laterQuietDb") else null,
