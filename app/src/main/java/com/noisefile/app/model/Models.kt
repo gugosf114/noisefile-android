@@ -244,6 +244,13 @@ data class Incident(
     val soundKind: String? = null,
     val ambientDb: Double? = null,
     val ambientSeconds: Long? = null,
+    /**
+     * A quiet level measured AFTER this incident at the same spot, source silent, attached by the person.
+     * Outside the seal and always labeled as measured later; the sealed [ambientDb] stays what it was.
+     */
+    val laterQuietDb: Double? = null,
+    val laterQuietSeconds: Long? = null,
+    val laterQuietAtEpochMillis: Long? = null,
     /** Where the dB numbers came from, for the complaint: mic and calibration, in words. */
     val levelNote: String? = null,
     /** The take second by second: highest estimate per sample, numbers only, never audio. */
@@ -261,6 +268,12 @@ data class Incident(
     val clipHash: String? = null,
     val clipSeconds: Int = 0,
 )
+
+/** The quiet level to compare against: the one taken with the incident, else one attached later. */
+val Incident.quietDb: Double? get() = ambientDb ?: laterQuietDb
+val Incident.quietSeconds: Long? get() = if (ambientDb != null) ambientSeconds else laterQuietSeconds
+/** True when the quiet in use was measured after the incident, so every report must say so. */
+val Incident.quietWasLater: Boolean get() = ambientDb == null && laterQuietDb != null
 
 /** How a published schedule reads: the windows are when noise is allowed, or when it is restricted. */
 enum class HoursKind {

@@ -2,6 +2,8 @@ package com.noisefile.app.data
 
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.quietDb
+import com.noisefile.app.model.quietSeconds
 import com.noisefile.app.model.MeterReading
 import com.noisefile.app.model.RuleWorkflow
 import java.time.Instant
@@ -69,8 +71,8 @@ fun buildReportPlan(
                 ),
                 incidentCount = earlier,
                 localDateTime = at.toLocalDateTime(),
-                ambient = if (incident.ambientDb != null && incident.ambientSeconds != null) {
-                    AmbientReading(db = incident.ambientDb, seconds = incident.ambientSeconds, sampleWindows = 1_000)
+                ambient = if (incident.quietDb != null && incident.quietSeconds != null) {
+                    AmbientReading(db = incident.quietDb!!, seconds = incident.quietSeconds!!, sampleWindows = 1_000)
                 } else null,
             )
         }

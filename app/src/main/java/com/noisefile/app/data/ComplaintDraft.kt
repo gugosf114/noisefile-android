@@ -4,6 +4,8 @@ import com.noisefile.app.model.FormAnswer
 import com.noisefile.app.model.FormGuide
 import com.noisefile.app.model.Incident
 import com.noisefile.app.model.RuleWorkflow
+import com.noisefile.app.model.quietDb
+import com.noisefile.app.model.quietWasLater
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -89,8 +91,12 @@ fun buildComplaintDraft(
     val clock = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
     val minutes = (incident.durationSeconds / 60).coerceAtLeast(if (incident.durationSeconds > 0) 1 else 0)
     val kind = incident.soundKind ?: com.noisefile.app.model.NoiseKinds.defaultKind(rule.noiseType)
-    val baseline = incident.ambientDb?.let { quiet ->
-        " Quiet at the same spot with the source silent: ${quiet.toInt()} dB, so the noise peaked " +
+    val baseline = incident.quietDb?.let { quiet ->
+        val when_ = if (incident.quietWasLater) {
+            " (measured later, on " + DateTimeFormatter.ofPattern("MMM d", Locale.US)
+                .format(Instant.ofEpochMilli(incident.laterQuietAtEpochMillis ?: 0L).atZone(zoneId)) + ")"
+        } else ""
+        " Quiet at the same spot with the source silent$when_: ${quiet.toInt()} dB, so the noise peaked " +
             "${(incident.maximumDb - quiet).toInt()} dB above quiet."
     } ?: ""
     val attachments = buildList {

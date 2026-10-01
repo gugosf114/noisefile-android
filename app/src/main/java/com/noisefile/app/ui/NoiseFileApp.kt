@@ -267,6 +267,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onBeginSelfTest = beginSelfTest,
             nav = nav,
             listState = homeListState,
+            onAttachQuiet = viewModel::attachQuietToEarlierIncidents,
+            onDismissQuietAttach = viewModel::dismissQuietAttach,
         )
 
         AppScreen.RULES -> RulesScreen(

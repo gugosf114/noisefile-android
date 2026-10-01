@@ -70,6 +70,13 @@ class EvidenceSealTest {
     }
 
     @Test
+    fun aQuietAttachedLaterStaysOutsideTheSeal() {
+        val takes = chain(take(1), take(2))
+        val attached = takes.map { it.copy(laterQuietDb = 33.0, laterQuietSeconds = 300L, laterQuietAtEpochMillis = 5L) }
+        assertTrue(EvidenceSeal.verify(attached).intact)
+    }
+
+    @Test
     fun takesSavedBeforeSealingAreCountedNotJudged() {
         val old = take(1)
         val sealed = EvidenceSeal.seal(take(2), null)

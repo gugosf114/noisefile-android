@@ -82,6 +82,8 @@ data class NoiseFileUiState(
     val showCalibrationPrompt: Boolean = false,
     /** The finger that points: which stop of the first-run tour is lit, or null. */
     val tourStep: TourStep? = null,
+    /** After a quiet run: how many earlier incidents in this city have no quiet and could take this one. */
+    val quietAttachCount: Int = 0,
     val selfTestRunning: Boolean = false,
     /** Which of the six tones is playing, 1..6. */
     val selfTestStep: Int = 0,
@@ -122,6 +124,21 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         ),
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
+
+    /** The person says this quiet belongs to their earlier incidents at the same spot. */
+    fun attachQuietToEarlierIncidents() {
+        val state = _uiState.value
+        val ambient = state.ambient ?: return
+        val incidents = incidentStore.attachLaterQuiet(
+            jurisdictionId = state.selectedJurisdictionId,
+            db = ambient.db,
+            seconds = ambient.seconds,
+            atEpochMillis = System.currentTimeMillis(),
+        )
+        _uiState.update { it.copy(incidents = incidents, quietAttachCount = 0, message = "Quiet level attached to your earlier incidents, marked as measured later.") }
+    }
+
+    fun dismissQuietAttach() = _uiState.update { it.copy(quietAttachCount = 0) }
 
     fun startTour() {
         _uiState.update { it.copy(screen = AppScreen.HOME, tourStep = TourStep.CITY) }
@@ -330,11 +347,14 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             sampleWindows = reading.sampleWindows,
             calibration = reading.calibration,
         )
+        val cityId = _uiState.value.selectedJurisdictionId
+        val attachable = _uiState.value.incidents.count { it.ruleId.startsWith("$cityId-") && it.ambientDb == null }
         _uiState.update {
             it.copy(
                 screen = AppScreen.HOME,
                 captureStage = CaptureStage.NOISE,
                 ambient = ambient,
+                quietAttachCount = attachable,
                 meterReading = MeterReading(),
                 measurementStartedAt = null,
                 message = "Quiet baseline saved: ${ambient.db.roundToInt()} dB over " +
