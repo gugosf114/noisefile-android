@@ -54,7 +54,7 @@ class IncidentStoreTest {
     fun laterQuietRoundTrips() {
         val j = incidentJson(id = 7L, startedAt = 700L).put("laterQuietDb", 33.0).put("laterQuietSeconds", 300L).put("laterQuietAtEpochMillis", 9L)
         val back = parseIncidents(JSONArray().put(parseIncidents(JSONArray().put(j).toString())[0].toJson()).toString())[0]
-        assertEquals(33.0, back.laterQuietDb)
+        assertEquals(33.0, back.laterQuietDb!!, 0.0)
         assertEquals(300L, back.laterQuietSeconds)
         assertEquals(9L, back.laterQuietAtEpochMillis)
     }
