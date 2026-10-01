@@ -6,6 +6,7 @@ import com.noisefile.app.BuildConfig
 import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.billing.UnlockState
 import com.noisefile.app.billing.UnlockStore
+import com.noisefile.app.ui.TourStep
 import com.noisefile.app.audio.MicProfile
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.NoiseMeter
@@ -78,6 +79,8 @@ data class NoiseFileUiState(
     val calibrationMode: CalibrationMode = CalibrationMode.SMOKE_ALARM,
     /** True while the once-only "make your numbers count" card should show on Home. */
     val showCalibrationPrompt: Boolean = false,
+    /** The finger that points: which stop of the first-run tour is lit, or null. */
+    val tourStep: TourStep? = null,
     val selfTestRunning: Boolean = false,
     /** Which of the six tones is playing, 1..6. */
     val selfTestStep: Int = 0,
@@ -107,10 +110,30 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     private val trace = LevelTraceRecorder()
     private val files = IncidentFiles(application)
     private val noiseMeter = NoiseMeter(application)
+    private val tourPrefs = application.getSharedPreferences("noisefile_tour", android.content.Context.MODE_PRIVATE)
     private val _uiState = MutableStateFlow(
-        NoiseFileUiState(incidents = incidentStore.load()),
+        NoiseFileUiState(
+            incidents = incidentStore.load(),
+            // First open ever: the tour runs once on its own. After that, only from More.
+            tourStep = if (tourPrefs.getBoolean(KEY_TOUR_SEEN, false)) null else TourStep.CITY,
+        ),
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
+
+    fun startTour() {
+        _uiState.update { it.copy(screen = AppScreen.HOME, tourStep = TourStep.CITY) }
+    }
+
+    fun tourNext() {
+        val current = _uiState.value.tourStep ?: return
+        val next = current.next
+        if (next == null) endTour() else _uiState.update { it.copy(tourStep = next) }
+    }
+
+    fun endTour() {
+        tourPrefs.edit().putBoolean(KEY_TOUR_SEEN, true).apply()
+        _uiState.update { it.copy(tourStep = null) }
+    }
 
     /** The one-time unlock (PDF report, form guide, filled-in email). Play is asked at start. */
     private val unlockStore = UnlockStore(application).also { it.start() }
@@ -711,5 +734,6 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     private companion object {
         /** Used when the city's code states no ambient recipe. */
         const val DEFAULT_AMBIENT_MINUTES = 5
+        const val KEY_TOUR_SEEN = "seen"
     }
 }

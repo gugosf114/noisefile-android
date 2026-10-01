@@ -494,7 +494,7 @@ fun BottomStrip(selected: AppScreen, nav: NavActions) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 StripItem(Icons.Default.Home, "Home", selected == AppScreen.HOME, nav.home, Modifier.weight(1f))
-                StripItem(Icons.Default.Folder, "Incidents", selected == AppScreen.HISTORY, nav.incidents, Modifier.weight(1f))
+                StripItem(Icons.Default.Folder, "Incidents", selected == AppScreen.HISTORY, nav.incidents, Modifier.weight(1f).tourTarget(TourStep.INCIDENTS))
                 Box(Modifier.weight(1f).height(66.dp), contentAlignment = Alignment.BottomCenter) {
                     Text("Record", style = MaterialTheme.typography.labelSmall, color = Chalk, modifier = Modifier.padding(bottom = 9.dp))
                 }
@@ -502,7 +502,7 @@ fun BottomStrip(selected: AppScreen, nav: NavActions) {
                 StripItem(Icons.Default.MoreHoriz, "More", selected == AppScreen.MORE, nav.more, Modifier.weight(1f))
             }
         }
-        RecordButton(onClick = nav.record, modifier = Modifier.align(Alignment.TopCenter))
+        RecordButton(onClick = nav.record, modifier = Modifier.align(Alignment.TopCenter).tourTarget(TourStep.RECORD))
     }
 }
 
