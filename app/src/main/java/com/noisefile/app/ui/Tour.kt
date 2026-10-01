@@ -59,7 +59,7 @@ import kotlin.math.roundToInt
 enum class TourStep(val title: String) {
     CITY("Pick your city"),
     TYPES("Pick what you hear"),
-    QUIET("Measure the quiet first"),
+    QUIET("Measure the quiet, a.k.a. ambient"),
     RECORD("Press this when the noise starts"),
     INCIDENTS("Your incidents live here"),
     ;
@@ -68,7 +68,7 @@ enum class TourStep(val title: String) {
     fun body(priceText: String?): String = when (this) {
         CITY -> "Every rule in this app is that city's own law. Tap the city name to change it."
         TYPES -> "Animal, noise, or construction. The rule under the dial changes with your pick."
-        QUIET -> "Record your room with the noise off, five minutes. Then every report says how far above the quiet the noise was. Skip it if the noise is already going."
+        QUIET -> "Record your room with the noise off, five minutes. The codes call this the ambient, or baseline. Every report then says how far above it the noise was. Skip it if the noise is already going."
         RECORD -> "Record until it stops. Then type where it came from, and save."
         INCIDENTS -> "Saved incidents stack up here. Looking and recording stay free. The PDF report and the city form guide are the one paid part: " +
             (priceText?.let { "$it, once." } ?: "paid once.")

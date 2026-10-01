@@ -261,7 +261,7 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
             "Highest" to "${inc.maximumDb.roundToInt()} dB",
             "Average" to "${inc.averageDb.roundToInt()} dB",
             "Lowest" to "${inc.minimumDb.roundToInt()} dB",
-            (if (inc.quietWasLater) "Quiet, measured later" else "Quiet baseline") to
+            (if (inc.quietWasLater) "Ambient, measured later" else "Quiet baseline (ambient)") to
                 (inc.quietDb?.let { "${it.roundToInt()} dB over ${lengthWords(inc.quietSeconds ?: 0L)}" } ?: "not taken"),
         )
         need(34f)
