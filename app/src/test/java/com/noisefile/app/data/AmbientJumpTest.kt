@@ -156,7 +156,7 @@ class AmbientJumpTest {
         assertTrue(draft, draft.contains("Quiet at the same spot with the source silent: 47 dB, so the noise peaked 14 dB above quiet."))
 
         val report = buildIncidentHistoryReport(listOf(incident), generatedAtLabel = "test", zoneId = ZoneId.of("America/Los_Angeles"))
-        assertTrue(report, report.contains("Quiet baseline: 47 dB over 360 sec"))
+        assertTrue(report, report.contains("Quiet baseline (ambient): 47 dB over 360 sec"))
         assertTrue(report, report.contains("8 dB above it on average, 14 dB above at peak"))
 
         val plain = incident.copy(ambientDb = null, ambientSeconds = null)
