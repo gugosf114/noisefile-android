@@ -19,6 +19,8 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
+      - name: Sources page matches the catalog
+        run: python3 scripts/build_sources_page.py && git diff --exit-code docs/sources.html
       - run: ./gradlew testDebugUnitTest lintDebug assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
