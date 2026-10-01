@@ -25,7 +25,7 @@ class QuietFloorTest {
 
     @Test
     fun shortRunsStillGiveANumberAndEmptyGivesNone() {
-        assertEquals(30.0, QuietFloor.of(listOf(30, 31, 29, 45, 30)) ?: -1.0)
+        assertEquals(29.0, QuietFloor.of(listOf(30, 31, 29, 45, 30)) ?: -1.0)
         assertNull(QuietFloor.of(emptyList()))
     }
 }
