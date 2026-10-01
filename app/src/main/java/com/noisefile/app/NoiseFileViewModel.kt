@@ -20,6 +20,7 @@ import com.noisefile.app.data.EvidenceSeal
 import com.noisefile.app.data.RuleCatalog
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.IncidentDetails
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
@@ -683,10 +684,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun updateIncidentDetails(
         incidentId: Long,
-        location: String,
-        notes: String,
+        details: IncidentDetails,
     ) {
-        val incidents = incidentStore.updateDetails(incidentId, location, notes)
+        val incidents = incidentStore.updateDetails(incidentId, details)
         _uiState.update {
             it.copy(
                 incidents = incidents,

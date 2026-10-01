@@ -134,7 +134,7 @@ class StoreScreenshots {
         HistoryScreen(
             cityName = city.displayName, incidents = list, ruleForIncident = catalog::byId,
             sealReport = EvidenceSeal.verify(list), fileFor = { _, n -> File(n) }, nav = nav,
-            onExport = {}, onExportPdf = {}, onUpdateDetails = { _, _, _ -> }, onPrepareComplaint = { _, _ -> },
+            onExport = {}, onExportPdf = {}, onUpdateDetails = { _, _ -> }, onPrepareComplaint = { _, _ -> },
         )
     }
 

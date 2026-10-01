@@ -147,6 +147,7 @@ import com.noisefile.app.audio.CalibrationMath
 import com.noisefile.app.model.AmbientReading
 import com.noisefile.app.model.LevelCalibration
 import com.noisefile.app.model.MeterReading
+import com.noisefile.app.model.IncidentDetails
 import com.noisefile.app.model.NoiseKinds
 import com.noisefile.app.model.NoiseType
 import com.noisefile.app.model.RuleWorkflow
@@ -1399,7 +1400,7 @@ internal fun MicrophoneCard(
 
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
-private fun SoundKindRow(kinds: List<String>, selected: String?, onSelect: (String?) -> Unit) {
+private fun SoundKindRow(kinds: List<String>, selected: String?, onSelect: (String?) -> Unit, onPaper: Boolean = false) {
     androidx.compose.foundation.layout.FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -1411,15 +1412,15 @@ private fun SoundKindRow(kinds: List<String>, selected: String?, onSelect: (Stri
                 onClick = { onSelect(kind) },
                 label = { Text(kind) },
                 colors = FilterChipDefaults.filterChipColors(
-                    containerColor = DeckHigh,
-                    labelColor = Chalk,
+                    containerColor = if (onPaper) Paper else DeckHigh,
+                    labelColor = if (onPaper) Ink else Chalk,
                     selectedContainerColor = Cobalt,
                     selectedLabelColor = White,
                 ),
                 border = FilterChipDefaults.filterChipBorder(
                     enabled = true,
                     selected = picked,
-                    borderColor = Hairline,
+                    borderColor = if (onPaper) Line else Hairline,
                     selectedBorderColor = Cobalt,
                 ),
             )
@@ -1483,7 +1484,7 @@ internal fun HistoryScreen(
     nav: NavActions,
     onExport: () -> Unit,
     onExportPdf: () -> Unit,
-    onUpdateDetails: (Long, String, String) -> Unit,
+    onUpdateDetails: (Long, IncidentDetails) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
 ) {
     AppScaffold(selectedScreen = AppScreen.HISTORY, nav = nav) { contentPadding ->
@@ -1653,13 +1654,15 @@ private fun EmptyHistory() {
 private fun IncidentCard(
     incident: Incident,
     rule: RuleWorkflow?,
-    onUpdateDetails: (Long, String, String) -> Unit,
+    onUpdateDetails: (Long, IncidentDetails) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
     fileFor: (Incident, String) -> File = { _, name -> File(name) },
 ) {
     var isEditingDetails by remember(incident.id) { mutableStateOf(false) }
     var locationDraft by remember(incident.id, incident.location) { mutableStateOf(incident.location) }
     var noteDraft by remember(incident.id, incident.notes) { mutableStateOf(incident.notes) }
+    var impactDraft by remember(incident.id, incident.impact) { mutableStateOf(incident.impact) }
+    var kindDraft by remember(incident.id, incident.soundKind) { mutableStateOf(incident.soundKind) }
     val date = DateTimeFormatter
         .ofPattern("EEE, MMM d, h:mm a", Locale.US)
         .format(
@@ -1679,7 +1682,7 @@ private fun IncidentCard(
             ) {
                 Column(Modifier.weight(1f)) {
                     Text(
-                        text = incident.noiseType.displayName,
+                        text = incident.soundKind ?: incident.noiseType.displayName,
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(date, color = PaperMuted, style = MaterialTheme.typography.bodyMedium)
@@ -1703,8 +1706,19 @@ private fun IncidentCard(
                 TraceStrip(trace = incident.levelTrace, limitDb = limit)
             }
             HorizontalDivider(color = Line)
-            Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
+            if (!isEditingDetails) Text(incident.impact, style = MaterialTheme.typography.bodyLarge)
             if (isEditingDetails) {
+                Text("What did you hear?", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
+                SoundKindRow(
+                    kinds = NoiseKinds.forType(incident.noiseType),
+                    selected = kindDraft,
+                    onSelect = { kindDraft = if (kindDraft == it) null else it },
+                    onPaper = true,
+                )
+                Text("How did it affect you?", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
+                impactOptions.forEach { impact ->
+                    ImpactOption(text = impact, selected = impact == impactDraft, onClick = { impactDraft = impact })
+                }
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = locationDraft,
@@ -1731,6 +1745,8 @@ private fun IncidentCard(
                         onClick = {
                             locationDraft = incident.location
                             noteDraft = incident.notes
+                            impactDraft = incident.impact
+                            kindDraft = incident.soundKind
                             isEditingDetails = false
                         },
                     ) {
@@ -1738,7 +1754,7 @@ private fun IncidentCard(
                     }
                     TextButton(
                         onClick = {
-                            onUpdateDetails(incident.id, locationDraft, noteDraft)
+                            onUpdateDetails(incident.id, IncidentDetails(locationDraft, noteDraft, impactDraft, kindDraft))
                             isEditingDetails = false
                         },
                         enabled = locationDraft.isNotBlank(),
