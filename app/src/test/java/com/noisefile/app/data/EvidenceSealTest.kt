@@ -63,6 +63,13 @@ class EvidenceSealTest {
     }
 
     @Test
+    fun theImpactAndTheSoundKindAreTheUsersWordsToo() {
+        val takes = chain(take(1), take(2))
+        val edited = takes.map { if (it.id == 1L) it.copy(impact = "Shook walls, windows, or furniture", soundKind = "Bass through the wall") else it }
+        assertTrue(EvidenceSeal.verify(edited).intact)
+    }
+
+    @Test
     fun takesSavedBeforeSealingAreCountedNotJudged() {
         val old = take(1)
         val sealed = EvidenceSeal.seal(take(2), null)

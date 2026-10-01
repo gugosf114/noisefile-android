@@ -2,6 +2,7 @@ package com.noisefile.app.data
 
 import android.content.Context
 import com.noisefile.app.model.Incident
+import com.noisefile.app.model.IncidentDetails
 import com.noisefile.app.model.NoiseType
 import org.json.JSONArray
 import org.json.JSONObject
@@ -41,14 +42,15 @@ class IncidentStore(context: Context) {
     @Synchronized
     fun updateDetails(
         incidentId: Long,
-        location: String,
-        notes: String,
+        details: IncidentDetails,
     ): List<Incident> {
         val incidents = load().map { incident ->
             if (incident.id == incidentId) {
                 incident.copy(
-                    location = location.trim(),
-                    notes = notes.trim(),
+                    location = details.location.trim(),
+                    notes = details.notes.trim(),
+                    impact = details.impact.trim().ifBlank { incident.impact },
+                    soundKind = details.soundKind?.trim()?.ifBlank { null },
                 )
             } else {
                 incident

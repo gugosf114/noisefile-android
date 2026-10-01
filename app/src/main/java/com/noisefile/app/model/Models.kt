@@ -220,6 +220,14 @@ data class MeterReading(
     val alarmToneDb: Double = 0.0,
 )
 
+/** The parts of a saved incident the person may change later. All outside the seal. */
+data class IncidentDetails(
+    val location: String,
+    val notes: String,
+    val impact: String,
+    val soundKind: String?,
+)
+
 data class Incident(
     val id: Long,
     val ruleId: String,
