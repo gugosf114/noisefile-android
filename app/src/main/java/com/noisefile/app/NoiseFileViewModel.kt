@@ -17,6 +17,7 @@ import com.noisefile.app.data.IncidentStore
 import android.net.Uri
 import java.io.File
 import com.noisefile.app.data.LevelTraceRecorder
+import com.noisefile.app.data.QuietFloor
 import com.noisefile.app.data.EvidenceSeal
 import com.noisefile.app.data.RuleCatalog
 import com.noisefile.app.model.AmbientReading
@@ -108,6 +109,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val incidentStore = IncidentStore(application)
     private val trace = LevelTraceRecorder()
+    /** The quiet run's own second-by-second trace; its 10th percentile is the baseline. */
+    private val quietTrace = LevelTraceRecorder()
     private val files = IncidentFiles(application)
     private val noiseMeter = NoiseMeter(application)
     private val tourPrefs = application.getSharedPreferences("noisefile_tour", android.content.Context.MODE_PRIVATE)
@@ -284,8 +287,10 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             )
         }
 
+        quietTrace.reset()
         noiseMeter.start(
             onReading = { reading ->
+                quietTrace.add(reading.elapsedMillis, reading.currentDb)
                 _uiState.update { state -> state.copy(meterReading = reading) }
                 if (reading.elapsedMillis >= targetSeconds * 1_000L) finishAmbient()
             },
@@ -318,8 +323,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             }
             return
         }
+        // The floor the room sits at (L90), never the energy average: a sneeze must not become the baseline.
         val ambient = AmbientReading(
-            db = reading.averageDb,
+            db = QuietFloor.of(quietTrace.snapshot()) ?: reading.minimumDb,
             seconds = max(1L, reading.elapsedMillis / 1_000L),
             sampleWindows = reading.sampleWindows,
             calibration = reading.calibration,
