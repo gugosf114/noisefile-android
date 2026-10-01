@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -82,11 +83,15 @@ internal fun StepsStrip(
     onFile: () -> Unit,
     sweepOnce: Boolean = true,
 ) {
+    // -1 = idle. 0..3 = the pen: whole part is which pill, fraction is how far round it has drawn.
     val sweep = remember { Animatable(-1f) }
     LaunchedEffect(sweepOnce) {
         if (sweepOnce) {
-            sweep.snapTo(0f)
-            sweep.animateTo(3f, tween(1_800))
+            for (i in 0 until 3) {
+                sweep.snapTo(i.toFloat())
+                sweep.animateTo(i + 0.999f, tween(700, easing = androidx.compose.animation.core.FastOutSlowInEasing))
+                kotlinx.coroutines.delay(120)
+            }
             sweep.snapTo(-1f)
         }
     }
@@ -103,17 +108,14 @@ internal fun StepsStrip(
                 Triple("File", steps.fileDone, onFile),
             )
             items.forEachIndexed { i, (name, done, onClick) ->
-                val lit = sweeping >= i && sweeping < i + 1f
+                val tracing = sweeping >= i && sweeping < i + 1f
+                val traceProgress = if (tracing) sweeping - i else 0f
                 val isNext = sweeping < 0f && i == steps.nextIndex && !done
-                val edge = when {
-                    lit -> Brass
-                    isNext -> Brass.copy(alpha = 0.55f)
-                    else -> Color.Transparent
-                }
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .border(1.dp, edge, RoundedCornerShape(12.dp))
+                        .border(1.dp, if (isNext) Brass.copy(alpha = 0.55f) else Color.Transparent, RoundedCornerShape(12.dp))
+                        .drawTracedEdge(progress = traceProgress, color = Brass)
                         .clickable(onClick = onClick)
                         .padding(horizontal = 12.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -143,3 +145,25 @@ internal fun StepsStrip(
         Spacer(Modifier.height(0.dp).border(0.dp, Hairline))
     }
 }
+
+
+/** A pen drawing the pill's edge: the stroke grows from the top-left corner round the shape as [progress] goes 0 to 1. */
+private fun Modifier.drawTracedEdge(progress: Float, color: Color): Modifier = this.then(
+    Modifier.drawWithContent {
+        drawContent()
+        if (progress <= 0f) return@drawWithContent
+        val radius = 12.dp.toPx()
+        val path = androidx.compose.ui.graphics.Path().apply {
+            addRoundRect(
+                androidx.compose.ui.geometry.RoundRect(
+                    androidx.compose.ui.geometry.Rect(0f, 0f, size.width, size.height),
+                    androidx.compose.ui.geometry.CornerRadius(radius),
+                ),
+            )
+        }
+        val measure = androidx.compose.ui.graphics.PathMeasure().apply { setPath(path, forceClosed = true) }
+        val segment = androidx.compose.ui.graphics.Path()
+        measure.getSegment(0f, measure.length * progress.coerceIn(0f, 1f), segment, startWithMoveTo = true)
+        drawPath(segment, color, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round))
+    },
+)
