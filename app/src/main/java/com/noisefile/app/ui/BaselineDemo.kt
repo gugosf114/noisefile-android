@@ -1,6 +1,5 @@
 package com.noisefile.app.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -120,13 +119,13 @@ internal fun BaselineDemo(modifier: Modifier = Modifier) {
                 .border(1.dp, Hairline, RoundedCornerShape(16.dp)),
         ) {
             // The scene: the quiet card, then the dial, then the baselines card.
-            AnimatedVisibility(visible = scene == Scene.PICK_ROOM || scene == Scene.TAP_MEASURE, enter = fadeIn(), exit = fadeOut()) {
+            androidx.compose.animation.AnimatedVisibility(visible = scene == Scene.PICK_ROOM || scene == Scene.TAP_MEASURE, enter = fadeIn(), exit = fadeOut()) {
                 MiniQuietCard(roomPicked = roomPicked, buttonLit = scene == Scene.TAP_MEASURE && pressed)
             }
-            AnimatedVisibility(visible = scene == Scene.MEASURING, enter = fadeIn(), exit = fadeOut()) {
+            androidx.compose.animation.AnimatedVisibility(visible = scene == Scene.MEASURING, enter = fadeIn(), exit = fadeOut()) {
                 MiniMeter(clockSeconds = clockSeconds, db = 28.0 + 3.0 * sin(wobble / 180.0))
             }
-            AnimatedVisibility(visible = scene == Scene.SAVED || scene == Scene.HOLD, enter = fadeIn(), exit = fadeOut()) {
+            androidx.compose.animation.AnimatedVisibility(visible = scene == Scene.SAVED || scene == Scene.HOLD, enter = fadeIn(), exit = fadeOut()) {
                 MiniBaselinesCard()
             }
             // The finger.
