@@ -53,6 +53,13 @@ class IncidentStore(context: Context) {
         return incidents
     }
 
+    /** The person says this one went to the city. [atEpochMillis] null clears the mark. */
+    fun markFiled(incidentId: Long, atEpochMillis: Long?): List<Incident> {
+        val incidents = load().map { if (it.id == incidentId) it.copy(filedAtEpochMillis = atEpochMillis) else it }
+        persist(incidents)
+        return incidents
+    }
+
     fun updateDetails(
         incidentId: Long,
         details: IncidentDetails,
@@ -101,6 +108,7 @@ internal fun Incident.toJson(): JSONObject = JSONObject()
     .put("notes", notes)
     .put("soundKind", soundKind ?: JSONObject.NULL)
     .put("room", room ?: JSONObject.NULL)
+    .put("filedAtEpochMillis", filedAtEpochMillis ?: JSONObject.NULL)
     .put("ambientDb", ambientDb ?: JSONObject.NULL)
     .put("ambientSeconds", ambientSeconds ?: JSONObject.NULL)
     .put("laterQuietDb", laterQuietDb ?: JSONObject.NULL)
@@ -142,6 +150,7 @@ private fun JSONObject.toIncident(): Incident = Incident(
     notes = optString("notes"),
     soundKind = if (has("soundKind") && !isNull("soundKind")) getString("soundKind") else null,
     room = if (has("room") && !isNull("room")) getString("room") else null,
+    filedAtEpochMillis = if (has("filedAtEpochMillis") && !isNull("filedAtEpochMillis")) getLong("filedAtEpochMillis") else null,
     ambientDb = if (has("ambientDb") && !isNull("ambientDb")) getDouble("ambientDb") else null,
     ambientSeconds = if (has("ambientSeconds") && !isNull("ambientSeconds")) getLong("ambientSeconds") else null,
     laterQuietDb = if (has("laterQuietDb") && !isNull("laterQuietDb")) getDouble("laterQuietDb") else null,
