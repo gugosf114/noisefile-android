@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -295,6 +296,18 @@ internal fun HomeScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = Muted,
                     )
+                    var showHow by remember { mutableStateOf(false) }
+                    TextButton(onClick = { showHow = true }, contentPadding = PaddingValues(0.dp)) {
+                        Text("Show me how", style = MaterialTheme.typography.labelLarge, color = Brass)
+                    }
+                    if (showHow) {
+                        AlertDialog(
+                            onDismissRequest = { showHow = false },
+                            title = { Text("The baseline, in nine seconds") },
+                            text = { BaselineDemo() },
+                            confirmButton = { TextButton(onClick = { showHow = false }) { Text("Got it") } },
+                        )
+                    }
                     Label("Where will you stand?")
                     RoomChips(selected = state.quietRoom, onSelect = onPickQuietRoom)
                     Text(
