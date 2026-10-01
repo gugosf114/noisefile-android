@@ -136,7 +136,8 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
     private fun personBlockHeight(e: ReportExhibit, body: Float): Float {
         val inc = e.incident
         var h = 6f + 10f + 14f
-        h += heightOf("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        h += heightOf("Where the noise came from: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        inc.room?.let { h += heightOf("Where the person stood: $it", body + 0.5f) }
         inc.soundKind?.let { h += heightOf("Sound: $it", body + 0.5f) }
         h += heightOf("Impact: ${inc.impact}", body + 0.5f)
         h += heightOf("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)
@@ -306,7 +307,8 @@ private class ReportPainter(private val doc: PdfDocument, private val fileFor: (
         need(personBlockHeight(e, body))
         gap(6f); rule()
         label("What the person recorded")
-        text("Location: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        text("Where the noise came from: ${inc.location.ifBlank { "not added" }}", body + 0.5f)
+        inc.room?.let { text("Where the person stood: $it", body + 0.5f) }
         inc.soundKind?.let { text("Sound: $it", body + 0.5f) }
         text("Impact: ${inc.impact}", body + 0.5f)
         text("Notes: ${inc.notes.ifBlank { "none" }}", body + 0.5f)

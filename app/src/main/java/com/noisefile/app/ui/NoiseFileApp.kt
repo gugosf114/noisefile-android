@@ -269,6 +269,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             listState = homeListState,
             onAttachQuiet = viewModel::attachQuietToEarlierIncidents,
             onDismissQuietAttach = viewModel::dismissQuietAttach,
+            onPickQuietRoom = viewModel::setQuietRoom,
         )
 
         AppScreen.RULES -> RulesScreen(
@@ -322,6 +323,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onLocationChange = viewModel::setLocation,
                 onImpactChange = viewModel::setImpact,
                 onSoundKindChange = viewModel::setSoundKind,
+                onRoomChange = viewModel::setDraftRoom,
+                roomBaseline = viewModel.baselineFor(state.draftRoom),
                 onNotesChange = viewModel::setNotes,
                 onSave = { viewModel.saveIncident() },
                 onAddPhoto = viewModel::addDraftPhoto,
@@ -349,6 +352,8 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onPrepareComplaint = { incident, rule ->
                 gated { prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
             },
+            baselines = state.baselines,
+            onRemeasure = { room -> viewModel.setQuietRoom(room); beginAmbient() },
         )
 
         AppScreen.FORM_GUIDE -> {
@@ -949,6 +954,8 @@ internal fun ReviewScreen(
     onSaveAndPrepare: () -> Unit,
     onDiscard: () -> Unit,
     onSoundKindChange: (String?) -> Unit = {},
+    onRoomChange: (String) -> Unit = {},
+    roomBaseline: com.noisefile.app.data.Baseline? = null,
     onAddPhoto: (Uri) -> Unit = {},
     onRemovePhoto: (File) -> Unit = {},
     onDropClip: () -> Unit = {},
@@ -1088,6 +1095,23 @@ internal fun ReviewScreen(
                     kinds = NoiseKinds.forType(rule.noiseType),
                     selected = state.draftSoundKind,
                     onSelect = onSoundKindChange,
+                )
+            }
+
+            item {
+                Text("Where were you?", style = MaterialTheme.typography.headlineSmall, color = Chalk)
+                Label("The room you stood in. Its baseline is what this incident is judged against.")
+                Spacer(Modifier.height(6.dp))
+                RoomChips(selected = state.draftRoom, onSelect = onRoomChange)
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = when {
+                        state.draftRoom == null -> "Pick a room. No pick means no baseline on this incident."
+                        roomBaseline != null -> "${roomBaseline.room} baseline: ${roomBaseline.db.roundToInt()} dB, measured ${shortDate(roomBaseline.measuredAtEpochMillis)}. This incident will be judged against it."
+                        else -> "No baseline for ${state.draftRoom} yet. The report will say so. Measure it on a quiet night and it attaches."
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (roomBaseline != null) Chalk else Muted,
                 )
             }
 
@@ -1514,6 +1538,8 @@ internal fun HistoryScreen(
     onExportPdf: () -> Unit,
     onUpdateDetails: (Long, IncidentDetails) -> Unit,
     onPrepareComplaint: (Incident, RuleWorkflow) -> Unit,
+    baselines: List<com.noisefile.app.data.Baseline> = emptyList(),
+    onRemeasure: (String) -> Unit = {},
 ) {
     AppScaffold(selectedScreen = AppScreen.HISTORY, nav = nav) { contentPadding ->
         LazyColumn(
@@ -1528,6 +1554,29 @@ internal fun HistoryScreen(
                 Spacer(Modifier.height(26.dp))
                 Text("Incidents", style = MaterialTheme.typography.headlineMedium, color = Chalk)
                 Label("Saved on this phone only")
+            }
+
+            item {
+                DeckCard {
+                    Text("Baselines", style = MaterialTheme.typography.titleMedium)
+                    Label("Each room's quiet, measured once and kept. Not incidents.")
+                    if (baselines.isEmpty()) {
+                        Text("None yet. Measure one on Home, in the room where the noise hits you.", style = MaterialTheme.typography.bodyMedium, color = Muted)
+                    }
+                    baselines.forEach { b ->
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(b.room, style = MaterialTheme.typography.titleSmall, color = Chalk)
+                                Text(
+                                    "${b.db.roundToInt()} dB over ${formatElapsed(b.seconds * 1_000L)}, measured ${shortDate(b.measuredAtEpochMillis)}" +
+                                        (b.codeMinutes?.let { ", ${b.cityName}'s code asks $it min" } ?: ", our 5-min default"),
+                                    style = MaterialTheme.typography.bodySmall, color = Muted,
+                                )
+                            }
+                            TextButton(onClick = { onRemeasure(b.room) }) { Text("Remeasure") }
+                        }
+                    }
+                }
             }
 
             if (incidents.isNotEmpty()) {
@@ -1691,6 +1740,7 @@ private fun IncidentCard(
     var noteDraft by remember(incident.id, incident.notes) { mutableStateOf(incident.notes) }
     var impactDraft by remember(incident.id, incident.impact) { mutableStateOf(incident.impact) }
     var kindDraft by remember(incident.id, incident.soundKind) { mutableStateOf(incident.soundKind) }
+    var roomDraft by remember(incident.id, incident.room) { mutableStateOf(incident.room) }
     val date = DateTimeFormatter
         .ofPattern("EEE, MMM d, h:mm a", Locale.US)
         .format(
@@ -1743,6 +1793,8 @@ private fun IncidentCard(
                     onSelect = { kindDraft = if (kindDraft == it) null else it },
                     onPaper = true,
                 )
+                Text("Where were you?", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
+                RoomChips(selected = roomDraft, onSelect = { roomDraft = it }, onPaper = true)
                 Text("How did it affect you?", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
                 impactOptions.forEach { impact ->
                     ImpactOption(text = impact, selected = impact == impactDraft, onClick = { impactDraft = impact })
@@ -1775,6 +1827,7 @@ private fun IncidentCard(
                             noteDraft = incident.notes
                             impactDraft = incident.impact
                             kindDraft = incident.soundKind
+                            roomDraft = incident.room
                             isEditingDetails = false
                         },
                     ) {
@@ -1782,7 +1835,7 @@ private fun IncidentCard(
                     }
                     TextButton(
                         onClick = {
-                            onUpdateDetails(incident.id, IncidentDetails(locationDraft, noteDraft, impactDraft, kindDraft))
+                            onUpdateDetails(incident.id, IncidentDetails(locationDraft, noteDraft, impactDraft, kindDraft, roomDraft))
                             isEditingDetails = false
                         },
                         enabled = locationDraft.isNotBlank(),
@@ -1802,6 +1855,11 @@ private fun IncidentCard(
                         color = if (incident.location.isBlank()) PaperMuted else Ink,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                    incident.room?.let { room ->
+                        Spacer(Modifier.height(5.dp))
+                        Text(text = "Where I stood", color = PaperMuted, style = MaterialTheme.typography.labelMedium)
+                        Text(text = room, color = Ink, style = MaterialTheme.typography.bodyMedium)
+                    }
                     Spacer(Modifier.height(5.dp))
                     Text(
                         text = "Notes",

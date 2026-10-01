@@ -226,6 +226,7 @@ data class IncidentDetails(
     val notes: String,
     val impact: String,
     val soundKind: String?,
+    val room: String? = null,
 )
 
 data class Incident(
@@ -242,6 +243,8 @@ data class Incident(
     val notes: String,
     /** What exactly was heard, from [NoiseKinds], or null when the person did not pick. Their own words, outside the seal. */
     val soundKind: String? = null,
+    /** Where the person stood (Bedroom, Back yard, ...). Their own word, outside the seal; the room's baseline is what [ambientDb] came from. */
+    val room: String? = null,
     val ambientDb: Double? = null,
     val ambientSeconds: Long? = null,
     /**

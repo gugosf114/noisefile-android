@@ -111,7 +111,9 @@ fun buildComplaintDraft(
     val levelNote = incident.levelNote?.trim()?.trimEnd('.')
 
     fun compose(withNotes: Boolean, withLevelNote: Boolean, withProof: Boolean) = buildString {
-        append("$kind from ${incident.location.trim()}. ")
+        append("$kind from ${incident.location.trim()}")
+        append(incident.room?.let { ", heard from my ${it.lowercase(Locale.US)}" } ?: "")
+        append(". ")
         append("$date, ${clock.format(start)} to ${clock.format(end)} ($minutes min). ")
         append("Phone estimate at my spot: highest ${incident.maximumDb.toInt()} dB, average ${incident.averageDb.toInt()} dB.")
         append(baseline)

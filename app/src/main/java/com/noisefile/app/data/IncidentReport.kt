@@ -28,6 +28,7 @@ fun buildIncidentHistoryReport(
         appendLine("Type: ${incident.noiseType.displayName}")
         incident.soundKind?.let { appendLine("Sound: $it") }
         appendLine("Location: ${incident.location.ifBlank { "None added" }}")
+        incident.room?.let { appendLine("Where the person stood: $it") }
         appendLine("Duration: ${incident.durationSeconds} sec")
         appendLine(
             "Levels: ${incident.averageDb.toInt()} dB avg / " +

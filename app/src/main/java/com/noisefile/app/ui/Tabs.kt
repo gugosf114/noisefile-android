@@ -190,8 +190,10 @@ internal fun HomeScreen(
     listState: LazyListState = rememberLazyListState(),
     onAttachQuiet: () -> Unit = {},
     onDismissQuietAttach: () -> Unit = {},
+    onPickQuietRoom: (String) -> Unit = {},
 ) {
     val city = selectedJurisdiction.displayName
+    val roomBaseline = state.quietRoom?.let { r -> state.baselines.firstOrNull { it.room.equals(r, ignoreCase = true) } }
     val limit = limitAt(selectedRule, LocalTime.now().hour)
     AppScaffold(selectedScreen = AppScreen.HOME, nav = nav) { contentPadding ->
         LazyColumn(
@@ -214,10 +216,10 @@ internal fun HomeScreen(
             if (state.quietAttachCount > 0 && state.ambient != null) {
                 item {
                     DeckCard {
-                        Text("Same spot as your earlier incidents?", style = MaterialTheme.typography.titleMedium)
+                        Text("Attach to your earlier ${state.quietRoom ?: "room"} incidents?", style = MaterialTheme.typography.titleMedium)
                         Text(
-                            text = "You have ${state.quietAttachCount} saved incident${if (state.quietAttachCount == 1) "" else "s"} in $city with no quiet level. " +
-                                "If you measured this quiet where those happened, attach it. The report will say it was measured later.",
+                            text = "You have ${state.quietAttachCount} saved incident${if (state.quietAttachCount == 1) "" else "s"} from the ${state.quietRoom ?: "same room"} with no baseline. " +
+                                "Attach this one. The report will say it was measured later.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Muted,
                         )
@@ -227,7 +229,7 @@ internal fun HomeScreen(
                                 shape = RoundedCornerShape(14.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Cobalt, contentColor = White),
                             ) { Text("Attach it") }
-                            TextButton(onClick = onDismissQuietAttach) { Text("Different spot", color = Muted) }
+                            TextButton(onClick = onDismissQuietAttach) { Text("Not now", color = Muted) }
                         }
                     }
                 }
@@ -264,6 +266,13 @@ internal fun HomeScreen(
             }
 
             item {
+                StepsStrip(
+                    baselineDone = roomBaseline != null,
+                    recordDone = state.incidents.isNotEmpty(),
+                )
+            }
+
+            item {
                 PaperCard {
                     Label("The rule in $city", color = PaperMuted)
                     Text(selectedRule.title, style = MaterialTheme.typography.titleLarge, color = Ink)
@@ -282,16 +291,26 @@ internal fun HomeScreen(
                 DeckCard(modifier = Modifier.tourTarget(TourStep.QUIET)) {
                     Text("Quiet baseline (the codes call it ambient)", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        text = state.ambient?.let {
-                            "Ready: ${it.db.roundToInt()} dB over ${formatElapsed(it.seconds * 1_000L)}. " +
-                                "Record the noise from the same spot."
-                        } ?: "Measure the quiet room first. Then each incident shows how far above the quiet it was.",
+                        text = baselineRuleLine(selectedRule, ambientTargetSeconds / 60),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Muted,
+                    )
+                    Label("Where will you stand?")
+                    RoomChips(selected = state.quietRoom, onSelect = onPickQuietRoom)
+                    Text(
+                        text = when {
+                            state.quietRoom == null -> "Pick the room where the noise hits you. Measure it once, on a quiet night."
+                            roomBaseline != null -> "${roomBaseline.room}: ${roomBaseline.db.roundToInt()} dB over ${formatElapsed(roomBaseline.seconds * 1_000L)}, " +
+                                "measured ${shortDate(roomBaseline.measuredAtEpochMillis)}. Every incident from this room is judged against it."
+                            else -> "No baseline for ${state.quietRoom} yet. Measure it once, with the noise off."
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (roomBaseline != null) Chalk else Muted,
                     )
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         onClick = onBeginAmbient,
+                        enabled = state.quietRoom != null,
                         shape = RoundedCornerShape(16.dp),
                         border = BorderStroke(1.dp, Hairline),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Chalk),
@@ -299,8 +318,9 @@ internal fun HomeScreen(
                         Icon(Icons.Default.GraphicEq, contentDescription = null, tint = Brass)
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            (if (state.ambient != null) "Measure the quiet again" else "Measure the quiet") +
-                                ", ${ambientTargetSeconds / 60} min",
+                            (if (roomBaseline != null) "Remeasure" else "Measure the quiet") +
+                                (state.quietRoom?.let { " in $it" } ?: "") +
+                                ", ${ambientTargetSeconds / 60} min (${baselineMinutesSource(selectedRule)})",
                         )
                     }
                 }
@@ -327,6 +347,8 @@ internal fun RuleSheet(rule: RuleWorkflow, incidentCount: Int, onOpenUri: (Strin
             }
         }
         rule.hoursRule?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
+        Label("The quiet baseline (ambient)", color = PaperMuted)
+        Text(baselineRuleLine(rule, com.noisefile.app.NoiseFileViewModel.DEFAULT_AMBIENT_MINUTES), style = MaterialTheme.typography.bodyMedium, color = Ink)
         rule.ambientRecipe?.let { CodeQuote(quote = it.sourceQuote, citation = it.sourceCitation) }
 
         rule.requiredIncidentCount?.let { required ->
@@ -458,6 +480,8 @@ internal fun MoreScreen(
                     )
                     HorizontalDivider(color = Hairline)
                     SettingRow(Icons.Default.TouchApp, "Show me around", "The five-stop tour, again", onStartTour)
+                    HorizontalDivider(color = Hairline)
+                    SettingRow(Icons.Default.GraphicEq, "Baselines", "Each room's quiet, kept at the top of Incidents", nav.incidents)
                 }
             }
 
@@ -475,7 +499,8 @@ internal fun MoreScreen(
                     Text("How it works", style = MaterialTheme.typography.titleMedium)
                     listOf(
                         "Pick your city and what you hear. Read the rule.",
-                        "Press record when the noise starts. Save the incident.",
+                        "On a quiet night, measure the baseline in the room where the noise hits you. Once per room.",
+                        "Press record when the noise starts. Say which room you were in. Save.",
                         "When your incidents add up, export the report and file it with the city.",
                     ).forEachIndexed { index, step ->
                         Row(verticalAlignment = Alignment.Top) {
@@ -521,3 +546,32 @@ internal fun MoreScreen(
         }
     }
 }
+
+
+/** 1 Baseline · 2 Record · 3 File, with a check on what is done. */
+@Composable
+internal fun StepsStrip(baselineDone: Boolean, recordDone: Boolean) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        listOf("Baseline" to baselineDone, "Record" to recordDone, "File" to false).forEachIndexed { i, (name, done) ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (done) "\u2713" else "${i + 1}",
+                    color = if (done) Brass else Muted,
+                    fontFamily = BarlowCondensed,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(name, color = if (done) Chalk else Muted, style = MaterialTheme.typography.labelLarge)
+            }
+        }
+    }
+}
+
+internal fun shortDate(epochMillis: Long): String =
+    java.time.format.DateTimeFormatter.ofPattern("MMM d", java.util.Locale.US)
+        .format(java.time.Instant.ofEpochMilli(epochMillis).atZone(java.time.ZoneId.systemDefault()))
