@@ -30,7 +30,6 @@ import com.noisefile.app.model.Incident
 import com.noisefile.app.ui.theme.BarlowCondensed
 import com.noisefile.app.ui.theme.Brass
 import com.noisefile.app.ui.theme.Chalk
-import com.noisefile.app.ui.theme.Hairline
 import com.noisefile.app.ui.theme.Muted
 import java.time.Instant
 import java.time.ZoneId
@@ -140,7 +139,6 @@ internal fun StepsStrip(
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
         )
-        Spacer(Modifier.height(0.dp).border(0.dp, Hairline))
     }
 }
 
