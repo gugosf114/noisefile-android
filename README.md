@@ -359,3 +359,48 @@ exact microphone as the live input. Regression tests cover a rejected USB
 preference, a missing route, and a wrong routed device.
 
 versionCode 17, versionName 0.10.2.
+
+## 2026-09-30 to 2026-10-01 — 36 cities, the paid part, and the first-run tour
+
+Shipped as versions 0.19.0 through 0.30.2, each one on Play alpha and internal:
+
+- **Cities.** 36 Bay Area cities, 108 rules, every one read from the city's own
+  current code (eCode360, Municode API, American Legal, Code Publishing,
+  municipal.codes). Each rule names its door: web form, email, phone, or
+  packet. 59 web forms carry a form guide (every box, with the app's answer
+  next to it). 29 city mailboxes are email routes. The sources page is built
+  from the catalog by `scripts/build_sources_page.py`; CI fails if it drifts.
+- **The complaint.** Short, sized to the city's box, built from the incident:
+  what (the sound kind the person tapped), where, when, how loud, how far above
+  the quiet, how it affected them, what proof exists. Rule text and code quotes
+  stay in the PDF.
+- **The one paid part.** One-time unlock `noisefile_unlock`, $7.99 on Google
+  Play (Billing Library 8): the sealed PDF report, the city form guide, the
+  filled-in city email. Price string comes from Play. Restore on More and on the
+  card. Preview builds stay open.
+- **Store words.** Title "NoiseFile: Noise Complaint Kit"; short line
+  "Construction, neighbor noise, loud music. Check the city rule. File a
+  complaint." Long text opens with "NoiseFile is made by WiM Labs, a small
+  company. It is not part of any city or government."
+- **Baselines per room.** Bedroom, Living room, Kitchen, Back yard, Street
+  side, Balcony, Other. Measured once, kept apart from incidents, listed at the
+  top of Incidents. The quiet number is the level the room sits at (10th
+  percentile, L90), not an energy average. Each rule page says whether the
+  city's code asks for a baseline and for how many minutes, or that 5 is our
+  default. A quiet measured later can attach to earlier incidents from the same
+  room, labeled "measured later"; the sealed numbers never change.
+- **The review screen** asks what you heard (dog barking, bass through the
+  wall, hammering, ...) and where you stood. Edit details can change both,
+  plus the impact.
+- **Case steps.** Under the dial: 1 Baseline · 2 Record · 3 File. They track
+  the newest case. File is marked by the person (asked once on return from a
+  file-it tap, or on the card). On open, a brass line draws itself round each
+  step in turn.
+- **First-run tour.** Five stops over the live screen, one control lit at a
+  time, Skip on every card. Stop 3 plays a nine-second drawn scene of the
+  baseline being measured. "Show me around" on More replays it; "Show me how"
+  on the quiet card plays the scene.
+- **Play.** Closed test on day 7 of 14 with 12 testers; production application
+  opens around 2026-10-08. The phone's copy comes from Play now (internal
+  track), not from the download link.
+
