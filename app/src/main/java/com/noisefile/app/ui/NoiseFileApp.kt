@@ -198,7 +198,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     val tourTargets = remember { newTourTargets() }
     // The brass sweep over 1 · 2 · 3 runs once per app open, the first time Home shows.
     var sweepSteps by remember { mutableStateOf(true) }
-    LaunchedEffect(state.screen) { if (state.screen == AppScreen.HOME) { kotlinx.coroutines.delay(2_200); sweepSteps = false } }
+    LaunchedEffect(state.screen) { if (state.screen == AppScreen.HOME) { kotlinx.coroutines.delay(4_000); sweepSteps = false } }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val homeListState = androidx.compose.foundation.lazy.rememberLazyListState()
     // The quiet card sits low on Home; scroll it into the light for its stop, back to the top for the rest.

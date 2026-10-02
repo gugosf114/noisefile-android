@@ -83,14 +83,17 @@ internal fun StepsStrip(
 ) {
     // -1 = idle. 0..3 = the pen: whole part is which pill, fraction is how far round it has drawn.
     val sweep = remember { Animatable(-1f) }
-    LaunchedEffect(sweepOnce) {
-        if (sweepOnce) {
+    // Keyed on Unit: nothing outside can restart or cut this. If it is ever cancelled, the pen still lifts.
+    LaunchedEffect(Unit) {
+        if (!sweepOnce) return@LaunchedEffect
+        try {
             for (i in 0 until 3) {
                 sweep.snapTo(i.toFloat())
                 sweep.animateTo(i + 0.999f, tween(700, easing = androidx.compose.animation.core.FastOutSlowInEasing))
                 kotlinx.coroutines.delay(120)
             }
-            sweep.snapTo(-1f)
+        } finally {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { sweep.snapTo(-1f) }
         }
     }
     val sweeping = sweep.value
@@ -108,7 +111,6 @@ internal fun StepsStrip(
             items.forEachIndexed { i, (name, done, onClick) ->
                 val tracing = sweeping >= i && sweeping < i + 1f
                 val traceProgress = if (tracing) sweeping - i else 0f
-                val isNext = i == steps.nextIndex && !done
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
@@ -127,7 +129,7 @@ internal fun StepsStrip(
                     Spacer(Modifier.width(6.dp))
                     Text(
                         text = name + if (i == 1 && steps.openCount > 1) " · ${steps.openCount}" else "",
-                        color = if (done || isNext) Chalk else Muted,
+                        color = if (done) Chalk else Muted,
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
