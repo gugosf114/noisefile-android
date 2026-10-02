@@ -2,7 +2,6 @@ package com.noisefile.app.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -110,11 +109,10 @@ internal fun StepsStrip(
             items.forEachIndexed { i, (name, done, onClick) ->
                 val tracing = sweeping >= i && sweeping < i + 1f
                 val traceProgress = if (tracing) sweeping - i else 0f
-                val isNext = sweeping < 0f && i == steps.nextIndex && !done
+                val isNext = i == steps.nextIndex && !done
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .border(1.dp, if (isNext) Brass.copy(alpha = 0.55f) else Color.Transparent, RoundedCornerShape(12.dp))
                         .drawTracedEdge(progress = traceProgress, color = Brass)
                         .clickable(onClick = onClick)
                         .padding(horizontal = 12.dp, vertical = 6.dp),
