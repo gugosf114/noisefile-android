@@ -15,6 +15,8 @@ import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.data.IncidentFiles
 import com.noisefile.app.data.IncidentStore
 import com.noisefile.app.data.Baseline
+import com.noisefile.app.data.CityStore
+import com.noisefile.app.data.resolveSavedCity
 import com.noisefile.app.data.BaselineStore
 import android.net.Uri
 import java.io.File
@@ -120,6 +122,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val incidentStore = IncidentStore(application)
     private val baselineStore = BaselineStore(application)
+    private val cityStore = CityStore(application)
+    /** The city the person left the app on; a fresh install lands on the catalog default. */
+    private val startCity = resolveSavedCity(cityStore.load(), ruleCatalog)
     private val trace = LevelTraceRecorder()
     /** The quiet run's own second-by-second trace; its 10th percentile is the baseline. */
     private val quietTrace = LevelTraceRecorder()
@@ -128,6 +133,8 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
     private val tourPrefs = application.getSharedPreferences("noisefile_tour", android.content.Context.MODE_PRIVATE)
     private val _uiState = MutableStateFlow(
         NoiseFileUiState(
+            selectedJurisdictionId = startCity.jurisdictionId,
+            selectedRuleId = startCity.ruleId,
             incidents = incidentStore.load(),
             baselines = baselineStore.load(),
             quietRoom = baselineStore.lastRoom,
@@ -229,6 +236,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             val selectedRule = matchingRule
                 ?: ruleCatalog.forJurisdiction(jurisdiction.id).firstOrNull()
                 ?: return@update it
+            cityStore.save(jurisdiction.id, selectedRule.id)
             it.copy(
                 selectedJurisdictionId = jurisdiction.id,
                 selectedRuleId = selectedRule.id,
@@ -252,6 +260,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             }
             return
         }
+        cityStore.save(state.selectedJurisdictionId, ruleId)
         _uiState.update {
             it.copy(
                 selectedRuleId = ruleId,
