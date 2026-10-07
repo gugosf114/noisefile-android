@@ -1,6 +1,6 @@
 # NoiseFile: Noise Complaint Kit
 
-### ▶ [Download NoiseFile — 2026-10-01 (v0.30.3)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
+### ▶ [Download NoiseFile — 2026-10-06 (v0.30.4)](https://github.com/gugosf114/noisefile-android/raw/refs/heads/main/00-NOISEFILE-DOWNLOAD.apk)
 
 **Construction, neighbor noise, loud music. Check the city rule. File a complaint.**
 
