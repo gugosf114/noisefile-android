@@ -7,6 +7,7 @@ import com.noisefile.app.model.RuleWorkflow
 import com.noisefile.app.model.quietDb
 import com.noisefile.app.model.quietWasLater
 import java.time.Instant
+import kotlin.math.roundToInt
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -96,8 +97,8 @@ fun buildComplaintDraft(
             " (measured later, on " + DateTimeFormatter.ofPattern("MMM d", Locale.US)
                 .format(Instant.ofEpochMilli(incident.laterQuietAtEpochMillis ?: 0L).atZone(zoneId)) + ")"
         } else ""
-        " Quiet at the same spot with the source silent$when_: ${quiet.toInt()} dB, so the noise peaked " +
-            "${(incident.maximumDb - quiet).toInt()} dB above quiet."
+        " Quiet at the same spot with the source silent$when_: ${quiet.roundToInt()} dB, so the noise peaked " +
+            "${(incident.maximumDb - quiet).roundToInt()} dB above quiet."
     } ?: ""
     val attachments = buildList {
         if (incident.photoNames.isNotEmpty()) add("${incident.photoNames.size} photo${if (incident.photoNames.size > 1) "s" else ""}")
@@ -115,7 +116,7 @@ fun buildComplaintDraft(
         append(incident.room?.let { ", heard from my ${it.lowercase(Locale.US)}" } ?: "")
         append(". ")
         append("$date, ${clock.format(start)} to ${clock.format(end)} ($minutes min). ")
-        append("Phone estimate at my spot: highest ${incident.maximumDb.toInt()} dB, average ${incident.averageDb.toInt()} dB.")
+        append("Phone estimate at my spot: highest ${incident.maximumDb.roundToInt()} dB, average ${incident.averageDb.roundToInt()} dB.")
         append(baseline)
         if (withLevelNote && !levelNote.isNullOrEmpty()) append(" $levelNote.")
         append(" Impact: ${incident.impact.trim().trimEnd('.')}.")

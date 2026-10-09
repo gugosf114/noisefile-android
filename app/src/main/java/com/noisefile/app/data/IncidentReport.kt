@@ -5,6 +5,7 @@ import com.noisefile.app.model.quietDb
 import com.noisefile.app.model.quietSeconds
 import com.noisefile.app.model.quietWasLater
 import java.time.Instant
+import kotlin.math.roundToInt
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -31,17 +32,17 @@ fun buildIncidentHistoryReport(
         incident.room?.let { appendLine("Where the person stood: $it") }
         appendLine("Duration: ${incident.durationSeconds} sec")
         appendLine(
-            "Levels: ${incident.averageDb.toInt()} dB avg / " +
-                "${incident.maximumDb.toInt()} dB max",
+            "Levels: ${incident.averageDb.roundToInt()} dB avg / " +
+                "${incident.maximumDb.roundToInt()} dB max",
         )
         val baselineDb = incident.quietDb
         val baselineSeconds = incident.quietSeconds
         if (baselineDb != null && baselineSeconds != null) {
             appendLine(
                 "Quiet baseline (ambient)${if (incident.quietWasLater) ", measured later, same spot, source silent" else ""}: " +
-                    "${baselineDb.toInt()} dB over $baselineSeconds sec at the same spot; " +
-                    "disturbance ${(incident.averageDb - baselineDb).toInt()} dB above it on average, " +
-                    "${(incident.maximumDb - baselineDb).toInt()} dB above at peak",
+                    "${baselineDb.roundToInt()} dB over $baselineSeconds sec at the same spot; " +
+                    "disturbance ${(incident.averageDb - baselineDb).roundToInt()} dB above it on average, " +
+                    "${(incident.maximumDb - baselineDb).roundToInt()} dB above at peak",
             )
         }
         appendLine("Impact: ${incident.impact}")
