@@ -39,7 +39,7 @@ class CaseStepsTest {
     @Test
     fun markingFiledResetsTheCaseAndSaysSo() {
         val s = CaseSteps.of(true, listOf(take(1, filedAt = 86_400_000L)))
-        assertFalse(s.recordDone); assertTrue(s.fileDone); assertEquals(1, s.nextIndex)
+        assertTrue(s.recordDone); assertTrue(s.fileDone); assertEquals(1, s.nextIndex)
         assertEquals("Filed Jan 2. Ready for the next one.", s.nextLine(ZoneOffset.UTC))
     }
 

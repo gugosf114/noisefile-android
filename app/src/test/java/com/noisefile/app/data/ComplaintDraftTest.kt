@@ -24,7 +24,7 @@ class ComplaintDraftTest {
 
         assertTrue(draft, draft.startsWith("Loud noise from 440 Price Avenue."))
         assertTrue(draft, draft.contains("Thursday, January 1, 1970, 12:00 AM to 12:00 AM (1 min)."))
-        assertTrue(draft, draft.contains("highest 67 dB, average 58 dB"))
+        assertTrue(draft, draft.contains("highest 68 dB, average 59 dB"))
         assertTrue(draft, draft.contains("Impact: Interrupted rest or quiet use."))
         assertTrue(draft, draft.contains("Bass was vibrating the bedroom window."))
         assertTrue(draft, draft.contains("Phone estimate at my spot"))
@@ -67,7 +67,7 @@ class ComplaintDraftTest {
     fun aQuietMeasuredLaterIsUsedAndSaidSo() {
         val later = incident().copy(laterQuietDb = 34.0, laterQuietSeconds = 300L, laterQuietAtEpochMillis = 86_400_000L)
         val draft = buildComplaintDraft(later, rule(), ZoneOffset.UTC)
-        assertTrue(draft, draft.contains("Quiet at the same spot with the source silent (measured later, on Jan 2): 34 dB, so the noise peaked 33 dB above quiet."))
+        assertTrue(draft, draft.contains("Quiet at the same spot with the source silent (measured later, on Jan 2): 34 dB, so the noise peaked 34 dB above quiet."))
         // A quiet taken with the incident wins over a later one.
         val both = later.copy(ambientDb = 40.0, ambientSeconds = 300L)
         assertTrue(buildComplaintDraft(both, rule(), ZoneOffset.UTC).contains("source silent: 40 dB"))

@@ -141,6 +141,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
             draftRoom = baselineStore.lastRoom,
             // First open ever: the tour runs once on its own. After that, only from More.
             tourStep = if (tourPrefs.getBoolean(KEY_TOUR_SEEN, false)) null else TourStep.CITY,
+            showCalibrationPrompt = shouldPromptCalibration(),
         ),
     )
     val uiState: StateFlow<NoiseFileUiState> = _uiState.asStateFlow()
@@ -561,9 +562,9 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update { it.copy(showCalibrationPrompt = false) }
     }
 
-    /** The card shows once: after the first saved incident, while the numbers are still estimates. */
-    private fun shouldPromptCalibration(incidents: List<Incident>): Boolean =
-        incidents.isNotEmpty() && !noiseMeter.calibrationPromptDismissed &&
+    /** The card shows before the first recording and until dismissed, while the numbers are still estimates. */
+    private fun shouldPromptCalibration(): Boolean =
+        !noiseMeter.calibrationPromptDismissed &&
             noiseMeter.inputStatus().let { it.profile == null && it.declaredSensitivity == null && it.selfTest?.passed != true }
 
     fun clearCalibration() {
@@ -757,7 +758,7 @@ class NoiseFileViewModel(application: Application) : AndroidViewModel(applicatio
                 draftPhotos = emptyList(),
                 draftClip = null,
                 draftClipSeconds = 0,
-                showCalibrationPrompt = shouldPromptCalibration(incidents),
+                showCalibrationPrompt = shouldPromptCalibration(),
                 message = "Incident saved to your private history.",
                 error = null,
             )

@@ -259,7 +259,7 @@ internal fun HomeScreen(
                     ) {
                         Text("Ready", style = MaterialTheme.typography.displayMedium, color = Chalk)
                         Text(
-                            text = if (limit != null) "$city limit now\n${limit.roundToInt()} dB" else "No dB limit in\n$city's rule",
+                            text = if (limit != null) "$city limit now\n${limit.roundToInt()} dB" else "$city's rule works\na different way",
                             style = MaterialTheme.typography.labelMedium,
                             color = if (limit != null) Danger else Muted,
                             textAlign = TextAlign.Center,

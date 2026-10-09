@@ -44,7 +44,7 @@ data class CaseSteps(
     /** The newest incident, when it is marked filed and nothing newer is open. */
     val filedAtEpochMillis: Long?,
 ) {
-    val recordDone: Boolean get() = openCount > 0
+    val recordDone: Boolean get() = openCount > 0 || filedAtEpochMillis != null
     val fileDone: Boolean get() = openCount == 0 && filedAtEpochMillis != null
     /** 0 = baseline, 1 = record, 2 = file; the step the person should do next. */
     val nextIndex: Int get() = when {
