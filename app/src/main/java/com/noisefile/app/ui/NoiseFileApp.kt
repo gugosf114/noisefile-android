@@ -209,8 +209,15 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             else -> homeListState.animateScrollToItem(0)
         }
     }
-    // A locked door opens the unlock card instead; the tap is not remembered, the person taps again after buying.
-    val gated: (() -> Unit) -> Unit = { action -> if (viewModel.isUnlocked()) action() else showUnlock = true }
+    // A locked door opens the unlock card and keeps the tap. The moment the purchase lands, the tap runs:
+    // the person who just paid lands on the form, not on Home.
+    var pendingGated by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val gated: (() -> Unit) -> Unit = { action ->
+        if (viewModel.isUnlocked()) action() else { pendingGated = action; showUnlock = true }
+    }
+    LaunchedEffect(unlock.unlocked) {
+        if (unlock.unlocked) pendingGated?.let { action -> pendingGated = null; action() }
+    }
     var pendingStage by remember { mutableStateOf(CaptureStage.NOISE) }
     var pendingCalibrationMode by remember { mutableStateOf(CalibrationMode.SMOKE_ALARM) }
     val startStage = { stage: CaptureStage ->
@@ -429,7 +436,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             state = unlock,
             onBuy = viewModel::buyUnlock,
             onRestore = viewModel::restoreUnlock,
-            onClose = { showUnlock = false; viewModel.clearUnlockMessage() },
+            onClose = { showUnlock = false; pendingGated = null; viewModel.clearUnlockMessage() },
         )
         // The card closes itself the moment Play says the purchase is done.
         LaunchedEffect(unlock.unlocked) { if (unlock.unlocked) showUnlock = false }
