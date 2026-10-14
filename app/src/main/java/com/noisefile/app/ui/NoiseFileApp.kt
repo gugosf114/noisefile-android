@@ -339,7 +339,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
                 onDropClip = viewModel::dropDraftClip,
                 onSaveAndPrepare = {
                     viewModel.saveIncident()?.let { incident ->
-                        gated { viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
+                        gated { if (rule.formGuide == null) viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
                     }
                 },
                 onDiscard = viewModel::showHome,
@@ -357,7 +357,7 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onExportPdf = { gated { shareHistoryPdf(context, state.incidents, viewModel::ruleForIncident, viewModel::incidentFile) } },
             onUpdateDetails = viewModel::updateIncidentDetails,
             onPrepareComplaint = { incident, rule ->
-                gated { viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
+                gated { if (rule.formGuide == null) viewModel.noteFileAttempt(incident.id); prepareComplaint(context, incident, rule, viewModel::showFormGuide) }
             },
             baselines = state.baselines,
             onRemeasure = { room -> viewModel.setQuietRoom(room); beginAmbient() },
@@ -393,11 +393,22 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
     }
 
     // Back from the city's form, email or phone: ask once whether it went out.
+    // A freshly added observer is replayed ON_RESUME at once, so the question used to pop before the
+    // city's page even opened. Now it waits for a real leave (ON_PAUSE) and the return after it.
     val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     var showFiledAsk by remember { mutableStateOf(false) }
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner, state.askFiledIncidentId) {
+    val askFiledId = androidx.compose.runtime.rememberUpdatedState(state.askFiledIncidentId)
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        var leftApp = false
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME && state.askFiledIncidentId != null) showFiledAsk = true
+            when (event) {
+                androidx.lifecycle.Lifecycle.Event.ON_PAUSE -> leftApp = true
+                androidx.lifecycle.Lifecycle.Event.ON_RESUME -> {
+                    if (leftApp && askFiledId.value != null) showFiledAsk = true
+                    leftApp = false
+                }
+                else -> Unit
+            }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
@@ -1181,6 +1192,15 @@ internal fun ReviewScreen(
 
             item {
                 val destination = complaintDestination(rule)
+                // The same error as up top, here where the thumb is: a save that fails must be seen.
+                state.error?.let { error ->
+                    StatusMessage(
+                        text = error,
+                        color = Danger,
+                        icon = Icons.Default.Shield,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                }
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
