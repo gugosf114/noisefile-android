@@ -141,6 +141,7 @@ import com.noisefile.app.model.Incident
 import com.noisefile.app.model.Jurisdiction
 import com.noisefile.app.audio.MicStatus
 import com.noisefile.app.audio.SelfTestMath
+import com.noisefile.app.review.RatingAsk
 import com.noisefile.app.audio.SelfTestOutcome
 import com.noisefile.app.audio.SelfTestResult
 import com.noisefile.app.audio.CalibrationMath
@@ -368,7 +369,10 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             },
             baselines = state.baselines,
             onRemeasure = { room -> viewModel.setQuietRoom(room); beginAmbient() },
-            onMarkFiled = viewModel::markFiled,
+            onMarkFiled = { id, filed ->
+                viewModel.markFiled(id, filed)
+                if (filed) context.findActivity()?.let { RatingAsk.afterFiled(it) }
+            },
         )
 
         AppScreen.FORM_GUIDE -> {
@@ -426,7 +430,14 @@ fun NoiseFileRoot(viewModel: NoiseFileViewModel = viewModel()) {
             onDismissRequest = { showFiledAsk = false; viewModel.dismissFiledAsk() },
             title = { Text("Did you file it with the city?") },
             text = { Text("The app cannot see the city's inbox. Mark it filed and the next case starts fresh. You can change this on the incident card.") },
-            confirmButton = { TextButton(onClick = { showFiledAsk = false; viewModel.markFiled(askId, true) }) { Text("Yes, mark it filed") } },
+            confirmButton = {
+                TextButton(onClick = {
+                    showFiledAsk = false
+                    viewModel.markFiled(askId, true)
+                    // The job is done: Google's own rating card, at most once every 120 days.
+                    context.findActivity()?.let { RatingAsk.afterFiled(it) }
+                }) { Text("Yes, mark it filed") }
+            },
             dismissButton = { TextButton(onClick = { showFiledAsk = false; viewModel.dismissFiledAsk() }) { Text("Not yet") } },
         )
     }
