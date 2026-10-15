@@ -7,8 +7,10 @@
 Free: pick your city, read the rule, record, save incidents, see the city
 check. One-time unlock ($7.99 on Google Play, product `noisefile_unlock`):
 the sealed PDF report, the city form guide, and the filled-in city email.
-Play Billing talks to the Play Store app; the app still has no internet
-permission and no account.
+Play Billing talks to the Play Store app. Since 0.24.0 the merged manifest has
+INTERNET and ACCESS_NETWORK_STATE: Play Billing's own diagnostics uploader
+(com.google.android.datatransport) declares them. The app's own code sends
+nothing, and there is no account.
 
 NoiseFile is made by WiM Labs, a small company. It is not part of any city or
 government. Neighbor noise, loud music, a barking dog, construction at 6 a.m.:

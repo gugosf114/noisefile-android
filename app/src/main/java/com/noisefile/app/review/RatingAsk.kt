@@ -10,9 +10,9 @@ import com.google.android.play.core.review.ReviewManagerFactory
  * the moment the job is done. Google decides whether the card actually shows (it caps how
  * often), and on top of that a person is asked at most once every [GAP_MS].
  *
- * The card is drawn by the Play Store app, the same way the purchase sheet is, so NoiseFile
- * still has no internet permission. On a copy not installed from Google Play the card never
- * shows and nothing happens.
+ * The card is drawn by the Play Store app, the same way the purchase sheet is. The rating
+ * library adds no permissions. On a copy not installed from Google Play the card never shows
+ * and nothing happens.
  */
 object RatingAsk {
     const val GAP_MS: Long = 120L * 24 * 60 * 60 * 1000
