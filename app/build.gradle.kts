@@ -25,8 +25,8 @@ android {
         applicationId = "com.wimlabs.noisefile"
         minSdk = 26
         targetSdk = 36
-        versionCode = 61
-        versionName = "0.30.8"
+        versionCode = 62
+        versionName = "0.30.9"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -111,6 +111,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // The one paid thing: a single one-time product. Play Billing talks to the Play Store app, not the internet.
     implementation("com.android.billingclient:billing-ktx:8.0.0")
+    // Google Play's own rating card. Drawn by the Play Store app too: still no internet permission.
+    implementation("com.google.android.play:review:2.0.2")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
