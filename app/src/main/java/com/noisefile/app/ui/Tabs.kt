@@ -539,7 +539,7 @@ internal fun MoreScreen(
                 DeckCard {
                     Text("Your privacy", style = MaterialTheme.typography.titleMedium)
                     Text(
-                        "Everything stays on this phone. The app has no internet access and no account. " +
+                        "Everything stays on this phone. No account. Your recordings, photos and notes leave the phone only when you share them. " +
                             "It listens only while you record.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Chalk,
