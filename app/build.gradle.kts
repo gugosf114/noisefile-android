@@ -25,8 +25,8 @@ android {
         applicationId = "com.wimlabs.noisefile"
         minSdk = 26
         targetSdk = 36
-        versionCode = 62
-        versionName = "0.30.9"
+        versionCode = 63
+        versionName = "0.30.10"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -112,9 +112,11 @@ dependencies {
     // The one paid thing: a single one-time product. The purchase itself goes through the Play Store app,
     // but this library brings Google's diagnostics uploader (datatransport), which declares INTERNET and
     // ACCESS_NETWORK_STATE. Since 0.24.0 the app has both; never claim "no internet permission".
-    implementation("com.android.billingclient:billing-ktx:8.0.0")
+    implementation("com.android.billingclient:billing-ktx:8.3.0")
     // Google Play's own rating card, drawn by the Play Store app. Adds no permissions.
     implementation("com.google.android.play:review:2.0.2")
+    // Play flagged androidx.fragment 1.1.0 (pulled in transitively) as outdated; pin a current one.
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
