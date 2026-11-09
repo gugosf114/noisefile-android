@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-11-08.4",
+  "catalogVersion": "2026-11-08.5",
   "jurisdictions": [
     {
       "id": "alameda",
@@ -197,6 +197,12 @@
     {
       "id": "san-bruno",
       "displayName": "San Bruno",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "san-carlos",
+      "displayName": "San Carlos",
       "region": "Bay Area",
       "available": true
     },
@@ -7679,13 +7685,13 @@
       "jurisdiction": "Foster City, California",
       "noiseType": "BARKING_DOG",
       "title": "Check the frequent-or-long-duration animal rule and the three-residence Barking Dog Petition",
-      "summary": "Foster City Municipal Code § 17.68.030(E)(2) prohibits owning, possessing or harboring any animal or bird which frequently or for long duration makes sounds that create a noise disturbance across a residential or commercial property plane. The section sets no minute count; 'frequently or for long duration' is the test. The City's Excessive Dog Barking page lays out the process: first try the owner; if it continues, contact the Police Department, which will try to mediate; if mediation fails, request the Barking Dog Petition form, which must be signed by at least three residences and carry a list of incidents, and is submitted to Foster City Police for investigation and forwarding to the City Attorney. The City describes the violation as a misdemeanor punishable by up to $1,000 and a year in jail. Police keep a record of complaints and respond to repeated calls. Foster City handles barking itself; the page does not route it to Peninsula Humane Society.",
+      "summary": "Foster City Municipal Code § 17.68.030(E)(2) prohibits owning, possessing or harboring any animal or bird which frequently or for long duration makes sounds that create a noise disturbance across a residential or commercial property plane. The section sets no minute count or dB number; 'frequently or for long duration' is the test. The City's Excessive Dog Barking page lays out the process: first try the owner; if it continues, contact the Police Department, which will try to mediate; if mediation fails, request the Barking Dog Petition form, which must be signed by at least three residences and carry a list of incidents, and is submitted to Foster City Police for investigation and forwarding to the City Attorney. The City describes the violation as a misdemeanor punishable by up to $1,000 and a year in jail. Police keep a record of complaints and respond to repeated calls. Foster City handles barking itself; the page does not route it to Peninsula Humane Society.",
       "captureInstruction": "Record the animal's address, every date, exact start and stop times, how often it recurs and how long each episode lasts, and how it disturbed you. Keep each day as its own incident. The petition wants a list of incidents, so a dated log with times is exactly what it asks for; talk to two neighbors who will sign.",
       "requiredIncidentCount": null,
       "nextAction": "Try the owner first. Then call Foster City Police non-emergency and ask them to mediate. If that fails, ask Police for the Barking Dog Petition form and gather three residences' signatures with your incident list.",
       "actionLabel": "Call Foster City Police",
       "actionUri": "tel:6502863300",
-      "secondaryActionLabel": "City's Excessive Dog Barking page",
+      "secondaryActionLabel": "City's barking-dog procedure page",
       "secondaryActionUri": "https://www.fostercity.org/623/Excessive-Dog-Barking",
       "officialSourceLabel": "Foster City Municipal Code § 17.68.030(E)(2); City Excessive Dog Barking page (petition process)",
       "officialSourceUrl": "https://www.codepublishing.com/CA/FosterCity/html/FosterCity17/FosterCity1768.html",
@@ -7768,6 +7774,104 @@
         "context": "Municipal Code 17.68.030(E)(4) and (F)(7): construction tools and equipment in or within 100 yards of a residential district only 7:30 AM to 8 PM weekdays and 9 AM to 8 PM weekends and legal holidays, and never over 100 dBA at the site's property line without the Planning Director's authorization. A project's conditions of approval can tighten this.",
         "sourceCitation": "Municipal Code 17.68.030(E)(4)",
         "sourceQuote": "Permitting the operation of any tools, or equipment used in construction, repair, alteration, demolition or landscape maintenance prior to seven-thirty a.m. or after eight p.m. on weekdays and before nine a.m. or after eight p.m. on weekends and legal holidays, in a residential district or within one hundred yards of a residential district"
+      }
+    },
+    {
+      "id": "san-carlos-barking-dog",
+      "jurisdictionId": "san-carlos",
+      "jurisdiction": "San Carlos, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the habitual-barking rule; the County animal control program enforces in San Carlos",
+      "summary": "San Carlos Municipal Code § 6.04.060(C) says no owner or possessor shall suffer or permit an animal to habitually bark or meow or otherwise act to disturb the peace of any citizen or to be a public nuisance; a separate clause makes domestic fowl that disturb a neighborhood's peace a public nuisance. No minute count or dB number appears. Chapter 6.04 is enforced through the San Mateo County animal control program and its contractor (§ 6.04.010, § 6.04.020), which is Peninsula Humane Society & SPCA. Animal noise also falls under the City's noise chapter, which caps noise at the receiving property line by Table 18.21.050-A and puts enforcement with the San Carlos Police Bureau on a complaint basis (§§ 9.30.030, 9.30.050); the Sheriff runs the bureau. Peninsula Humane Society has told other Peninsula cities it does not handle barking-only complaints, so start with the Police Bureau.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, how often it recurs across days (habitual means a pattern), the time of night, and how it disturbed you. Keep each day as its own incident and preserve recordings.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call the San Carlos Police Bureau and report a barking nuisance under § 6.04.060(C). After hours, the Sheriff's non-emergency dispatch is 650-363-4911. If they refer you to the County contractor, Peninsula Humane Society's animal control line is 650-340-8200.",
+      "actionLabel": "Call San Carlos Police Bureau",
+      "actionUri": "tel:6508024277",
+      "secondaryActionLabel": "Peninsula Humane Society (County animal control)",
+      "secondaryActionUri": "tel:6503408200",
+      "officialSourceLabel": "San Carlos Municipal Code § 6.04.060(C), §§ 6.04.010–6.04.020 (Ord. 1609, 2024); § 9.30.050",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/SanCarlos/html/SanCarlos06/SanCarlos0604.html",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "san-carlos-party-music",
+      "jurisdictionId": "san-carlos",
+      "jurisdiction": "San Carlos, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 55 and 45 dBA residential limits, the 10 p.m. nighttime, and the 5 dB music penalty",
+      "summary": "San Carlos Municipal Code § 9.30.030 says no person shall cause, and no owner shall permit, noise from any person, amplified sound or device above the limits in Zoning Table 18.21.050-A, measured at the receiving property line. For a residential receiver the table sets an L50 (half-hour median) of 55 dBA in the daytime (7:00 a.m. to 10:00 p.m.) and 45 dBA at night (10:00 p.m. to 7:00 a.m.), and an Lmax of 70 daytime and 60 nighttime; interior limits are 40/30 L50 and 55/45 Lmax. Section 18.21.050(A)(1) adjusts them: music, speech, a steady tone or repetitive noise lowers the limit 5 dB; noise under 15 minutes an hour may exceed by 5, under 5 minutes by 10, under 1 minute by 15; and noise over the standard for 30 minutes or more in an hour is prohibited outright. Ambient is the lowest level repeating over six minutes on the A scale, slow, never taken below 35 dBA (§ 9.30.020). The Police Department enforces on a complaint basis (§ 9.30.050); violations are misdemeanors the Police Chief may treat as infractions up to $250 each, and are public nuisances (§ 9.30.060). The City Planner can permit a special event to exceed the limits (§ 9.30.040). A phone estimate is context; the measurement at the line decides.",
+      "captureInstruction": "Record the source address, exact start and stop times, whether it was after 10:00 p.m., how many minutes per hour it ran, whether it was music or speech, and how it disturbed you. Your phone reading is an estimate; ask the responding officer to measure at the property line.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call the San Carlos Police Bureau; after hours call the Sheriff's non-emergency dispatch at 650-363-4911 while the noise is happening so a deputy can measure it.",
+      "actionLabel": "Call San Carlos Police Bureau",
+      "actionUri": "tel:6508024277",
+      "secondaryActionLabel": "Sheriff non-emergency dispatch (after hours)",
+      "secondaryActionUri": "tel:6503634911",
+      "officialSourceLabel": "San Carlos Municipal Code §§ 9.30.020–9.30.060 (Ord. 1439, 2011); Zoning § 18.21.050 Table 18.21.050-A",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/SanCarlos/html/SanCarlos09/SanCarlos0930.html",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "22:00",
+            "end": "07:00"
+          }
+        ],
+        "context": "Zoning Code Table 18.21.050-A, applied by Municipal Code 9.30.030: from 10 PM to 7 AM the residential L50 limit drops from 55 to 45 dBA and the Lmax from 70 to 60. Music or speech lowers the limit 5 dB more. The officer's measurement at the receiving property line decides.",
+        "sourceCitation": "Zoning Code 18.21.050, Table 18.21.050-A; Municipal Code 9.30.030",
+        "sourceQuote": "Residential: L50 Exterior Daytime (7 a.m. – 10 p.m.) 55, Nighttime (10 p.m. – 7 a.m.) 45; Lmax 70 / 60. Interior L50 40 / 30; Lmax 55 / 45."
+      },
+      "ambientRecipe": {
+        "minutes": 6,
+        "note": "Municipal Code 9.30.020(A): ambient is the lowest sound level repeating itself during a six-minute period on the A scale with the meter on slow, never counted below 35 dBA. Zoning 18.21.050(A)(1)(a) lowers the limit 5 dB where ambient is 10 dBA or more below the standard.",
+        "sourceCitation": "Municipal Code 9.30.020(A)",
+        "sourceQuote": "\"Ambient\" means the lowest sound level repeating itself during a six-minute period, using the A scale, and with the sound meter set on \"slow.\" For the purpose of this chapter, in no case shall the ambient be considered less than thirty-five dBA."
+      },
+      "meterLimit": {
+        "daytimeMaximumDb": 55,
+        "nighttimeMaximumDb": 45,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "San Carlos Table 18.21.050-A residential L50: 55 dBA daytime (7 AM to 10 PM), 45 dBA nighttime, at the receiving property line; Lmax 70/60; music or speech lowers the limit 5 dB; short durations allow 5 to 15 dB more; 30 minutes or more over the standard in an hour is prohibited. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "san-carlos-construction",
+      "jurisdictionId": "san-carlos",
+      "jurisdiction": "San Carlos, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the 8 to 5 weekday and 9 to 5 Saturday exemption, no Sunday or holiday work",
+      "summary": "San Carlos Municipal Code § 9.30.070(B) exempts construction activities from the noise limits only between 8:00 a.m. and 5:00 p.m. Monday through Friday and 9:00 a.m. to 5:00 p.m. on Saturdays, and bars construction noise-related activities on Sundays and ten listed holidays: New Year's Day, Martin Luther King Jr. Day, President's Day, Memorial Day, Juneteenth, 4th of July, Labor Day, Veteran's Day, Thanksgiving Day and Christmas Day (Ord. 1586, 2022). Gasoline equipment must keep its factory muffler. The Building Official may grant exceptions. Home workshop and gas gardening equipment have their own window, 8:00 a.m. to sunset weekdays and 10:00 a.m. to sunset weekends and holidays (§ 9.30.070(C)); public works and utility work follows the construction hours except in emergencies (§ 9.30.070(D)). Outside the exempt hours construction is held to the ordinary limits in Table 18.21.050-A. There is no construction dB cap inside the hours. The Police Department enforces on a complaint basis; violations are misdemeanors or infractions up to $250 (§§ 9.30.050, 9.30.060).",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what work was happening and whether it was a contractor or a homeowner's own tools, and your distance. Preserve video with the time visible. Ask whether a Building Official exception is posted.",
+      "requiredIncidentCount": null,
+      "nextAction": "For construction outside the hours while it is happening, call the San Carlos Police Bureau, or the Sheriff's non-emergency dispatch after hours. During business hours, call Code Enforcement at 650-802-4261 or file through the Inform San Carlos request app so the Building Division can act on the permit.",
+      "actionLabel": "Call San Carlos Police Bureau",
+      "actionUri": "tel:6508024277",
+      "secondaryActionLabel": "Call Code Enforcement (business hours)",
+      "secondaryActionUri": "tel:6508024261",
+      "officialSourceLabel": "San Carlos Municipal Code § 9.30.070(B)–(D) (Ord. 1586, 2022); §§ 9.30.050–9.30.060",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/SanCarlos/html/SanCarlos09/SanCarlos0930.html",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "17:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "17:00"
+          }
+        ],
+        "context": "Municipal Code 9.30.070(B) (Ord. 1586, 2022): construction exempt from the noise limits 8 AM to 5 PM Monday to Friday and 9 AM to 5 PM Saturday; none on Sundays or the ten listed holidays. The Building Official can grant exceptions.",
+        "sourceCitation": "Municipal Code 9.30.070(B)",
+        "sourceQuote": "Construction activities; such activities, however, shall be limited to the hours of eight (8:00) a.m. to five (5:00) p.m. Monday through Friday, and nine (9:00) a.m. to five (5:00) p.m. on Saturdays. No construction noise-related activities on Sundays and the following holidays"
       }
     }
   ]

@@ -60,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(47, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(141, catalog.rules.size)
+        assertEquals(48, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(144, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -82,10 +82,10 @@ class RuleCatalogTest {
                 "palo-alto-construction", "petaluma-construction", "petaluma-party_music",
                 "pleasanton-construction", "pleasanton-party_music", "redwood-city-construction",
                 "richmond-party_music", "san-bruno-construction", "san-bruno-party_music",
-                "san-leandro-party_music", "san-mateo-construction", "san-mateo-party_music",
-                "san-rafael-construction", "san-rafael-party_music", "santa-clara-party_music",
-                "south-san-francisco-construction", "south-san-francisco-party_music", "sunnyvale-party_music",
-                "union-city-construction",
+                "san-carlos-party-music", "san-leandro-party_music", "san-mateo-construction",
+                "san-mateo-party_music", "san-rafael-construction", "san-rafael-party_music",
+                "santa-clara-party_music", "south-san-francisco-construction", "south-san-francisco-party_music",
+                "sunnyvale-party_music", "union-city-construction",
             ),
             limitedRules,
         )
