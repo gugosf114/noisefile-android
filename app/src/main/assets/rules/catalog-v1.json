@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-11-08.3",
+  "catalogVersion": "2026-11-08.4",
   "jurisdictions": [
     {
       "id": "alameda",
@@ -17,6 +17,12 @@
     {
       "id": "antioch",
       "displayName": "Antioch",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "belmont",
+      "displayName": "Belmont",
       "region": "Bay Area",
       "available": true
     },
@@ -77,6 +83,12 @@
     {
       "id": "fairfield",
       "displayName": "Fairfield",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "foster-city",
+      "displayName": "Foster City",
       "region": "Bay Area",
       "available": true
     },
@@ -7582,6 +7594,180 @@
         "context": "Municipal Code 8-1.05, Building Code 105.8 (Ord. 904-C.S., 2026): permitted construction 7 AM to 7 PM weekdays, 9 AM to 5 PM Saturday and Sunday. Grading and excavation are tighter: none 6 PM to 7 AM and none on weekends without the Building Official's approval. Loud heavy equipment is also barred 8 PM to 7 AM by 5-10.03(m).",
         "sourceCitation": "Municipal Code 8-1.05, CBC Section 105.8",
         "sourceQuote": "The hours of construction for any project for which a building permit is required within the City of Pacifica shall be limited to the hours of 7:00 a.m. to 7:00 p.m. on Monday, Tuesday, Wednesday, Thursday, and Friday. The hours of construction shall be limited to 9:00 a.m. to 5:00 p.m. on Saturday and Sunday."
+      }
+    },
+    {
+      "id": "belmont-barking-dog",
+      "jurisdictionId": "belmont",
+      "jurisdiction": "Belmont, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the excessive, continuous or untimely barking nuisance; the County enforces in Belmont",
+      "summary": "Belmont City Code § 5-40(b) declares excessive, continuous or untimely barking a nuisance, and § 5-40(a) makes it unlawful for an owner or keeper to fail to control an animal so that it becomes a public nuisance. No minute count or dB number appears. Section 5-1 adopts San Mateo County Ordinance Code Chapter 6.04 (Animal Control, as adopted by County Ord. 4486, Jan. 9, 2024) and authorizes the County to administer and enforce it inside Belmont, including administrative fines and hearings; the County's field contractor is Peninsula Humane Society & SPCA. Barking also counts under the City's noise article: animals are not listed in § 15-101(k), but § 15-102(c)(5) treats any excessively annoying noise that offends persons of ordinary sensibilities as a noise disturbance even under the dB limits, and the Chief of Police administers that article (§ 15-105). Peninsula Humane Society has told other Peninsula cities it does not handle barking-only complaints, so start with Belmont Police.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, whether it was continuous or on and off, the time of day (untimely means late or early), and how it disturbed you. Keep each day as its own incident and preserve recordings.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Belmont Police non-emergency and report a barking nuisance under § 5-40(b). If they refer you to the County animal control program, Peninsula Humane Society's animal control line is 650-340-8200.",
+      "actionLabel": "Call Belmont Police",
+      "actionUri": "tel:6505957400",
+      "secondaryActionLabel": "Peninsula Humane Society (County animal control)",
+      "secondaryActionUri": "tel:6503408200",
+      "officialSourceLabel": "Belmont City Code § 5-40(a)–(b), § 5-1 (adopting San Mateo County Ch. 6.04); § 15-102(c)(5), § 15-105",
+      "officialSourceUrl": "https://library.municode.com/ca/belmont/codes/code_of_ordinances?nodeId=CICO_CH5ANFO",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "belmont-party-music",
+      "jurisdictionId": "belmont",
+      "jurisdiction": "Belmont, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 65 and 55 dBA limits, the sunset nighttime, and the apartment-wall limits",
+      "summary": "Belmont City Code § 15-102 makes any sound from private property above the limits a noise disturbance, and § 15-102(f) makes it unlawful to create, permit, allow or maintain one. Measured at the receiving residential property: 65 dBA in the daytime and 55 dBA at night. 'Daytime' is 8:00 a.m. to sunset Monday through Friday and 10:00 a.m. to sunset on Saturday, Sunday and holidays; 'nighttime' is everything else, so the lower limit starts at sunset, not at a fixed clock hour (§ 15-101(c), (j)). Inside a multifamily building, sound through a shared wall, floor or ceiling is limited to 45 dBA daytime and 35 dBA nighttime, measured 3.5 feet from the wall and 5 feet above the floor. A steady tone such as a hum or throbbing bass lowers the limit by 5 dB. Section 15-102(c)(5) adds that excessively annoying, loud or unusual noise is a disturbance even under the limits if it offends persons of ordinary sensibilities or interferes with comfortable enjoyment of life or property. Measurements use a precision Type 1 or 2 meter on A-weighting, fast response for fluctuating sound (§ 15-102(b)); a phone estimate does not meet that and cannot decide a violation. The Chief of Police administers the article (§ 15-105); violations are public nuisances enforceable by civil, administrative or criminal remedies (§ 15-106).",
+      "captureInstruction": "Record the source address, exact start and stop times, whether it was after sunset (that is when the night limit starts), whether it came through a shared wall, and how it affected you. Your phone reading is an estimate; ask the officer to measure at the property line.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Belmont Police non-emergency while the noise is happening so an officer can measure it. For a recurring address, ask that each call be logged.",
+      "actionLabel": "Call Belmont Police",
+      "actionUri": "tel:6505957400",
+      "officialSourceLabel": "Belmont City Code §§ 15-101, 15-102, 15-105, 15-106 (Ord. 1018, 2006; Ord. 2016-1105)",
+      "officialSourceUrl": "https://library.municode.com/ca/belmont/codes/code_of_ordinances?nodeId=CICO_CH15OFIS",
+      "verifiedDate": "2026-11-08",
+      "meterLimit": {
+        "daytimeMaximumDb": 65,
+        "nighttimeMaximumDb": 55,
+        "daytimeStartsHour": 8,
+        "nighttimeStartsHour": 20,
+        "comparisonContext": "Belmont 15-102(c)(1): 65 dBA daytime, 55 dBA nighttime at the receiving residential property; daytime is 8 AM (10 AM weekends and holidays) to sunset, so the night limit begins at sunset, shown here as 8 PM for display; 45/35 dBA through a shared wall; 5 dB lower for a steady tone; measured with a precision Type 1 or 2 meter. Phone estimate at your spot, not the officer's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "belmont-construction",
+      "jurisdictionId": "belmont",
+      "jurisdiction": "Belmont, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the 8 to 5 weekday and 10 to 5 Saturday hours, no Sunday or holiday work",
+      "summary": "Belmont City Code § 15-102(d)(1) allows construction and related activities that require a City permit, including powered equipment used with them, only from 8:00 a.m. to 5:00 p.m. Monday through Friday except holidays, and 10:00 a.m. to 5:00 p.m. on Saturdays; there are no Sunday or holiday hours. The City's own FAQ adds no grading on Saturday. Holidays are listed in § 15-101(g). Gasoline equipment must keep its factory muffler. The Building Official may allow work outside those hours only for emergency repairs, a site more than 300 feet from any dwelling, noise comparable to the area's ordinary noise, or a quantifiable public benefit, and the exception must be noted on the building permit (§ 15-102(d)(2)–(3)). Powered equipment used for non-construction work has its own window: 8:00 a.m. to 7:00 p.m. weekdays and 10:00 a.m. to 5:00 p.m. weekends and holidays (§ 15-102(e)). There is no construction dB cap inside the hours. The City's FAQ routes after-hours construction complaints to Police and business-hours complaints to the Permit Center.",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what work was happening and whether it needed a permit, and your distance. Preserve video with the time visible. Ask whether an exception is noted on the posted building permit.",
+      "requiredIncidentCount": null,
+      "nextAction": "For construction outside the hours while it is happening, call Belmont Police non-emergency. During business hours, call the Permit Center at 650-595-7422 so the Building Official can act on the permit.",
+      "actionLabel": "Call Belmont Police",
+      "actionUri": "tel:6505957400",
+      "secondaryActionLabel": "Call Permit Center (business hours)",
+      "secondaryActionUri": "tel:6505957422",
+      "officialSourceLabel": "Belmont City Code § 15-102(d)–(e) (Ord. 2016-1105); City FAQ on construction hours",
+      "officialSourceUrl": "https://library.municode.com/ca/belmont/codes/code_of_ordinances?nodeId=CICO_CH15OFIS",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "17:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "10:00",
+            "end": "17:00"
+          }
+        ],
+        "context": "City Code 15-102(d)(1): permitted construction 8 AM to 5 PM Monday to Friday except holidays, 10 AM to 5 PM Saturday, no Sunday or holiday work; the City says no grading on Saturday. A Building Official exception noted on the permit can change this.",
+        "sourceCitation": "City Code 15-102(d)(1)",
+        "sourceQuote": "all construction and related activities which require a city permit, including the use of powered equipment in connection with such activities, are allowed only during the hours of 8:00 a.m. to 5:00 p.m. Monday through Friday except Holidays, and 10:00 a.m. to 5:00 p.m. on Saturdays."
+      }
+    },
+    {
+      "id": "foster-city-barking-dog",
+      "jurisdictionId": "foster-city",
+      "jurisdiction": "Foster City, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the frequent-or-long-duration animal rule and the three-residence Barking Dog Petition",
+      "summary": "Foster City Municipal Code § 17.68.030(E)(2) prohibits owning, possessing or harboring any animal or bird which frequently or for long duration makes sounds that create a noise disturbance across a residential or commercial property plane. The section sets no minute count; 'frequently or for long duration' is the test. The City's Excessive Dog Barking page lays out the process: first try the owner; if it continues, contact the Police Department, which will try to mediate; if mediation fails, request the Barking Dog Petition form, which must be signed by at least three residences and carry a list of incidents, and is submitted to Foster City Police for investigation and forwarding to the City Attorney. The City describes the violation as a misdemeanor punishable by up to $1,000 and a year in jail. Police keep a record of complaints and respond to repeated calls. Foster City handles barking itself; the page does not route it to Peninsula Humane Society.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, how often it recurs and how long each episode lasts, and how it disturbed you. Keep each day as its own incident. The petition wants a list of incidents, so a dated log with times is exactly what it asks for; talk to two neighbors who will sign.",
+      "requiredIncidentCount": null,
+      "nextAction": "Try the owner first. Then call Foster City Police non-emergency and ask them to mediate. If that fails, ask Police for the Barking Dog Petition form and gather three residences' signatures with your incident list.",
+      "actionLabel": "Call Foster City Police",
+      "actionUri": "tel:6502863300",
+      "secondaryActionLabel": "City's Excessive Dog Barking page",
+      "secondaryActionUri": "https://www.fostercity.org/623/Excessive-Dog-Barking",
+      "officialSourceLabel": "Foster City Municipal Code § 17.68.030(E)(2); City Excessive Dog Barking page (petition process)",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/FosterCity/html/FosterCity17/FosterCity1768.html",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "foster-city-party-music",
+      "jurisdictionId": "foster-city",
+      "jurisdiction": "Foster City, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check Table 1: 60 and 50 dBA at a house, with the 10 p.m. to 7:30 a.m. nighttime",
+      "summary": "Foster City Municipal Code § 17.68.030 declares noise beyond its limits a public nuisance. Table 1 sets the limits at the receiving property: for one- or two-family residential, 60 dBA from 7:30 a.m. to 10:00 p.m. and 50 dBA from 10:00 p.m. to 7:30 a.m. for any noise lasting more than 3 minutes, with 5 dBA more allowed for noise under 3 minutes (65 and 55); for multiple-family and public space, 65 and 55 daytime and 55 and 60 nighttime by duration. Section 17.68.030(E)(1) names radios, televisions, stereos and musical instruments played so as to create a noise disturbance under Table 1 at any time, unless the City issued a permit. Measurements are taken on the receiver's property or on public property as the City determines; for apartment and condominium complexes, at least 50 feet from the source or inside the affected unit 4 feet from the wall (§ 17.68.030(D)). The code expects a sound level meter on the A scale; a phone estimate is context, and the City's measurement decides. Violations go through the zoning enforcement sections 17.06.160 and 17.06.170. The City's own noise page routes complaints to Police after hours and Code Enforcement by day.",
+      "captureInstruction": "Record the source address, exact start and stop times, whether it ran past 10:00 p.m. or before 7:30 a.m., whether it lasted more than three minutes, where you stood, and how it disturbed you. Your phone reading is an estimate; ask the responding officer to measure.",
+      "requiredIncidentCount": null,
+      "nextAction": "For a party or music happening now, especially after 10 p.m., call Foster City Police non-emergency. For a recurring address during business hours, email or call Code Enforcement so a case is opened.",
+      "actionLabel": "Call Foster City Police",
+      "actionUri": "tel:6502863300",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:codeenforcement@fostercity.org",
+      "officialSourceLabel": "Foster City Municipal Code § 17.68.030(B) Table 1, (D), (E)(1), (G)",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/FosterCity/html/FosterCity17/FosterCity1768.html",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "22:00",
+            "end": "07:30"
+          }
+        ],
+        "context": "Municipal Code 17.68.030 Table 1: from 10 PM to 7:30 AM the one- or two-family residential limit drops from 60 to 50 dBA (65 to 55 for noise under three minutes). The limits apply all day; the night window only lowers them. The City's meter reading decides.",
+        "sourceCitation": "Municipal Code 17.68.030(B), Table 1",
+        "sourceQuote": "Table 1 Noise Limits. Receiving land use category: One- or two-family residential. Time period 10 p.m.—7:30 a.m.: Any time duration greater than 3 minutes 50, Time duration less than 3 minutes 55. Time period 7:30 a.m.—10 p.m.: 60, 65."
+      },
+      "meterLimit": {
+        "daytimeMaximumDb": 60,
+        "nighttimeMaximumDb": 50,
+        "daytimeStartsHour": 7,
+        "nighttimeStartsHour": 22,
+        "comparisonContext": "Foster City 17.68.030 Table 1, one- or two-family residential, noise lasting more than three minutes: 60 dBA 7:30 AM to 10 PM, 50 dBA 10 PM to 7:30 AM; 5 dBA more for noise under three minutes; multiple-family and public space 65/55; measured on the receiver's property with a sound level meter on the A scale. Phone estimate at your spot, not the City's meter at the code's measurement point."
+      }
+    },
+    {
+      "id": "foster-city-construction",
+      "jurisdictionId": "foster-city",
+      "jurisdiction": "Foster City, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the 7:30 to 8 weekday and 9 to 8 weekend hours near homes, and the 100 dBA cap",
+      "summary": "Foster City Municipal Code § 17.68.030(E)(4) prohibits operating any tools or equipment used in construction, repair, alteration, demolition or landscape maintenance before 7:30 a.m. or after 8:00 p.m. on weekdays, and before 9:00 a.m. or after 8:00 p.m. on weekends and legal holidays, in a residential district or within 100 yards of one. Inside those hours the work is allowed under § 17.68.030(F)(7) so long as the noise from one or more sources does not exceed 100 dBA at the producer's property plane; the Director of Planning and Development Services can authorize more, with mitigation. Loading, unloading and handling of crates, building materials and similar objects are held to the same hours (§ 17.68.030(E)(3)). Major projects can carry tighter hours in their conditions of approval, and the City may impose stricter standards on any project it authorizes. Leaf blowers have their own narrower window (§ 17.68.030(E)(7)). The 100 dBA cap is measured at the site's own property line by the City, so a phone estimate is context only.",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what tools or equipment were running, how close the site is to homes, and your distance. Preserve video with the time visible. Ask whether the project's conditions of approval set tighter hours.",
+      "requiredIncidentCount": null,
+      "nextAction": "For construction outside the hours while it is happening, call Foster City Police non-emergency so they can stop it. During business hours, email or call Code Enforcement at 650-286-3268 so the Building Division can act on the permit.",
+      "actionLabel": "Call Foster City Police",
+      "actionUri": "tel:6502863300",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:codeenforcement@fostercity.org",
+      "officialSourceLabel": "Foster City Municipal Code § 17.68.030(E)(3)–(4), (F)(7); City construction-hours FAQ",
+      "officialSourceUrl": "https://www.codepublishing.com/CA/FosterCity/html/FosterCity17/FosterCity1768.html",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:30",
+            "end": "20:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "20:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "09:00",
+            "end": "20:00"
+          }
+        ],
+        "context": "Municipal Code 17.68.030(E)(4) and (F)(7): construction tools and equipment in or within 100 yards of a residential district only 7:30 AM to 8 PM weekdays and 9 AM to 8 PM weekends and legal holidays, and never over 100 dBA at the site's property line without the Planning Director's authorization. A project's conditions of approval can tighten this.",
+        "sourceCitation": "Municipal Code 17.68.030(E)(4)",
+        "sourceQuote": "Permitting the operation of any tools, or equipment used in construction, repair, alteration, demolition or landscape maintenance prior to seven-thirty a.m. or after eight p.m. on weekdays and before nine a.m. or after eight p.m. on weekends and legal holidays, in a residential district or within one hundred yards of a residential district"
       }
     }
   ]
