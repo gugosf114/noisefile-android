@@ -60,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(48, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(144, catalog.rules.size)
+        assertEquals(51, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(153, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -686,6 +686,7 @@ class RuleCatalogTest {
             mapOf(
                 "albany-construction" to "mailto:com-dev@albanyca.gov",
                 "berkeley-barking_dog" to "mailto:animalservices@berkeleyca.gov",
+                "campbell-party-music" to "mailto:codeenforcement@campbellca.gov",
                 "east-palo-alto-barking-dog" to "mailto:codeenforcement@cityofepa.org",
                 "east-palo-alto-construction" to "mailto:codeenforcement@cityofepa.org",
                 "east-palo-alto-party-music" to "mailto:codeenforcement@cityofepa.org",
@@ -715,6 +716,8 @@ class RuleCatalogTest {
                 "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
                 "san-mateo-party_music" to "mailto:police@cityofsanmateo.org",
                 "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
+                "santa-cruz-construction" to "mailto:codecompliance@santacruzca.gov",
+                "santa-cruz-party-music" to "mailto:codecompliance@santacruzca.gov",
                 "santa-rosa-barking_dog" to "mailto:theanimalshelter@sonomacounty.gov",
                 "union-city-construction" to "mailto:neighborhoodpreservation@unioncity.org",
                 "union-city-party_music" to "mailto:neighborhoodpreservation@unioncity.org",
