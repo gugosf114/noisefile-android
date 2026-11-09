@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-11-08.2",
+  "catalogVersion": "2026-11-08.3",
   "jurisdictions": [
     {
       "id": "alameda",
@@ -105,6 +105,12 @@
       "available": true
     },
     {
+      "id": "millbrae",
+      "displayName": "Millbrae",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
       "id": "milpitas",
       "displayName": "Milpitas",
       "region": "Bay Area",
@@ -131,6 +137,12 @@
     {
       "id": "oakland",
       "displayName": "Oakland",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "pacifica",
+      "displayName": "Pacifica",
       "region": "Bay Area",
       "available": true
     },
@@ -6722,7 +6734,85 @@
       "secondaryActionUri": "tel:9256088400",
       "officialSourceLabel": "El Cerrito Municipal Code §§ 7.04.010, 7.04.020, 7.08.010; Contra Costa County Code § 416-12.202",
       "officialSourceUrl": "https://library.municode.com/ca/el_cerrito/codes/code_of_ordinances?nodeId=TIT7AN",
-      "verifiedDate": "2026-11-08"
+      "verifiedDate": "2026-11-08",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
     },
     {
       "id": "el-cerrito-party-music",
@@ -7039,7 +7129,85 @@
       "secondaryActionUri": "tel:9256088400",
       "officialSourceLabel": "San Pablo Municipal Code § 9.12.010(C); Title 6 adoption of Contra Costa County Code Division 416; County § 416-12.202",
       "officialSourceUrl": "https://ecode360.com/45737724",
-      "verifiedDate": "2026-11-08"
+      "verifiedDate": "2026-11-08",
+      "formGuide": {
+        "portal": "Contra Costa Animal Services form",
+        "access": "No sign-in needed.",
+        "steps": [
+          "One long page"
+        ],
+        "fields": [
+          {
+            "label": "Your Last Name / Your First Name",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Your street number, street name, city, state, zip",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Home Phone",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Email Address",
+            "required": true,
+            "answer": "YOURS"
+          },
+          {
+            "label": "Animal location: street number, street name, city, state, zip",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Split the address into the boxes."
+          },
+          {
+            "label": "Owner's Last Name / First Name",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Leave blank if unknown."
+          },
+          {
+            "label": "Starting on / at",
+            "required": true,
+            "answer": "START_TIME"
+          },
+          {
+            "label": "Ending on / at",
+            "required": true,
+            "answer": "END_TIME"
+          },
+          {
+            "label": "Incessant or Intermittent",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Intermittent",
+            "hint": "Pick Incessant only if it never stopped."
+          },
+          {
+            "label": "Animal Type",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Dog"
+          },
+          {
+            "label": "Have you contacted the owner?",
+            "required": true,
+            "answer": "YOURS",
+            "hint": "Yes or No."
+          },
+          {
+            "label": "What occurred when you made contact with the owner",
+            "required": false,
+            "answer": "DESCRIPTION"
+          }
+        ],
+        "tips": [
+          "The form asks for one incident. Keep the app log; the county wants the pattern."
+        ]
+      }
     },
     {
       "id": "san-pablo-party-music",
@@ -7171,6 +7339,249 @@
         "context": "Municipal Code 18.07.010, Article 6 section 1-601 (Ord. 2041, 2025): 8 AM to 7 PM weekdays, 9 AM to 6 PM Saturdays, no work Sundays or holidays. Bayfront Commercial, Innovative Industrial and Rollins Road Mixed Use zones may start at 7 AM weekdays without loud impact tools until 8. Written Building Official approval can extend hours.",
         "sourceCitation": "Municipal Code 18.07.010, CAC Article 6 § 1-601",
         "sourceQuote": "No person shall erect (including excavation and grading), demolish, alter or repair any building or structure other than between the hours of eight a.m. and seven p.m. on weekdays, and nine a.m. and six p.m. on Saturdays, except in circumstances where continuing work beyond legal hours is necessary to building or site integrity"
+      }
+    },
+    {
+      "id": "millbrae-barking-dog",
+      "jurisdictionId": "millbrae",
+      "jurisdiction": "Millbrae, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the disturbing-the-peace animal rule; the County and Peninsula Humane Society run animal control",
+      "summary": "Millbrae Municipal Code § 6.14.020(G) says no person shall keep or permit on any premises any animal that disturbs the peace and quiet of any neighborhood, or any person residing there, by barking, crying, baying or making any other noise sufficient in volume to disturb them, and declares such an animal a public nuisance. Section 6.14.020(F) separately makes it unlawful to tease or provoke a dog into barking. No minute count or dB number appears. Chapter 6.14 names the Chief of Police and Millbrae officers as animal control officers, while Chapter 6.04 adopts the San Mateo County animal control program and its contractor; the City's own Code Enforcement page says San Mateo County and Peninsula Humane Society provide animal control for Millbrae. Peninsula Humane Society has told other Peninsula cities it does not handle barking-only complaints, so start with Millbrae Police, which is also the City's listed line for noise disturbances.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, how loud it was from your side, how often it recurs across days, the time of night, and how it disturbed you or the neighborhood. Keep each day as its own incident and preserve recordings.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call the Millbrae Police Bureau 24-hour non-emergency line and report a barking-dog nuisance under § 6.14.020(G). You can also file it under Animal Concerns on Millbrae Works, the City's online request portal.",
+      "actionLabel": "Call Millbrae Police (24 hr)",
+      "actionUri": "tel:6502592300",
+      "secondaryActionLabel": "File on Millbrae Works (Animal Concerns)",
+      "secondaryActionUri": "https://seeclickfix.com/web_portal/QahyXXZcyv4ZjqLaYERnYgE3/report/category",
+      "officialSourceLabel": "Millbrae Municipal Code § 6.14.020(F)–(G) (Ord. 704); Chapter 6.04; City Code Enforcement page",
+      "officialSourceUrl": "https://ecode360.com/47413265",
+      "verifiedDate": "2026-11-08",
+      "formGuide": {
+        "portal": "Millbrae Works (SeeClickFix)",
+        "access": "Sign in or continue as a guest; the site uses reCAPTCHA.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Animal Concerns"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
+      }
+    },
+    {
+      "id": "millbrae-party-music",
+      "jurisdictionId": "millbrae",
+      "jurisdiction": "Millbrae, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Millbrae has no general noise chapter; use Penal Code 415 and the unruly-gathering second-call charge",
+      "summary": "Millbrae's municipal code has no general noise ordinance for parties, music or neighbors: no quiet hours, no dB table, no disturbing-the-peace section of its own. What applies is state law, California Penal Code § 415(2), which makes it a misdemeanor to maliciously and willfully disturb another person by loud and unreasonable noise, enforced by Millbrae Police. The City's own tool for parties is Chapter 5.100, Response to Unruly Gatherings: when an officer at the scene finds a party on or next to private property is a threat to the public peace, health, safety or welfare, the officer gives the person in charge a written warning; a second police visit to the same gathering is billed to the people in charge, and the owner if it is a short-term rental, at the actual cost and never less than $200, with each further visit charged separately (§§ 5.100.020–5.100.060). Code Enforcement handles zoning, building and housing matters, not neighbor noise. The lack of a City standard means the officer's judgment of 'unreasonable' decides; a phone reading cannot.",
+      "captureInstruction": "Record the source address, exact start and stop times, what the noise was, how far it carried, the time of night, how many homes it reached, and how it disturbed you. Preserve audio and video from your side. Note each police visit; the second visit to the same gathering is the one that costs the host.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call the Millbrae Police Bureau 24-hour non-emergency line while the noise is happening. If an officer warns the host and it continues, call again; the second response is billed to them under Chapter 5.100.",
+      "actionLabel": "Call Millbrae Police (24 hr)",
+      "actionUri": "tel:6502592300",
+      "officialSourceLabel": "Millbrae Municipal Code Chapter 5.100 Response to Unruly Gatherings; California Penal Code § 415",
+      "officialSourceUrl": "https://ecode360.com/47412490",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "millbrae-construction",
+      "jurisdictionId": "millbrae",
+      "jurisdiction": "Millbrae, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the 2025 hours: 7:30 to 7 weekdays, 8 to 6 Saturday, 9 to 6 Sunday and holidays",
+      "summary": "Millbrae Municipal Code § 9.05.180 (Ord. 821, Nov. 25, 2025) limits noise-generating construction activity to 7:30 a.m. to 7:00 p.m. Monday through Friday, 8:00 a.m. to 6:00 p.m. on Saturdays, and 9:00 a.m. to 6:00 p.m. on Sundays and holidays. Work outside those hours may be approved by the Building Official when requested in writing at least 48 hours in advance. The section sets no dB number; the clock and the Building Official's written approvals decide. Code Enforcement in the Community Development Department enforces building and zoning rules and takes complaints by phone, email, PDF form and the Millbrae Works online portal under the Code Enforcement Complaint category.",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what work was happening and whether it was making noise, and your distance. Preserve video with the time visible. Ask whether a written Building Official approval for extended hours is posted.",
+      "requiredIncidentCount": null,
+      "nextAction": "File a Code Enforcement Complaint on Millbrae Works or email Code Enforcement with the address, dates and times. For work happening right now outside the hours, call the Millbrae Police Bureau 24-hour line.",
+      "actionLabel": "File on Millbrae Works",
+      "actionUri": "https://seeclickfix.com/web_portal/QahyXXZcyv4ZjqLaYERnYgE3/report/category",
+      "secondaryActionLabel": "Email Code Enforcement",
+      "secondaryActionUri": "mailto:codeenforcement@ci.millbrae.ca.us",
+      "officialSourceLabel": "Millbrae Municipal Code § 9.05.180 Hours of construction (Ord. 821, 11/25/2025)",
+      "officialSourceUrl": "https://ecode360.com/49935014",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:30",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "08:00",
+            "end": "18:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Municipal Code 9.05.180 (Ord. 821, 2025): noise-generating construction 7:30 AM to 7 PM weekdays, 8 AM to 6 PM Saturdays, 9 AM to 6 PM Sundays and holidays. The Building Official may approve other hours on a written request made 48 hours ahead.",
+        "sourceCitation": "Municipal Code 9.05.180",
+        "sourceQuote": "The hours of noise generating construction activity is limited to the hours of 7:30 AM to 7:00 PM, Monday through Friday, 8:00 AM to 6:00 PM Saturdays and 9:00 AM to 6:00 PM on Sundays and Holidays. Work outside of these hours may be approved by the Building Official when requested in writing, a minimum of 48 hours in advance."
+      },
+      "formGuide": {
+        "portal": "Millbrae Works (SeeClickFix)",
+        "access": "Sign in or continue as a guest; the site uses reCAPTCHA.",
+        "steps": [
+          "Location",
+          "Category",
+          "Details",
+          "Contact"
+        ],
+        "fields": [
+          {
+            "label": "Location",
+            "required": true,
+            "answer": "ADDRESS",
+            "hint": "Search the address, then Confirm Location."
+          },
+          {
+            "label": "Category",
+            "required": true,
+            "answer": "FIXED",
+            "fixedText": "Code Enforcement Complaint (Private Property Issues)"
+          },
+          {
+            "label": "Description",
+            "required": false,
+            "answer": "DESCRIPTION"
+          },
+          {
+            "label": "Image",
+            "required": false,
+            "answer": "PHOTOS"
+          },
+          {
+            "label": "Your name and email",
+            "required": false,
+            "answer": "YOURS",
+            "hint": "Sign in, or report as a guest."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pacifica-barking-dog",
+      "jurisdictionId": "pacifica",
+      "jurisdiction": "Pacifica, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the frequent-or-long-continued animal noise rule and the habitual-barking rule",
+      "summary": "Pacifica Municipal Code § 5-10.03(e) lists among loud, disturbing and unnecessary noises the keeping of any animal or bird causing frequent or long-continued noise that disturbs the comfort or repose of any persons in the vicinity. Separately, the animal chapter's prohibited-conduct section, § 6-1.206, says no owner shall suffer or permit an animal to habitually bark or meow or otherwise act to disturb the peace of any citizen or to be a public nuisance; any violation of that article is a public nuisance (§ 6-1.225) and can draw administrative citations (§ 6-1.220) or misdemeanor charges (§ 6-1.224). Neither section sets a minute count or dB number. Animal control for Pacifica runs through the San Mateo County animal control program and its contractor, Peninsula Humane Society & SPCA (§ 6-1.202). Peninsula Humane Society has told other Peninsula cities it does not handle barking-only complaints, so start with Pacifica Police, which enforces the noise chapter.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, how often it recurs across days (frequent or habitual means a pattern), the time of night, and how it disturbed you. Keep each day as its own incident and preserve recordings.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Pacifica Police non-emergency and report an animal-noise violation under § 5-10.03(e) and § 6-1.206. If they refer you to the County contractor, Peninsula Humane Society's animal control line is 650-340-8200.",
+      "actionLabel": "Call Pacifica Police",
+      "actionUri": "tel:6507387314",
+      "secondaryActionLabel": "Peninsula Humane Society (County animal control)",
+      "secondaryActionUri": "tel:6503408200",
+      "officialSourceLabel": "Pacifica Municipal Code § 5-10.03(e); § 6-1.206, §§ 6-1.220–6-1.225",
+      "officialSourceUrl": "https://library.municode.com/ca/pacifica/codes/code_of_ordinances?nodeId=TIT5PUWEMOCO_CH10LODIUNUNNO",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "pacifica-party-music",
+      "jurisdictionId": "pacifica",
+      "jurisdiction": "Pacifica, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the 11 p.m. to 7 a.m. fifty-foot rule and the general disturbing-noise ban",
+      "summary": "Pacifica Municipal Code § 5-10.02 makes it unlawful to make or continue any loud, disturbing, unnecessary or unusual noise, or any noise that annoys, disturbs, injures or endangers the comfort, health, repose, peace or safety of other persons in the City. Section 5-10.03(b) names radios, musical instruments and other sound devices played so as to disturb the peace, quiet and comfort of neighbors, or louder than needed for the people in the room, as violations, and adds a bright line: between 11:00 p.m. and 7:00 a.m., operating such a device so it is plainly audible 50 feet from the building or vehicle it is in is prima facie evidence of a violation. Section 5-10.03(d) covers yelling, shouting and singing on the streets, particularly 10:00 p.m. to 7:00 a.m., or at any time so as to disturb people in a home. The chapter sets no dB number; outside the night window the test is whether the noise disturbs a neighbor, which the officer judges. A phone reading cannot decide it, but your own ear at 50 feet after 11 p.m. is exactly the test the code names.",
+      "captureInstruction": "Record the source address, exact start and stop times, whether it was between 11:00 p.m. and 7:00 a.m., whether you could plainly hear it 50 feet from the building it came from (step it off and note where you stood), and how it disturbed you. Preserve audio and video with the time visible.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Pacifica Police non-emergency while the noise is happening. For a recurring address, the same line takes the report; ask that it be logged.",
+      "actionLabel": "Call Pacifica Police",
+      "actionUri": "tel:6507387314",
+      "officialSourceLabel": "Pacifica Municipal Code §§ 5-10.02, 5-10.03(b), (d) (Ord. 211 as amended)",
+      "officialSourceUrl": "https://library.municode.com/ca/pacifica/codes/code_of_ordinances?nodeId=TIT5PUWEMOCO_CH10LODIUNUNNO",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "QUIET",
+        "windows": [
+          {
+            "days": "ALL",
+            "start": "23:00",
+            "end": "07:00"
+          }
+        ],
+        "context": "Municipal Code 5-10.03(b)(2): between 11 PM and 7 AM, a radio, instrument or sound device plainly audible 50 feet from its building is prima facie evidence of a violation. Outside those hours the general rule in 5-10.02 still applies to noise that disturbs neighbors.",
+        "sourceCitation": "Municipal Code 5-10.03(b)(2)",
+        "sourceQuote": "The operation of any such set, instrument, phonograph, machine, or device between the hours of 11:00 p.m. and 7:00 a.m. in such manner as to be plainly audible at a distance of fifty (50′) feet from the building, structure, or vehicle in which such device is located which shall be prima facie evidence of a violation of the provisions of this section"
+      }
+    },
+    {
+      "id": "pacifica-construction",
+      "jurisdictionId": "pacifica",
+      "jurisdiction": "Pacifica, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the Building Code hours: 7 to 7 weekdays, 9 to 5 Saturday and Sunday, plus the 8 p.m. heavy-equipment ban",
+      "summary": "Pacifica Municipal Code § 8-1.05 adds Section 105.8 to the California Building Code as adopted by the City: for any project that needs a building permit, construction hours are 7:00 a.m. to 7:00 p.m. Monday through Friday and 9:00 a.m. to 5:00 p.m. on Saturday and Sunday (Ord. 886-C.S., 2023; Ord. 904-C.S., eff. Jan. 1, 2026). Grading, excavating and filling are tighter: none between 6:00 p.m. and 7:00 a.m. on any day, and none on Saturday or Sunday, without the Building Official's prior approval, and the Building Official notifies Police when approval is given (Building Code Appendix J as amended). The noise chapter adds § 5-10.03(m): operating a pile driver, steam shovel, pneumatic hammer, derrick, hoist or other loud appliance between 8:00 p.m. and 7:00 a.m. is a loud and unnecessary noise. There is no construction dB cap. Work that needs no permit is outside the 105.8 hours but still under the general noise rule.",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what work was happening (grading and excavation have their own tighter hours), and your distance. Preserve video with the time visible. Ask whether a Building Official approval for other hours is posted.",
+      "requiredIncidentCount": null,
+      "nextAction": "Report construction outside the hours to Pacifica Code Enforcement by email or phone during business hours. For work happening right now outside the hours, call Pacifica Police non-emergency.",
+      "actionLabel": "Email Code Enforcement",
+      "actionUri": "mailto:codeenforcement@pacifica.gov",
+      "secondaryActionLabel": "Call Code Enforcement",
+      "secondaryActionUri": "tel:6507387341",
+      "officialSourceLabel": "Pacifica Municipal Code § 8-1.05 (CBC § 105.8 as added; Ord. 904-C.S., eff. 1/1/2026); § 5-10.03(m); Appendix J grading hours",
+      "officialSourceUrl": "https://library.municode.com/ca/pacifica/codes/code_of_ordinances?nodeId=TIT8BURE_CH1BUCO",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "07:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "17:00"
+          },
+          {
+            "days": "SUNDAY",
+            "start": "09:00",
+            "end": "17:00"
+          }
+        ],
+        "context": "Municipal Code 8-1.05, Building Code 105.8 (Ord. 904-C.S., 2026): permitted construction 7 AM to 7 PM weekdays, 9 AM to 5 PM Saturday and Sunday. Grading and excavation are tighter: none 6 PM to 7 AM and none on weekends without the Building Official's approval. Loud heavy equipment is also barred 8 PM to 7 AM by 5-10.03(m).",
+        "sourceCitation": "Municipal Code 8-1.05, CBC Section 105.8",
+        "sourceQuote": "The hours of construction for any project for which a building permit is required within the City of Pacifica shall be limited to the hours of 7:00 a.m. to 7:00 p.m. on Monday, Tuesday, Wednesday, Thursday, and Friday. The hours of construction shall be limited to 9:00 a.m. to 5:00 p.m. on Saturday and Sunday."
       }
     }
   ]

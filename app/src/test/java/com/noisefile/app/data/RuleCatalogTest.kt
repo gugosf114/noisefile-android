@@ -60,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(43, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(129, catalog.rules.size)
+        assertEquals(45, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(135, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -73,22 +73,18 @@ class RuleCatalogTest {
         val limitedRules = catalog.rules.filter { it.meterLimit != null }.map { it.id }.toSet()
         assertEquals(
             setOf(
-                "berkeley-party_music", "hayward-party_music", "santa-clara-party_music",
-                "sunnyvale-party_music", "san-mateo-party_music", "richmond-party_music",
-                "hayward-construction", "san-mateo-construction",
-                "san-leandro-party_music", "redwood-city-construction",
-                "mountain-view-construction", "milpitas-party_music",
-                "pleasanton-party_music", "pleasanton-construction",
-                "alameda-party_music", "alameda-construction",
-                "cupertino-construction", "cupertino-party_music", "palo-alto-construction",
-                "san-bruno-construction", "san-bruno-party_music",
-                "south-san-francisco-construction", "south-san-francisco-party_music",
-                "union-city-construction",
-                "newark-party_music", "newark-construction",
-                "san-rafael-party_music", "san-rafael-construction",
-                "fairfield-party_music", "fairfield-construction",
-                "petaluma-party_music", "petaluma-construction",
-                "albany-party-music", "menlo-park-party-music", "east-palo-alto-party-music",
+                "alameda-construction", "alameda-party_music", "albany-party-music",
+                "berkeley-party_music", "cupertino-construction", "cupertino-party_music",
+                "east-palo-alto-party-music", "fairfield-construction", "fairfield-party_music",
+                "hayward-construction", "hayward-party_music", "menlo-park-party-music",
+                "milpitas-party_music", "mountain-view-construction", "newark-construction",
+                "newark-party_music", "palo-alto-construction", "petaluma-construction",
+                "petaluma-party_music", "pleasanton-construction", "pleasanton-party_music",
+                "redwood-city-construction", "richmond-party_music", "san-bruno-construction",
+                "san-bruno-party_music", "san-leandro-party_music", "san-mateo-construction",
+                "san-mateo-party_music", "san-rafael-construction", "san-rafael-party_music",
+                "santa-clara-party_music", "south-san-francisco-construction", "south-san-francisco-party_music",
+                "sunnyvale-party_music", "union-city-construction",
             ),
             limitedRules,
         )
@@ -680,7 +676,7 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theTwentyNineEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
@@ -716,6 +712,11 @@ class RuleCatalogTest {
                 "vacaville-construction" to "mailto:Code.Enforcement@cityofvacaville.gov",
                 "fairfield-party_music" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
                 "fairfield-construction" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
+                "albany-construction" to "mailto:com-dev@albanyca.gov",
+                "east-palo-alto-barking-dog" to "mailto:codeenforcement@cityofepa.org",
+                "east-palo-alto-construction" to "mailto:codeenforcement@cityofepa.org",
+                "emeryville-construction" to "mailto:nicole.ewing@emeryville.org",
+                "pacifica-construction" to "mailto:codeenforcement@pacifica.gov",
             ),
             emails,
         )
