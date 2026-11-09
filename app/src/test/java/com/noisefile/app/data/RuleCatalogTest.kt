@@ -60,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(42, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(126, catalog.rules.size)
+        assertEquals(43, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(129, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,

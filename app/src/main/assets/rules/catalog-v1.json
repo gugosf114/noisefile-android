@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026-11-08.1",
+  "catalogVersion": "2026-11-08.2",
   "jurisdictions": [
     {
       "id": "alameda",
@@ -23,6 +23,12 @@
     {
       "id": "berkeley",
       "displayName": "Berkeley",
+      "region": "Bay Area",
+      "available": true
+    },
+    {
+      "id": "burlingame",
+      "displayName": "Burlingame",
       "region": "Bay Area",
       "available": true
     },
@@ -7095,6 +7101,76 @@
         "context": "Municipal Code 9.12.010(B): loud construction tools may not run between 10 PM and 7 AM any day, except by the building inspector's written permission in an emergency. The code sets no separate weekend or holiday limit.",
         "sourceCitation": "Municipal Code 9.12.010(B)",
         "sourceQuote": "Operate or use in connection with building operations between the hours of ten p.m. and seven a.m. any pile driver, steam shovel, pneumatic hammer, derrick, steam or electric hoist, power-driven saw or any other tool or apparatus the use of which is attended by loud or unusual noise, except by written permission of the building inspector, and then only in case of emergency"
+      }
+    },
+    {
+      "id": "burlingame-barking-dog",
+      "jurisdictionId": "burlingame",
+      "jurisdiction": "Burlingame, California",
+      "noiseType": "BARKING_DOG",
+      "title": "Check the habitual-barking rule and the animal disturbance-of-peace rule",
+      "summary": "Burlingame Municipal Code § 9.04.060(c) says no owner or possessor shall suffer or permit an animal to habitually bark or meow or otherwise act to disturb the peace of any citizen or to be a public nuisance. Section 9.08.030 separately makes it unlawful to keep, maintain or permit any animal or fowl which by any sound or cry disturbs the peace and quiet of any person or neighborhood. Neither section sets a minute count or dB number. Title 9 is enforced through the San Mateo County animal control program and its contractor (§ 9.04.010, § 9.04.020), which in San Mateo County is Peninsula Humane Society & SPCA; violations can draw administrative citations (§ 9.04.200) or misdemeanor charges (§ 9.04.240), and any violation is a public nuisance (§ 9.04.250). Animal noise also falls under the City's general noise rule, § 10.40.035, which weighs level, time of night, duration, recurrence and closeness to sleeping rooms. Peninsula Humane Society has told other Peninsula cities it does not handle barking-only complaints, so start with Burlingame Police.",
+      "captureInstruction": "Record the animal's address, every date, exact start and stop times, how often it recurs across days (habitual means a pattern), the time of night, and how it disturbed you. Keep each day as its own incident and preserve recordings; the City's rule has no minute threshold, so the pattern is the proof.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Burlingame Police non-emergency and report a barking-dog disturbance under § 9.04.060(c) and § 9.08.030. If they refer you to the County animal control contractor, Peninsula Humane Society's Lantos Center is at 650-340-7022.",
+      "actionLabel": "Call Burlingame Police",
+      "actionUri": "tel:6507774100",
+      "secondaryActionLabel": "Peninsula Humane Society (County animal control)",
+      "secondaryActionUri": "tel:6503407022",
+      "officialSourceLabel": "Burlingame Municipal Code § 9.04.060(c), § 9.08.030, §§ 9.04.200–9.04.250; § 10.40.035",
+      "officialSourceUrl": "https://ecode360.com/44510056",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "burlingame-party-music",
+      "jurisdictionId": "burlingame",
+      "jurisdiction": "Burlingame, California",
+      "noiseType": "PARTY_MUSIC",
+      "title": "Check the loudspeaker rule, the twelve-factor general noise rule, and the unruly-gathering second-response charge",
+      "summary": "Burlingame Municipal Code § 10.40.020 makes it unlawful to use any device that amplifies the voice or any sound, in any public or private place, in a manner that disturbs the peace and good order of the neighborhood or disturbs or annoys people in nearby property. Section 10.40.035 makes it unlawful to willfully make or continue any loud, unnecessary or unusual noise that disturbs the peace and quiet of a neighborhood or annoys a reasonable person of normal sensitiveness, judged by twelve listed factors: level, intensity, usual or unusual, natural or unnatural, background level, closeness to sleeping rooms, zoning, density, time of day or night, duration, whether recurrent, intermittent or constant, and commercial or noncommercial. Powered equipment such as mowers and edgers in a residential district is limited to 8:00 a.m. to 7:00 p.m. Monday through Saturday and 10:00 a.m. to 6:00 p.m. Sundays and holidays (§ 10.40.037). For parties, Chapter 10.70 lets an officer who finds an unruly gathering warn the host in writing; a second police response to the same address within 24 hours is billed to the host and owner as a special security assignment. The chapter sets no dB limit for music or parties and no fixed quiet hours; the time of night is one of the factors, so a phone reading alone cannot decide a violation.",
+      "captureInstruction": "Record the source address, exact start and stop times, whether the sound was amplified, how far it carried, the time of night, how many homes it reached, and how it disturbed you. Preserve audio and video from your side. Note each police visit; a second visit within 24 hours is what triggers the cost charge.",
+      "requiredIncidentCount": null,
+      "nextAction": "Call Burlingame Police non-emergency while the noise is happening. If an officer gives the host the unruly-gathering warning and it continues, call again; the second response within 24 hours is billed to them.",
+      "actionLabel": "Call Burlingame Police",
+      "actionUri": "tel:6507774100",
+      "officialSourceLabel": "Burlingame Municipal Code §§ 10.40.020, 10.40.035, 10.40.037; Chapter 10.70",
+      "officialSourceUrl": "https://ecode360.com/44510439",
+      "verifiedDate": "2026-11-08"
+    },
+    {
+      "id": "burlingame-construction",
+      "jurisdictionId": "burlingame",
+      "jurisdiction": "Burlingame, California",
+      "noiseType": "CONSTRUCTION",
+      "title": "Apply the 2025 hours: 8 to 7 weekdays, 9 to 6 Saturday, nothing Sunday or holidays",
+      "summary": "Burlingame Municipal Code § 18.07.010 adds Article 6, section 1-601, to the California Administrative Code as adopted by the City (Ord. 2041, Nov. 3, 2025): no person shall erect, excavate, grade, demolish, alter or repair any building or structure other than between 8:00 a.m. and 7:00 p.m. on weekdays and 9:00 a.m. and 6:00 p.m. on Saturdays, and no such work on Sundays or holidays. Exceptions only with written approval from the Building Official, limited to what is necessary, for building or site integrity (large concrete pours), environmental or state or federal requirements, or public health and safety. Holidays are the days in § 13.04.100. The restrictions do not apply to work that needs no permit, or to work inside a completely enclosed building that stays under the exterior ambient noise level per Chapter 10.40. In the Bayfront Commercial, Innovative Industrial and Rollins Road Mixed Use zones only, work may start at 7:00 a.m. on weekdays, but chainsaws, jackhammers, pile drivers and pneumatic impact wrenches are barred from 7 to 8 a.m. The City's construction-hours page adds that Public Works right-of-way work runs weekdays 8 a.m. to 5 p.m. and sandblasting is limited to 8 a.m. to 5 p.m. There is no construction dB cap; the clock plus the Building Official's written approvals decide.",
+      "captureInstruction": "Record the site address, the date and day, exact start and stop times, what work was happening, whether the site is in one of the three 7 a.m. zones, and your distance. Preserve video with the time visible. Ask whether a written Building Official approval is posted.",
+      "requiredIncidentCount": null,
+      "nextAction": "Report construction outside the hours to the Burlingame Building Division during business hours. For work happening right now on a Sunday, a holiday, or outside the hours, call Burlingame Police non-emergency.",
+      "actionLabel": "Call Building Division",
+      "actionUri": "tel:6505587260",
+      "secondaryActionLabel": "Call Burlingame Police",
+      "secondaryActionUri": "tel:6507774100",
+      "officialSourceLabel": "Burlingame Municipal Code § 18.07.010 (CAC Article 6, § 1-601), Ord. 2041, Nov. 3, 2025; City Construction Hours page",
+      "officialSourceUrl": "https://ecode360.com/48250724",
+      "verifiedDate": "2026-11-08",
+      "hoursRule": {
+        "kind": "ALLOWED",
+        "windows": [
+          {
+            "days": "WEEKDAY",
+            "start": "08:00",
+            "end": "19:00"
+          },
+          {
+            "days": "SATURDAY",
+            "start": "09:00",
+            "end": "18:00"
+          }
+        ],
+        "context": "Municipal Code 18.07.010, Article 6 section 1-601 (Ord. 2041, 2025): 8 AM to 7 PM weekdays, 9 AM to 6 PM Saturdays, no work Sundays or holidays. Bayfront Commercial, Innovative Industrial and Rollins Road Mixed Use zones may start at 7 AM weekdays without loud impact tools until 8. Written Building Official approval can extend hours.",
+        "sourceCitation": "Municipal Code 18.07.010, CAC Article 6 § 1-601",
+        "sourceQuote": "No person shall erect (including excavation and grading), demolish, alter or repair any building or structure other than between the hours of eight a.m. and seven p.m. on weekdays, and nine a.m. and six p.m. on Saturdays, except in circumstances where continuing work beyond legal hours is necessary to building or site integrity"
       }
     }
   ]
