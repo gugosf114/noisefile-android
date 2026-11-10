@@ -100,10 +100,10 @@ class AmbientJumpTest {
     }
 
     @Test
-    fun elevenRulesCarryTheCitysOwnAmbientRecipe() {
+    fun theseRulesCarryTheCitysOwnAmbientRecipe() {
         val withRecipe = catalog.rules.filter { it.ambientRecipe != null }.map { it.id }.sorted()
         assertEquals(
-            listOf("fairfield-party_music", "milpitas-party_music", "palo-alto-party_music", "petaluma-party_music", "redwood-city-party_music", "san-francisco-construction", "san-francisco-party_music", "san-mateo-party_music", "south-san-francisco-party_music", "union-city-construction", "union-city-party_music"),
+            listOf("albany-party-music", "fairfield-party_music", "los-gatos-party-music", "milpitas-party_music", "palo-alto-party_music", "petaluma-party_music", "redwood-city-party_music", "san-carlos-party-music", "san-francisco-construction", "san-francisco-party_music", "san-mateo-party_music", "south-san-francisco-party_music", "union-city-construction", "union-city-party_music"),
             withRecipe,
         )
     }

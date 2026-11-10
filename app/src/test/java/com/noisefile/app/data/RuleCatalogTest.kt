@@ -60,8 +60,8 @@ class RuleCatalogTest {
     fun everyAvailableCityHasAllThreeCategoriesAndSafeComplaintActions() {
         val catalog = catalog()
 
-        assertEquals(36, catalog.jurisdictions.count { it.isAvailable })
-        assertEquals(108, catalog.rules.size)
+        assertEquals(54, catalog.jurisdictions.count { it.isAvailable })
+        assertEquals(162, catalog.rules.size)
         catalog.jurisdictions.filter { it.isAvailable }.forEach { jurisdiction ->
             assertEquals(
                 jurisdiction.id,
@@ -73,21 +73,20 @@ class RuleCatalogTest {
         val limitedRules = catalog.rules.filter { it.meterLimit != null }.map { it.id }.toSet()
         assertEquals(
             setOf(
-                "berkeley-party_music", "hayward-party_music", "santa-clara-party_music",
-                "sunnyvale-party_music", "san-mateo-party_music", "richmond-party_music",
-                "hayward-construction", "san-mateo-construction",
-                "san-leandro-party_music", "redwood-city-construction",
-                "mountain-view-construction", "milpitas-party_music",
-                "pleasanton-party_music", "pleasanton-construction",
-                "alameda-party_music", "alameda-construction",
-                "cupertino-construction", "cupertino-party_music", "palo-alto-construction",
-                "san-bruno-construction", "san-bruno-party_music",
-                "south-san-francisco-construction", "south-san-francisco-party_music",
+                "alameda-construction", "alameda-party_music", "albany-party-music",
+                "belmont-party-music", "berkeley-party_music", "cupertino-construction",
+                "cupertino-party_music", "east-palo-alto-party-music", "fairfield-construction",
+                "fairfield-party_music", "foster-city-party-music", "hayward-construction",
+                "hayward-party_music", "menlo-park-party-music", "milpitas-party_music",
+                "mountain-view-construction", "newark-construction", "newark-party_music",
+                "palo-alto-construction", "petaluma-construction", "petaluma-party_music",
+                "pleasanton-construction", "pleasanton-party_music", "redwood-city-construction",
+                "richmond-party_music", "san-bruno-construction", "san-bruno-party_music",
+                "san-carlos-party-music", "san-leandro-party_music", "san-mateo-construction",
+                "san-mateo-party_music", "san-rafael-construction", "san-rafael-party_music",
+                "santa-clara-party_music", "santa-monica-construction", "santa-monica-party-music",
+                "south-san-francisco-construction", "south-san-francisco-party_music", "sunnyvale-party_music",
                 "union-city-construction",
-                "newark-party_music", "newark-construction",
-                "san-rafael-party_music", "san-rafael-construction",
-                "fairfield-party_music", "fairfield-construction",
-                "petaluma-party_music", "petaluma-construction",
             ),
             limitedRules,
         )
@@ -679,42 +678,54 @@ class RuleCatalogTest {
     }
 
     @Test
-    fun theTwentyNineEmailRoutesAreExactlyTheVerifiedMailboxes() {
+    fun theEmailRoutesAreExactlyTheVerifiedMailboxes() {
         val catalog = catalog()
         val emails = catalog.rules
             .filter { complaintDestination(it).isEmail }
             .associate { it.id to complaintDestination(it).uri }
         assertEquals(
             mapOf(
+                "albany-construction" to "mailto:com-dev@albanyca.gov",
                 "berkeley-barking_dog" to "mailto:animalservices@berkeleyca.gov",
-                "vallejo-barking_dog" to "mailto:SheriffACO@solanocounty.com",
-                "santa-rosa-barking_dog" to "mailto:theanimalshelter@sonomacounty.gov",
-                "san-mateo-party_music" to "mailto:police@cityofsanmateo.org",
-                "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
-                "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
-                "san-leandro-construction" to "mailto:BuildingInspections@SanLeandro.org",
+                "campbell-party-music" to "mailto:codeenforcement@campbellca.gov",
+                "east-palo-alto-barking-dog" to "mailto:codeenforcement@cityofepa.org",
+                "east-palo-alto-construction" to "mailto:codeenforcement@cityofepa.org",
+                "east-palo-alto-party-music" to "mailto:codeenforcement@cityofepa.org",
+                "el-cerrito-party-music" to "mailto:codeenforcement@elcerrito.gov",
+                "emeryville-construction" to "mailto:nicole.ewing@emeryville.org",
+                "fairfield-construction" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
+                "fairfield-party_music" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
+                "foster-city-construction" to "mailto:codeenforcement@fostercity.org",
+                "foster-city-party-music" to "mailto:codeenforcement@fostercity.org",
+                "milpitas-barking_dog" to "mailto:Code_Enforcement@milpitas.gov",
+                "milpitas-construction" to "mailto:Code_Enforcement@milpitas.gov",
+                "milpitas-party_music" to "mailto:Code_Enforcement@milpitas.gov",
                 "mountain-view-barking_dog" to "mailto:staff@svaca.com",
                 "mountain-view-construction" to "mailto:cmvworkrequest@mountainview.gov",
-                "milpitas-barking_dog" to "mailto:Code_Enforcement@milpitas.gov",
-                "milpitas-party_music" to "mailto:Code_Enforcement@milpitas.gov",
-                "milpitas-construction" to "mailto:Code_Enforcement@milpitas.gov",
-                "palo-alto-barking_dog" to "mailto:animalcontrol@paloalto.gov",
-                "palo-alto-party_music" to "mailto:Planning.Enforcement@paloalto.gov",
-                "palo-alto-construction" to "mailto:Planning.Enforcement@paloalto.gov",
-                "san-bruno-barking_dog" to "mailto:police@sanbruno.ca.gov",
-                "san-bruno-party_music" to "mailto:police@sanbruno.ca.gov",
-                "san-bruno-construction" to "mailto:police@sanbruno.ca.gov",
-                "union-city-party_music" to "mailto:neighborhoodpreservation@unioncity.org",
-                "union-city-construction" to "mailto:neighborhoodpreservation@unioncity.org",
-                "walnut-creek-party_music" to "mailto:CodeEnforcement@walnut-creek.org",
-                "pittsburg-party_music" to "mailto:ce@pittsburgca.gov",
-                "pittsburg-construction" to "mailto:ce@pittsburgca.gov",
-                "napa-party_music" to "mailto:codeenforcement@cityofnapa.org",
                 "napa-construction" to "mailto:codeenforcement@cityofnapa.org",
-                "vacaville-party_music" to "mailto:Code.Enforcement@cityofvacaville.gov",
+                "napa-party_music" to "mailto:codeenforcement@cityofnapa.org",
+                "pacifica-construction" to "mailto:codeenforcement@pacifica.gov",
+                "palo-alto-barking_dog" to "mailto:animalcontrol@paloalto.gov",
+                "palo-alto-construction" to "mailto:Planning.Enforcement@paloalto.gov",
+                "palo-alto-party_music" to "mailto:Planning.Enforcement@paloalto.gov",
+                "pittsburg-construction" to "mailto:ce@pittsburgca.gov",
+                "pittsburg-party_music" to "mailto:ce@pittsburgca.gov",
+                "san-bruno-barking_dog" to "mailto:police@sanbruno.ca.gov",
+                "san-bruno-construction" to "mailto:police@sanbruno.ca.gov",
+                "san-bruno-party_music" to "mailto:police@sanbruno.ca.gov",
+                "san-leandro-construction" to "mailto:BuildingInspections@SanLeandro.org",
+                "san-mateo-construction" to "mailto:police@cityofsanmateo.org",
+                "san-mateo-party_music" to "mailto:police@cityofsanmateo.org",
+                "santa-clara-barking_dog" to "mailto:police@santaclaraca.gov",
+                "santa-cruz-construction" to "mailto:codecompliance@santacruzca.gov",
+                "santa-cruz-party-music" to "mailto:codecompliance@santacruzca.gov",
+                "santa-rosa-barking_dog" to "mailto:theanimalshelter@sonomacounty.gov",
+                "union-city-construction" to "mailto:neighborhoodpreservation@unioncity.org",
+                "union-city-party_music" to "mailto:neighborhoodpreservation@unioncity.org",
                 "vacaville-construction" to "mailto:Code.Enforcement@cityofvacaville.gov",
-                "fairfield-party_music" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
-                "fairfield-construction" to "mailto:fpdcodeenforcement@fairfield.ca.gov",
+                "vacaville-party_music" to "mailto:Code.Enforcement@cityofvacaville.gov",
+                "vallejo-barking_dog" to "mailto:SheriffACO@solanocounty.com",
+                "walnut-creek-party_music" to "mailto:CodeEnforcement@walnut-creek.org",
             ),
             emails,
         )

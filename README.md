@@ -18,8 +18,8 @@ NoiseFile turns it into a noise complaint your city can act on. Record it with
 the sound meter. Check it against your city's own noise ordinance. File it the
 way that city wants.
 
-The verified catalog covers 108 animal, general-noise, and construction
-workflows across 36 Bay Area cities:
+The verified catalog covers 162 animal, general-noise, and construction
+workflows across 54 California cities, 51 in the Bay Area and 3 in Greater Los Angeles:
 
 - the official five-incident documentation requirement;
 - active party or amplified-music reporting;
@@ -53,13 +53,7 @@ built offline in two stages, and only the second stage ships in the app:
    no legal interpretation — see
    [`legal-corpus/acquisition-report.md`](legal-corpus/acquisition-report.md)
    for what was retrieved, what's URL-only, and what's flagged for review per
-   city. 36 Bay Area cities are covered as of 2026-09-30: San Jose, San
-   Francisco, Oakland, Fremont, Santa Rosa, Hayward, Concord, Sunnyvale, Santa
-   Clara, Vallejo, Berkeley, Richmond, Antioch, Daly City, San Mateo, San
-   Leandro, Livermore, Redwood City, Mountain View, Milpitas, Pleasanton,
-   Alameda, Palo Alto, South San Francisco, San Bruno, Union City, Walnut
-   Creek, Pittsburg, Cupertino, Napa, Vacaville, Fairfield, San Rafael,
-   Petaluma, Dublin, and Newark.
+   city. 54 cities are covered as of 2026-11-09. Bay Area (51): Alameda, Albany, Antioch, Belmont, Berkeley, Burlingame, Campbell, Concord, Cupertino, Daly City, Dublin, East Palo Alto, El Cerrito, Emeryville, Fairfield, Foster City, Fremont, Hayward, Livermore, Los Gatos, Menlo Park, Millbrae, Milpitas, Mountain View, Napa, Newark, Oakland, Pacifica, Palo Alto, Petaluma, Pittsburg, Pleasanton, Redwood City, Richmond, San Bruno, San Carlos, San Francisco, San Jose, San Leandro, San Mateo, San Pablo, San Rafael, Santa Clara, Santa Cruz, Santa Rosa, South San Francisco, Sunnyvale, Union City, Vacaville, Vallejo, Walnut Creek. Greater Los Angeles (3): Beverly Hills, Burbank, Santa Monica.
 2. **Structured catalog** (`app/src/main/assets/rules/catalog-v1.json`) — the
    normalized, human-verified rule packets the app actually reads at runtime,
    one exact `jurisdictionId` + `noiseType` lookup at a time. The catalog contains
